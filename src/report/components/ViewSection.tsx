@@ -1,4 +1,4 @@
-import { formatBytes, formatNumber } from "../../format.js";
+import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportSections, ReportView } from "../../types.js";
 import { BarList } from "./BarList.js";
 import { CountBars } from "./CountBars.js";
@@ -17,7 +17,7 @@ export function ViewSection({ view, palette, sections }: ViewSectionProps) {
   const [primary, secondary, tertiary, quaternary, quinary, senary] = palette;
   const summaryNote =
     view.firstTimestamp && view.lastTimestamp
-      ? `${view.firstTimestamp} → ${view.lastTimestamp}`
+      ? `${formatReadableDate(view.firstTimestamp)} → ${formatReadableDate(view.lastTimestamp)}`
       : "No timestamps found";
 
   return (

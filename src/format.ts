@@ -33,3 +33,17 @@ export function formatBytes(bytes: number): string {
 export function formatPercentage(value: number): string {
   return `${value.toFixed(1)}%`;
 }
+
+const readableDateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+export function formatReadableDate(timestamp: string): string {
+  if (!timestamp) return "";
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return "";
+  return readableDateFormatter.format(date);
+}

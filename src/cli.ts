@@ -20,7 +20,7 @@ interface CliOptions {
 
 function printHelp(): void {
 	console.log(`Usage:
-  sanity-log-analyzer <input.ndjson> <output.html> [--config config.json]
+  sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.json]
 
 Options:
   --config    Load a JSON config file
@@ -57,7 +57,7 @@ function parseArgs(argv: string[]): CliOptions {
 	if (positional.length < 2) {
 		printHelp();
 		throw new Error(
-			"Expected positional arguments: <input.ndjson> <output.html>",
+			"Expected positional arguments: <input.ndjson|.ndjson.gz> <output.html>",
 		);
 	}
 

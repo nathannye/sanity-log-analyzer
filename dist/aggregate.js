@@ -76,17 +76,34 @@ function incrementHourBreakdown(map, hour, responseBytes) {
 function incrementStatus(map, status) {
     map[status] = (map[status] ?? 0) + 1;
 }
-function bucketForBytes(responseBytes, histogramBuckets) {
+function bucketLabelsFor(histogramBuckets) {
+    const labels = [];
     for (let i = 0; i < histogramBuckets.length - 1; i += 1) {
-        if (responseBytes < histogramBuckets[i + 1]) {
-            return formatBucketLabel(histogramBuckets[i], histogramBuckets[i + 1]);
-        }
+        labels.push(formatBucketLabel(histogramBuckets[i], histogramBuckets[i + 1]));
     }
-    return histogramBuckets.length > 1
-        ? formatBucketLabel(histogramBuckets[histogramBuckets.length - 2], histogramBuckets[histogramBuckets.length - 1])
-        : null;
+    return labels;
 }
-function accumulateEntry(summary, entry, histogramBuckets) {
+function bucketIndex(responseBytes, histogramBuckets) {
+    for (let i = 0; i < histogramBuckets.length - 1; i += 1) {
+        if (responseBytes < histogramBuckets[i + 1])
+            return i;
+    }
+    return Math.max(0, histogramBuckets.length - 2);
+}
+function createHistogramTracker(bucketCount) {
+    return {
+        counts: new Array(bucketCount).fill(0),
+        nonStudioCounts: new Array(bucketCount).fill(0),
+    };
+}
+function histogramToRecord(labels, counts) {
+    const histogram = {};
+    for (let i = 0; i < labels.length; i += 1) {
+        histogram[labels[i]] = counts[i];
+    }
+    return histogram;
+}
+function accumulateEntry(summary, entry, histogramBuckets, histogram) {
     const responseBytes = entry.responseSize;
     const requestBytes = entry.requestSize;
     const studioRequest = entry.studioRequest;
@@ -130,21 +147,21 @@ function accumulateEntry(summary, entry, histogramBuckets) {
     if (!studioRequest) {
         incrementStatus(summary.byStatusNonStudio, entry.status);
     }
-    const bucket = bucketForBytes(responseBytes, histogramBuckets);
-    if (bucket && summary.responseSizeHistogram[bucket] !== undefined) {
-        summary.responseSizeHistogram[bucket] += 1;
-    }
-    if (!studioRequest &&
-        bucket &&
-        summary.responseSizeHistogramNonStudio[bucket] !== undefined) {
-        summary.responseSizeHistogramNonStudio[bucket] += 1;
+    const bucket = bucketIndex(responseBytes, histogramBuckets);
+    histogram.counts[bucket] += 1;
+    if (!studioRequest) {
+        histogram.nonStudioCounts[bucket] += 1;
     }
 }
 export async function aggregateLogFile(inputPath, histogramBuckets, onProgress) {
     const summary = createSummary(histogramBuckets);
+    const labels = bucketLabelsFor(histogramBuckets);
+    const histogram = createHistogramTracker(labels.length);
     for await (const entry of streamLogEntries(inputPath, onProgress)) {
-        accumulateEntry(summary, entry, histogramBuckets);
+        accumulateEntry(summary, entry, histogramBuckets, histogram);
     }
+    summary.responseSizeHistogram = histogramToRecord(labels, histogram.counts);
+    summary.responseSizeHistogramNonStudio = histogramToRecord(labels, histogram.nonStudioCounts);
     return summary;
 }
 //# sourceMappingURL=aggregate.js.map

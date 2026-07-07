@@ -1,15 +1,21 @@
 import { access, stat } from "node:fs/promises";
 import { createInterface } from "node:readline";
-import { createReadStream, type ReadStream } from "node:fs";
+import { createReadStream } from "node:fs";
+import { createGunzip } from "node:zlib";
 import { parseLogEntry } from "./log-entry.js";
 import type { LogEntry, LogProgress } from "./types.js";
 
+function isGzipPath(inputPath: string): boolean {
+  return inputPath.toLowerCase().endsWith(".gz");
+}
+
+const READ_BUFFER_BYTES = 4 * 1024 * 1024;
 const PROGRESS_BYTE_INTERVAL = 50 * 1024 * 1024;
 const PROGRESS_ENTRY_INTERVAL = 100_000;
 const PROGRESS_MIN_INTERVAL_MS = 250;
 
 function createProgressReporter(
-  input: ReadStream,
+  byteSource: { bytesRead: number },
   totalBytes: number,
   onProgress?: (progress: LogProgress) => void,
 ) {
@@ -20,7 +26,7 @@ function createProgressReporter(
   return (entriesProcessed: number, force = false): void => {
     if (!onProgress) return;
 
-    const bytesRead = input.bytesRead;
+    const bytesRead = byteSource.bytesRead;
     const bytesDelta = bytesRead - lastReportedBytes;
     const entriesDelta = entriesProcessed - lastReportedEntries;
     const shouldReport =
@@ -49,9 +55,14 @@ export async function* streamLogEntries(
 ): AsyncGenerator<LogEntry> {
   await access(inputPath);
   const { size: totalBytes } = await stat(inputPath);
-  const input = createReadStream(inputPath, { encoding: "utf8" });
+  const fileStream = createReadStream(inputPath, {
+    highWaterMark: READ_BUFFER_BYTES,
+  });
+  const input = isGzipPath(inputPath)
+    ? fileStream.pipe(createGunzip())
+    : fileStream.setEncoding("utf8");
   const rl = createInterface({ input, crlfDelay: Infinity });
-  const reportProgress = createProgressReporter(input, totalBytes, onProgress);
+  const reportProgress = createProgressReporter(fileStream, totalBytes, onProgress);
   let entriesProcessed = 0;
 
   for await (const line of rl) {

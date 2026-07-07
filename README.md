@@ -16,7 +16,7 @@ Parse Sanity request logs (NDJSON) into an offline HTML report or flat CSV.
 ### HTML report
 
 ```bash
-sanity-log-analyzer <input.ndjson> <output.html> [--config config.json] [--open]
+sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.json] [--open]
 ```
 
 - Streams large NDJSON files without loading everything into memory
@@ -27,7 +27,7 @@ sanity-log-analyzer <input.ndjson> <output.html> [--config config.json] [--open]
 ### CSV export
 
 ```bash
-npm run to-csv -- <input.ndjson>
+npm run to-csv -- <input.ndjson|.ndjson.gz>
 ```
 
 - Streams log entries to `./output/logs.csv`
@@ -68,5 +68,5 @@ await writeHtmlReport(report, "report.html");
 
 ## Input format
 
-- Newline-delimited JSON (`.ndjson`)
+- Newline-delimited JSON (`.ndjson`) or gzip-compressed (`.ndjson.gz`)
 - One Sanity API request log entry per line

@@ -7,7 +7,7 @@ import { analyzeLog, writeHtmlReport } from "./index.js";
 import { finishProgressLine, formatProgressMessage, setProgressMessage, startProgressSpinner, } from "./progress-line.js";
 function printHelp() {
     console.log(`Usage:
-  sanity-log-analyzer <input.ndjson> <output.html> [--config config.json]
+  sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.json]
 
 Options:
   --config    Load a JSON config file
@@ -40,7 +40,7 @@ function parseArgs(argv) {
     }
     if (positional.length < 2) {
         printHelp();
-        throw new Error("Expected positional arguments: <input.ndjson> <output.html>");
+        throw new Error("Expected positional arguments: <input.ndjson|.ndjson.gz> <output.html>");
     }
     return {
         inputPath: positional[0],

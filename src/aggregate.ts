@@ -96,27 +96,46 @@ function incrementStatus(map: Record<number, number>, status: number): void {
   map[status] = (map[status] ?? 0) + 1;
 }
 
-function bucketForBytes(
-  responseBytes: number,
-  histogramBuckets: number[],
-): string | null {
+function bucketLabelsFor(histogramBuckets: number[]): string[] {
+  const labels: string[] = [];
   for (let i = 0; i < histogramBuckets.length - 1; i += 1) {
-    if (responseBytes < histogramBuckets[i + 1]) {
-      return formatBucketLabel(histogramBuckets[i], histogramBuckets[i + 1]);
-    }
+    labels.push(formatBucketLabel(histogramBuckets[i], histogramBuckets[i + 1]));
   }
-  return histogramBuckets.length > 1
-    ? formatBucketLabel(
-        histogramBuckets[histogramBuckets.length - 2],
-        histogramBuckets[histogramBuckets.length - 1],
-      )
-    : null;
+  return labels;
+}
+
+function bucketIndex(responseBytes: number, histogramBuckets: number[]): number {
+  for (let i = 0; i < histogramBuckets.length - 1; i += 1) {
+    if (responseBytes < histogramBuckets[i + 1]) return i;
+  }
+  return Math.max(0, histogramBuckets.length - 2);
+}
+
+interface HistogramTracker {
+  counts: number[];
+  nonStudioCounts: number[];
+}
+
+function createHistogramTracker(bucketCount: number): HistogramTracker {
+  return {
+    counts: new Array<number>(bucketCount).fill(0),
+    nonStudioCounts: new Array<number>(bucketCount).fill(0),
+  };
+}
+
+function histogramToRecord(labels: string[], counts: number[]): Record<string, number> {
+  const histogram: Record<string, number> = {};
+  for (let i = 0; i < labels.length; i += 1) {
+    histogram[labels[i]] = counts[i];
+  }
+  return histogram;
 }
 
 function accumulateEntry(
   summary: AggregationSummary,
   entry: LogEntry,
   histogramBuckets: number[],
+  histogram: HistogramTracker,
 ): void {
   const responseBytes = entry.responseSize;
   const requestBytes = entry.requestSize;
@@ -166,16 +185,10 @@ function accumulateEntry(
     incrementStatus(summary.byStatusNonStudio, entry.status);
   }
 
-  const bucket = bucketForBytes(responseBytes, histogramBuckets);
-  if (bucket && summary.responseSizeHistogram[bucket] !== undefined) {
-    summary.responseSizeHistogram[bucket] += 1;
-  }
-  if (
-    !studioRequest &&
-    bucket &&
-    summary.responseSizeHistogramNonStudio[bucket] !== undefined
-  ) {
-    summary.responseSizeHistogramNonStudio[bucket] += 1;
+  const bucket = bucketIndex(responseBytes, histogramBuckets);
+  histogram.counts[bucket] += 1;
+  if (!studioRequest) {
+    histogram.nonStudioCounts[bucket] += 1;
   }
 }
 
@@ -185,10 +198,18 @@ export async function aggregateLogFile(
   onProgress?: (progress: LogProgress) => void,
 ): Promise<AggregationSummary> {
   const summary = createSummary(histogramBuckets);
+  const labels = bucketLabelsFor(histogramBuckets);
+  const histogram = createHistogramTracker(labels.length);
 
   for await (const entry of streamLogEntries(inputPath, onProgress)) {
-    accumulateEntry(summary, entry, histogramBuckets);
+    accumulateEntry(summary, entry, histogramBuckets, histogram);
   }
+
+  summary.responseSizeHistogram = histogramToRecord(labels, histogram.counts);
+  summary.responseSizeHistogramNonStudio = histogramToRecord(
+    labels,
+    histogram.nonStudioCounts,
+  );
 
   return summary;
 }

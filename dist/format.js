@@ -30,4 +30,18 @@ export function formatBytes(bytes) {
 export function formatPercentage(value) {
     return `${value.toFixed(1)}%`;
 }
+const readableDateFormatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+});
+export function formatReadableDate(timestamp) {
+    if (!timestamp)
+        return "";
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime()))
+        return "";
+    return readableDateFormatter.format(date);
+}
 //# sourceMappingURL=format.js.map
