@@ -2,29 +2,16 @@ import { formatBytes, formatNumber } from "../../format.js";
 import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
 import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
+import { Button } from "./Button.js";
 import tableStyles from "./DataTable.module.css";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
+import { CopyIcon } from "./icons.js";
 import styles from "./UrlDataTable.module.css";
 
 interface UrlDataTableProps {
 	rows: RankedRow[];
 	showFlyout?: boolean;
 	idPrefix: string;
-}
-
-function CopyIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			aria-hidden="true"
-		>
-			<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-			<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-		</svg>
-	);
 }
 
 export function UrlDataTable({
@@ -60,26 +47,23 @@ export function UrlDataTable({
 							<tr key={`${row.label}-${index}`}>
 								<td class={tableStyles.labelCell} title={row.label}>
 									<div class={tableStyles.labelCellInner}>
-										<button
-											type="button"
-											class={tableStyles.copyButton}
+										<Button
+											variant="ghost-icon-sm"
+											icon={<CopyIcon />}
 											data-copy-value={row.label}
 											data-copy-toast="Copied URL"
 											aria-label={`Copy "${row.label}"`}
 											title="Copy to clipboard"
-										>
-											<CopyIcon />
-										</button>
+										/>
 										<span class={tableStyles.labelText}>{row.label}</span>
 										{flyoutId ? (
-											<button
-												type="button"
-												class={styles.viewQueryButton}
+											<Button
+												variant="outline-pill-accent"
 												data-groq-flyout-target={flyoutId}
 												aria-haspopup="dialog"
 											>
 												View query
-											</button>
+											</Button>
 										) : null}
 									</div>
 									{flyoutId && groqQuery ? (

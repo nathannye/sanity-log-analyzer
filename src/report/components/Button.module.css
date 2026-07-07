@@ -1,0 +1,149 @@
+.button {
+	font-family: inherit;
+	cursor: pointer;
+}
+
+.icon {
+	display: inline-flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.label {
+	line-height: 1;
+}
+
+.default {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.8rem;
+	padding: 1.2rem 1.6rem;
+	border: 0.1rem solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	background: var(--panel);
+	color: var(--text);
+	font-size: var(--text-size-sm);
+	white-space: nowrap;
+	transition:
+		border-color 0.15s ease,
+		background 0.15s ease;
+}
+
+.default:hover {
+	border-color: var(--border-faint);
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.default .icon svg {
+	width: 1.6rem;
+	height: 1.6rem;
+}
+
+.ghostIcon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.8rem;
+	height: 2.8rem;
+	padding: 0;
+	border: none;
+	border-radius: var(--radius-sm);
+	background: transparent;
+	color: var(--muted);
+	font-size: 2rem;
+	line-height: 1;
+}
+
+.ghostIcon:hover {
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.ghostIcon .icon svg {
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
+.ghostIconSm {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.4rem;
+	height: 2.4rem;
+	padding: 0;
+	border: none;
+	border-radius: var(--radius-sm);
+	background: transparent;
+	color: var(--muted);
+}
+
+.ghostIconSm:hover {
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.ghostIconSm .icon svg {
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
+.outlinePill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.4rem 0.8rem;
+	border: 0.1rem solid var(--border-faint);
+	border-radius: var(--radius-pill);
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--muted);
+	font-size: var(--text-size-xs);
+	font-weight: 600;
+}
+
+.outlinePill:hover {
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.outlinePill .icon svg {
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
+.outlinePillAccent {
+	flex-shrink: 0;
+	padding: 0.3rem 0.8rem;
+	border: 0.1rem solid var(--border-faint);
+	border-radius: var(--radius-pill);
+	background: rgba(14, 165, 233, 0.12);
+	color: var(--color-blue);
+	font-size: var(--text-size-xs);
+	font-weight: 600;
+}
+
+.outlinePillAccent:hover {
+	background: rgba(14, 165, 233, 0.2);
+}
+
+.tab {
+	padding: 0.6rem 1.2rem;
+	border: 0.1rem solid var(--border-subtle);
+	border-radius: var(--radius-pill);
+	background: transparent;
+	color: var(--muted);
+	font-size: var(--text-size-sm);
+	font-weight: 600;
+}
+
+.tab:hover {
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.tab[aria-selected="true"] {
+	border-color: color-mix(in srgb, var(--color-blue) 45%, transparent);
+	background: rgba(14, 165, 233, 0.12);
+	color: var(--color-blue);
+}

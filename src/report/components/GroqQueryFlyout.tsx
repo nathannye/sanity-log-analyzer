@@ -2,7 +2,9 @@ import { formatBytes, formatNumber } from "../../format.js";
 import { analyzeGroqQuery } from "../analyze-groq.js";
 import { formatGroqForDisplay } from "../format-groq.js";
 import { highlightGroq } from "../highlight-groq.js";
+import { Button } from "./Button.js";
 import { GroqQueryStatsView } from "./GroqQueryStats.js";
+import { CopyIcon } from "./icons.js";
 import styles from "./GroqQueryFlyout.module.css";
 
 interface GroqQueryFlyoutProps {
@@ -11,21 +13,6 @@ interface GroqQueryFlyoutProps {
 	params?: Record<string, unknown> | null;
 	requests: number;
 	responseBytes: number;
-}
-
-function CopyIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			aria-hidden="true"
-		>
-			<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-			<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-		</svg>
-	);
 }
 
 export function GroqQueryFlyout({
@@ -49,24 +36,22 @@ export function GroqQueryFlyout({
 			<div class={styles.panel}>
 				<div class={styles.header}>
 					<h4 class={`heading-3 ${styles.title}`}>GROQ query</h4>
-					<button
-						type="button"
-						class={styles.copyButton}
+					<Button
+						variant="outline-pill"
+						icon={<CopyIcon />}
+						iconPosition="end"
 						data-copy-value={formatted}
 						data-copy-toast="Copied query"
 						aria-label="Copy query"
 					>
-						<span class={styles.copyButtonLabel}>Copy query</span>
-						<CopyIcon />
-					</button>
-					<button
-						type="button"
-						class={styles.iconButton}
+						Copy query
+					</Button>
+					<Button
+						variant="ghost-icon"
+						icon="×"
 						data-groq-flyout-close
 						aria-label="Close"
-					>
-						×
-					</button>
+					/>
 				</div>
 				<div class={styles.section}>
 					<div class={`eyebrow-1 ${styles.sectionLabel}`}>Usage</div>

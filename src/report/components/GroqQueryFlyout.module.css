@@ -30,60 +30,6 @@
 	font-size: 1.4rem;
 }
 
-.iconButton {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 2.8rem;
-	height: 2.8rem;
-	padding: 0;
-	border: none;
-	border-radius: var(--radius-sm);
-	background: transparent;
-	color: var(--muted);
-	cursor: pointer;
-	font-size: 2rem;
-	line-height: 1;
-}
-
-.iconButton:hover {
-	color: var(--text);
-	background: rgba(255, 255, 255, 0.06);
-}
-
-.iconButton svg {
-	width: 1.4rem;
-	height: 1.4rem;
-}
-
-.copyButton {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	padding: 0.4rem 0.8rem;
-	border: 0.1rem solid var(--border-faint);
-	border-radius: var(--radius-pill);
-	background: rgba(255, 255, 255, 0.04);
-	color: var(--muted);
-	cursor: pointer;
-	font-size: var(--text-size-xs);
-	font-weight: 600;
-}
-
-.copyButton:hover {
-	color: var(--text);
-	background: rgba(255, 255, 255, 0.08);
-}
-
-.copyButtonLabel {
-	line-height: 1;
-}
-
-.copyButton svg {
-	width: 1.4rem;
-	height: 1.4rem;
-}
-
 .section + .section {
 	margin-top: 1.6rem;
 	padding-top: 1.6rem;

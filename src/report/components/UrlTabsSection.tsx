@@ -4,6 +4,7 @@ import {
 	groupUrlsByKind,
 	type UrlTab,
 } from "../group-urls-by-kind.js";
+import { Button } from "./Button.js";
 import styles from "./UrlTabsSection.module.css";
 import { UrlDataTable } from "./UrlDataTable.js";
 
@@ -33,17 +34,16 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 			<h3 class="heading-3">Top URLs</h3>
 			<div class={styles.tabList} role="tablist" aria-label="URL categories">
 				{TABS.map((tab) => (
-					<button
+					<Button
 						key={tab.id}
-						type="button"
-						class={styles.tab}
+						variant="tab"
 						role="tab"
 						data-url-tab={tab.id}
 						aria-selected={tab.id === activeTab ? "true" : "false"}
 						aria-controls={`${idPrefix}-panel-${tab.id}`}
 					>
 						{tab.label} ({groups[tab.id].length})
-					</button>
+					</Button>
 				))}
 			</div>
 			{TABS.map((tab) => (

@@ -1,3 +1,4 @@
+import buttonCss from "../components/Button.module.css?inline";
 import verticalBarChartCss from "../components/VerticalBarChart.module.css?inline";
 import barListCss from "../components/BarList.module.css?inline";
 import dataTableCss from "../components/DataTable.module.css?inline";
@@ -6,7 +7,6 @@ import donutCss from "../components/Donut.module.css?inline";
 import groqQueryFlyoutCss from "../components/GroqQueryFlyout.module.css?inline";
 import groqQueryStatsCss from "../components/GroqQueryStats.module.css?inline";
 import headerCss from "../components/Header.module.css?inline";
-import markdownDownloadCss from "../components/MarkdownDownload.module.css?inline";
 import metricCss from "../components/Metric.module.css?inline";
 import reportControlsCss from "../components/ReportControls.module.css?inline";
 import tableOfContentsCss from "../components/TableOfContents.module.css?inline";
@@ -26,7 +26,7 @@ export const reportCss = [
 	tableOfContentsCss,
 	reportControlsCss,
 	viewToggleCss,
-	markdownDownloadCss,
+	buttonCss,
 	viewSectionCss,
 	metricCss,
 	donutCss,
