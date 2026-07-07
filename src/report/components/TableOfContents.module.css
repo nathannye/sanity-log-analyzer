@@ -1,0 +1,43 @@
+.toc {
+	position: sticky;
+	top: 2rem;
+	align-self: start;
+	padding: 1.6rem;
+	border: 0.1rem solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	background: var(--panel);
+	backdrop-filter: blur(0.8rem);
+}
+
+.heading {
+	color: var(--muted);
+	margin-bottom: 1.2rem;
+}
+
+.list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 0.4rem;
+}
+
+.link {
+	display: block;
+	padding: 0.6rem 0.8rem;
+	border-radius: var(--radius-sm);
+	color: var(--text);
+	text-decoration: none;
+	font-size: var(--text-size-sm);
+	transition: background 0.15s ease;
+}
+
+.link:hover {
+	background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 90rem) {
+	.toc {
+		position: static;
+	}
+}

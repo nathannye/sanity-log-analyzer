@@ -1,0 +1,11 @@
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1.2rem;
+	margin-bottom: 2.4rem;
+}
+
+.row > :first-child {
+	flex: 1 1 24rem;
+}

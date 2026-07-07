@@ -11,118 +11,149 @@ import styles from "./ViewSection.module.css";
 interface ViewSectionProps {
 	view: ReportView;
 	sections: ReportSections;
+	viewKey: "all" | "billable";
+	hidden?: boolean;
 }
 
-export function ViewSection({ view, sections }: ViewSectionProps) {
+export function ViewSection({
+	view,
+	sections,
+	viewKey,
+	hidden = false,
+}: ViewSectionProps) {
 	const summaryNote =
 		view.firstTimestamp && view.lastTimestamp
 			? `${formatReadableDate(view.firstTimestamp)} → ${formatReadableDate(view.lastTimestamp)}`
 			: "No timestamps found";
 
 	return (
-		<details class={styles.section} open>
-			<summary class="heading-2">{view.label}</summary>
-			<div class={styles.viewGrid}>
-				<Metric
-					label="Requests"
-					value={formatNumber(view.requests)}
-					note={summaryNote}
-				/>
-				<Metric
-					label="Bandwidth"
-					value={formatBytes(view.responseBytes)}
-					note="Response size total"
-				/>
-				<Metric
-					label="Request bytes"
-					value={formatBytes(view.requestBytes)}
-					note="Inbound payload total"
-				/>
-				<Metric
-					label="Studio"
-					value={formatBytes(view.studio.responseBytes)}
-					note={`${formatNumber(view.studio.requests)} requests`}
-				/>
-				<Metric
-					label="Billable"
-					value={formatBytes(view.nonStudio.responseBytes)}
-					note={`${formatNumber(view.nonStudio.requests)} requests`}
-				/>
-				<Donut
-					title="Studio split"
-					primary={{ label: "Studio", value: view.studio.responseBytes }}
-					secondary={{ label: "Billable", value: view.nonStudio.responseBytes }}
-					colors={{ primary: colorVar("blue"), secondary: colorVar("green") }}
-				/>
-			</div>
+		<div data-report-view={viewKey} hidden={hidden || undefined}>
+			<section class={styles.sectionBlock} data-section="summary">
+				<div class={styles.viewGrid}>
+					<Metric
+						label="Requests"
+						value={formatNumber(view.requests)}
+						note={summaryNote}
+					/>
+					<Metric
+						label="Bandwidth"
+						value={formatBytes(view.responseBytes)}
+						note="Response size total"
+					/>
+					<Metric
+						label="Request bytes"
+						value={formatBytes(view.requestBytes)}
+						note="Inbound payload total"
+					/>
+					<Metric
+						label="Studio"
+						value={formatBytes(view.studio.responseBytes)}
+						note={`${formatNumber(view.studio.requests)} requests`}
+					/>
+					<Metric
+						label="Billable"
+						value={formatBytes(view.nonStudio.responseBytes)}
+						note={`${formatNumber(view.nonStudio.requests)} requests`}
+					/>
+					<Donut
+						title="Studio split"
+						primary={{ label: "Studio", value: view.studio.responseBytes }}
+						secondary={{
+							label: "Billable",
+							value: view.nonStudio.responseBytes,
+						}}
+						colors={{ primary: colorVar("blue"), secondary: colorVar("green") }}
+					/>
+				</div>
+			</section>
 			<div class={styles.grid2}>
 				<div class={styles.stack}>
 					<div class={`eyebrow-1 ${styles.sectionTitle}`}>Charts</div>
 					<div class={styles.grid2}>
 						{sections.domain ? (
-							<BarList
-								title="Top domains"
-								rows={view.byDomain}
-								accent={colorVar("blue")}
-							/>
+							<section class={styles.sectionBlock} data-section="domain">
+								<BarList
+									title="Top domains"
+									rows={view.byDomain}
+									accent={colorVar("blue")}
+								/>
+							</section>
 						) : null}
 						{sections.endpoint ? (
-							<BarList
-								title="Top endpoints"
-								rows={view.byEndpoint}
-								accent={colorVar("green")}
-							/>
+							<section class={styles.sectionBlock} data-section="endpoint">
+								<BarList
+									title="Top endpoints"
+									rows={view.byEndpoint}
+									accent={colorVar("green")}
+								/>
+							</section>
 						) : null}
 					</div>
 					<div class={styles.grid2}>
 						{sections.date ? (
-							<BarList
-								title="Daily bandwidth"
-								rows={view.byDate}
-								accent={colorVar("amber")}
-							/>
+							<section class={styles.sectionBlock} data-section="date">
+								<BarList
+									title="Daily bandwidth"
+									rows={view.byDate}
+									accent={colorVar("amber")}
+								/>
+							</section>
 						) : null}
 						{sections.hour ? (
-							<BarList
-								title="Hourly bandwidth"
-								rows={view.byHour}
-								accent={colorVar("red")}
-							/>
+							<section class={styles.sectionBlock} data-section="hour">
+								<BarList
+									title="Hourly bandwidth"
+									rows={view.byHour}
+									accent={colorVar("red")}
+								/>
+							</section>
 						) : null}
 					</div>
 					<div class={styles.grid2}>
 						{sections.status ? (
-							<CountBars
-								title="Response codes"
-								rows={view.byStatus}
-								accent={colorVar("purple")}
-							/>
+							<section class={styles.sectionBlock} data-section="status">
+								<CountBars
+									title="Response codes"
+									rows={view.byStatus}
+									accent={colorVar("purple")}
+								/>
+							</section>
 						) : null}
 						{sections.histogram ? (
-							<CountBars
-								title="Response size buckets"
-								rows={view.responseSizeHistogram}
-								accent={colorVar("teal")}
-							/>
+							<section class={styles.sectionBlock} data-section="histogram">
+								<CountBars
+									title="Response size buckets"
+									rows={view.responseSizeHistogram}
+									accent={colorVar("teal")}
+								/>
+							</section>
 						) : null}
 					</div>
 				</div>
 				<div class={styles.stack}>
 					<div class={`eyebrow-1 ${styles.sectionTitle}`}>Top lists</div>
 					{sections.urls ? (
-						<DataTable hasCopyButton title="Top URLs" rows={view.byUrl} />
+						<section class={styles.sectionBlock} data-section="urls">
+							<DataTable hasCopyButton title="Top URLs" rows={view.byUrl} />
+						</section>
 					) : null}
 					{sections.referers ? (
-						<DataTable title="Top referers" rows={view.byReferer} />
+						<section class={styles.sectionBlock} data-section="referers">
+							<DataTable title="Top referers" rows={view.byReferer} />
+						</section>
 					) : null}
 					{sections.userAgents ? (
-						<DataTable title="Top user agents" rows={view.byUserAgent} />
+						<section class={styles.sectionBlock} data-section="userAgents">
+							<DataTable title="Top user agents" rows={view.byUserAgent} />
+						</section>
 					) : null}
 					{sections.ips ? (
-						<DataTable hasCopyButton title="Top IPs" rows={view.byIp} />
+						<section class={styles.sectionBlock} data-section="ips">
+							<DataTable hasCopyButton title="Top IPs" rows={view.byIp} />
+						</section>
 					) : null}
 				</div>
 			</div>
-		</details>
+		</div>
 	);
 }

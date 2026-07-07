@@ -49,7 +49,25 @@ await writeHtmlReport(report, "report.html");
 
 - `analyzeLog(inputPath, options?)` — returns `ReportData`
 - `writeHtmlReport(report, outputPath)` — writes self-contained HTML
+- `generateMarkdown(report, options?)` — returns LLM-friendly markdown for a report view (`billable` by default, or `all`)
+- `writeMarkdownReport(report, outputPath, options?)` — writes markdown to disk
+- `markdownReportFilename(report, view)` — derives a filename with `_billable-only` or `_all` suffix
 - `resolveReportConfig(partial)` / `loadReportConfig(path)` — config helpers
+
+### Markdown export
+
+```ts
+import { analyzeLog, generateMarkdown, writeMarkdownReport } from "sanity-log-analyzer";
+
+const report = await analyzeLog("logs.ndjson");
+
+const billableMd = generateMarkdown(report);
+const allMd = generateMarkdown(report, { view: "all" });
+
+await writeMarkdownReport(report, "report_billable-only.md", { view: "billable" });
+```
+
+The HTML report also includes a **Download markdown for LLM** button that exports whichever view is currently shown.
 
 ## Development
 

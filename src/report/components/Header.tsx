@@ -20,11 +20,6 @@ export function Header({ data }: HeaderProps) {
 			<div class={`body-2 ${styles.meta}`}>
 				<div>Generated on: {formatReadableDate(data.generatedAt)}</div>
 				<div>Max table rows: {data.config.topN}</div>
-				<div>
-					{data.config.sections.billableComparison
-						? "Billable comparison enabled"
-						: "Billable comparison disabled"}
-				</div>
 			</div>
 		</header>
 	);

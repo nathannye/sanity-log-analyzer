@@ -11,7 +11,7 @@ export default defineConfig({
 			fileName: "render",
 		},
 		outDir: "dist/report",
-		emptyOutDir: true,
+		emptyOutDir: false,
 		cssCodeSplit: false,
 	},
 });

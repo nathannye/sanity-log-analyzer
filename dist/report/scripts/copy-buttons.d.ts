@@ -1,0 +1,2 @@
+export declare const copyButtonsScript = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar btn=e.target.closest(\"[data-copy-value]\");\nif(!btn)return;\ne.preventDefault();\nvar value=btn.getAttribute(\"data-copy-value\");\nif(!value)return;\nnavigator.clipboard.writeText(value).then(function(){\nwindow.__showReportToast(\"Copied\");\n}).catch(function(){});\n});\n})();";
+//# sourceMappingURL=copy-buttons.d.ts.map

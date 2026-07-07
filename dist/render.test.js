@@ -1,95 +1,71 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { renderReportHtml } from "./report/render.js";
-const SAMPLE_REPORT = {
-    title: "Sanity Log Report",
-    sourcePath: "sample.ndjson",
-    generatedAt: "2026-07-07T00:00:00.000Z",
-    config: {
-        title: "Sanity Log Report",
-        topN: 50,
-        histogramBuckets: [0, 1024, Infinity],
-        palette: ["#0ea5e9", "#22c55e", "#f59e0b", "#ef4444", "#a855f7", "#14b8a6", "#f97316"],
-        sections: {
-            domain: true,
-            endpoint: true,
-            date: true,
-            hour: true,
-            status: true,
-            histogram: true,
-            urls: true,
-            referers: true,
-            userAgents: true,
-            ips: true,
-            billableComparison: true,
-        },
-    },
-    all: {
-        label: "All requests",
-        requests: 2,
-        responseBytes: 275,
-        requestBytes: 150,
-        firstTimestamp: "2026-06-14T00:00:00.000Z",
-        lastTimestamp: "2026-06-14T01:00:00.000Z",
-        studio: { requests: 1, responseBytes: 75, requestBytes: 50 },
-        nonStudio: { requests: 1, responseBytes: 200, requestBytes: 100 },
-        byDomain: [{ label: "api", requests: 2, responseBytes: 275 }],
-        byEndpoint: [
-            { label: "listen", requests: 1, responseBytes: 200 },
-            { label: "query", requests: 1, responseBytes: 75 },
-        ],
-        byDate: [{ label: "Jun 14, 2026", requests: 2, responseBytes: 275 }],
-        byHour: [
-            { label: "00:00", requests: 1, responseBytes: 200 },
-            { label: "01:00", requests: 1, responseBytes: 75 },
-        ],
-        byUrl: [
-            { label: "https://example.com/a", requests: 1, responseBytes: 200 },
-            { label: "https://example.com/b", requests: 1, responseBytes: 75 },
-        ],
-        byReferer: [{ label: "(empty)", requests: 2, responseBytes: 275 }],
-        byUserAgent: [
-            { label: "UA-1", requests: 1, responseBytes: 200 },
-            { label: "UA-2", requests: 1, responseBytes: 75 },
-        ],
-        byIp: [
-            { label: "127.0.0.1", requests: 1, responseBytes: 200 },
-            { label: "127.0.0.2", requests: 1, responseBytes: 75 },
-        ],
-        byStatus: [
-            { label: "200", count: 1 },
-            { label: "404", count: 1 },
-        ],
-        responseSizeHistogram: [{ label: "0 B - 1 KB", count: 2 }],
-    },
-    billable: {
-        label: "Billable requests",
-        requests: 1,
-        responseBytes: 200,
-        requestBytes: 100,
-        firstTimestamp: "2026-06-14T00:00:00.000Z",
-        lastTimestamp: "2026-06-14T00:00:00.000Z",
-        studio: { requests: 0, responseBytes: 0, requestBytes: 0 },
-        nonStudio: { requests: 1, responseBytes: 200, requestBytes: 100 },
-        byDomain: [{ label: "api", requests: 1, responseBytes: 200 }],
-        byEndpoint: [{ label: "listen", requests: 1, responseBytes: 200 }],
-        byDate: [{ label: "Jun 14, 2026", requests: 1, responseBytes: 200 }],
-        byHour: [{ label: "00:00", requests: 1, responseBytes: 200 }],
-        byUrl: [{ label: "https://example.com/a", requests: 1, responseBytes: 200 }],
-        byReferer: [{ label: "(empty)", requests: 1, responseBytes: 200 }],
-        byUserAgent: [{ label: "UA-1", requests: 1, responseBytes: 200 }],
-        byIp: [{ label: "127.0.0.1", requests: 1, responseBytes: 200 }],
-        byStatus: [{ label: "200", count: 1 }],
-        responseSizeHistogram: [{ label: "0 B - 1 KB", count: 1 }],
-    },
-};
+import { SAMPLE_REPORT } from "./sample-report-data.js";
 test("renderReportHtml produces a self-contained html report", () => {
     const html = renderReportHtml(SAMPLE_REPORT);
     assert.ok(html.includes("<!DOCTYPE html>"));
     assert.ok(html.includes("Sanity Log Report"));
     assert.ok(html.includes('id="report-data"'));
-    assert.ok(html.includes("All requests"));
     assert.ok(html.includes("Top domains"));
     assert.ok(html.includes("<style>"));
+    assert.ok(!html.includes("<details"));
+});
+test("renderReportHtml includes TOC links for enabled sections", () => {
+    const html = renderReportHtml(SAMPLE_REPORT);
+    assert.ok(html.includes('aria-label="Report sections"'));
+    assert.ok(html.includes('href="#summary"'));
+    assert.ok(html.includes('href="#domain"'));
+    assert.ok(html.includes('href="#urls"'));
+    assert.ok(html.includes("data-toc-link"));
+});
+test("renderReportHtml omits TOC links for disabled sections", () => {
+    const html = renderReportHtml({
+        ...SAMPLE_REPORT,
+        config: {
+            ...SAMPLE_REPORT.config,
+            sections: {
+                ...SAMPLE_REPORT.config.sections,
+                ips: false,
+            },
+        },
+    });
+    assert.ok(!html.includes('href="#ips"'));
+    assert.ok(html.includes('href="#domain"'));
+});
+test("renderReportHtml shows billable view by default with toggle", () => {
+    const html = renderReportHtml(SAMPLE_REPORT);
+    assert.ok(html.includes('id="show-studio-requests"'));
+    assert.ok(html.includes("Show non-billable studio requests"));
+    assert.match(html, /data-report-view="billable"[^>]*>/);
+    assert.match(html, /data-report-view="all"[^>]*hidden/);
+});
+test("renderReportHtml hides toggle when billableComparison is disabled", () => {
+    const html = renderReportHtml({
+        ...SAMPLE_REPORT,
+        config: {
+            ...SAMPLE_REPORT.config,
+            sections: {
+                ...SAMPLE_REPORT.config.sections,
+                billableComparison: false,
+            },
+        },
+    });
+    const body = html.slice(0, html.indexOf("<script"));
+    assert.ok(!body.includes('id="show-studio-requests"'));
+    assert.ok(body.includes('data-report-view="all"'));
+    assert.ok(!body.includes('data-report-view="billable"'));
+    assert.ok(body.includes('id="download-markdown"'));
+});
+test("renderReportHtml includes markdown download payload and scripts", () => {
+    const html = renderReportHtml(SAMPLE_REPORT);
+    assert.ok(html.includes('id="download-markdown"'));
+    assert.ok(html.includes("Download markdown for LLM"));
+    assert.ok(html.includes('id="report-markdown"'));
+    assert.ok(html.includes('"filenameBase":"sanity-log-report"'));
+    assert.ok(html.includes("Billable requests"));
+    assert.ok(html.includes("All requests"));
+    assert.ok(html.includes("window.__showReportToast"));
+    assert.ok(html.includes('__showReportToast("Downloaded")'));
 });
 //# sourceMappingURL=render.test.js.map

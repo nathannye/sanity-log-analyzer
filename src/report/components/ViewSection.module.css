@@ -1,39 +1,19 @@
-.section {
-	margin-bottom: 2.4rem;
-	border: 0.1rem solid var(--panel-border);
-	border-radius: var(--radius-lg);
-	background: linear-gradient(
-		180deg,
-		rgba(24, 24, 27, 0.92),
-		rgba(17, 17, 23, 0.92)
-	);
-	box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.2);
-	overflow: clip;
-}
-
-.section > summary {
-	list-style: none;
-	cursor: pointer;
-	padding: 1.8rem 2rem;
-	border-bottom: 0.1rem solid var(--border-subtle);
-}
-
-.section > summary::-webkit-details-marker {
-	display: none;
+.sectionBlock {
+	scroll-margin-top: 2rem;
 }
 
 .viewGrid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 	gap: 1.6rem;
-	padding: 2rem;
+	margin-bottom: 2.4rem;
 }
 
 .grid2 {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 1.6rem;
-	padding: 0 2rem 2rem;
+	margin-bottom: 2.4rem;
 }
 
 @media (max-width: 110rem) {
