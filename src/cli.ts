@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { resolve } from "node:path";
+import open from "open";
 import { loadReportConfig } from "./config.js";
 import { formatBytes, formatPercentage } from "./format.js";
 import { analyzeLog, writeHtmlReport } from "./index.js";
@@ -13,6 +15,7 @@ interface CliOptions {
 	inputPath: string;
 	outputPath: string;
 	configPath?: string;
+	open: boolean;
 }
 
 function printHelp(): void {
@@ -21,6 +24,7 @@ function printHelp(): void {
 
 Options:
   --config    Load a JSON config file
+  --open      Open the generated report in your default browser
   --help      Show this message
 `);
 }
@@ -28,6 +32,7 @@ Options:
 function parseArgs(argv: string[]): CliOptions {
 	const positional: string[] = [];
 	let configPath: string | undefined;
+	let openReport = false;
 
 	for (let i = 0; i < argv.length; i += 1) {
 		const arg = argv[i];
@@ -37,6 +42,10 @@ function parseArgs(argv: string[]): CliOptions {
 		}
 		if (arg === "--config") {
 			configPath = argv[++i];
+			continue;
+		}
+		if (arg === "--open") {
+			openReport = true;
 			continue;
 		}
 		if (arg.startsWith("-")) {
@@ -56,6 +65,7 @@ function parseArgs(argv: string[]): CliOptions {
 		inputPath: positional[0],
 		outputPath: positional[1],
 		configPath,
+		open: openReport,
 	};
 }
 
@@ -87,6 +97,10 @@ async function main(): Promise<void> {
 	console.log(
 		`Wrote ${options.outputPath} in ${((Date.now() - start) / 1000).toFixed(1)}s (${report.all.requests.toLocaleString()} requests).`,
 	);
+
+	if (options.open) {
+		await open(resolve(options.outputPath));
+	}
 }
 
 main().catch((error: unknown) => {

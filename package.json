@@ -18,6 +18,9 @@
   "files": [
     "dist"
   ],
+  "dependencies": {
+    "open": "^10.1.0"
+  },
   "scripts": {
     "build:core": "tsc",
     "build:report": "vite build",

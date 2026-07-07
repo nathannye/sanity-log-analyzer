@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { resolve } from "node:path";
+import open from "open";
 import { loadReportConfig } from "./config.js";
 import { formatBytes, formatPercentage } from "./format.js";
 import { analyzeLog, writeHtmlReport } from "./index.js";
@@ -9,12 +11,14 @@ function printHelp() {
 
 Options:
   --config    Load a JSON config file
+  --open      Open the generated report in your default browser
   --help      Show this message
 `);
 }
 function parseArgs(argv) {
     const positional = [];
     let configPath;
+    let openReport = false;
     for (let i = 0; i < argv.length; i += 1) {
         const arg = argv[i];
         if (arg === "--help" || arg === "-h") {
@@ -23,6 +27,10 @@ function parseArgs(argv) {
         }
         if (arg === "--config") {
             configPath = argv[++i];
+            continue;
+        }
+        if (arg === "--open") {
+            openReport = true;
             continue;
         }
         if (arg.startsWith("-")) {
@@ -38,6 +46,7 @@ function parseArgs(argv) {
         inputPath: positional[0],
         outputPath: positional[1],
         configPath,
+        open: openReport,
     };
 }
 async function main() {
@@ -54,6 +63,9 @@ async function main() {
     finishProgressLine();
     await writeHtmlReport(report, options.outputPath);
     console.log(`Wrote ${options.outputPath} in ${((Date.now() - start) / 1000).toFixed(1)}s (${report.all.requests.toLocaleString()} requests).`);
+    if (options.open) {
+        await open(resolve(options.outputPath));
+    }
 }
 main().catch((error) => {
     console.error(error);
