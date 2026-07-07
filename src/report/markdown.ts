@@ -1,9 +1,14 @@
 import {
 	formatBytes,
 	formatNumber,
+	formatPercentage,
 	formatReadableDate,
 } from "../format.js";
 import { avgBytesPerRequest } from "../ranked-row.js";
+import {
+	aggregateUserAgentStats,
+	parseUserAgent,
+} from "./parse-user-agent.js";
 import type {
 	CountRow,
 	RankedRow,
@@ -63,6 +68,32 @@ function rankedTable(title: string, rows: RankedRow[]): string {
 	return lines.join("\n");
 }
 
+function userAgentTable(title: string, rows: RankedRow[]): string {
+	if (rows.length === 0) return "";
+
+	const stats = aggregateUserAgentStats(rows);
+	const lines = [
+		`### ${title}`,
+		"",
+		`Mac ${formatPercentage(stats.macPct)} · Windows ${formatPercentage(stats.windowsPct)} · Mobile ${formatPercentage(stats.mobilePct)} · Desktop ${formatPercentage(stats.desktopPct)}`,
+		"",
+		"| Device | Label | Requests | Bandwidth | Avg / req |",
+		"| --- | --- | ---: | ---: | ---: |",
+	];
+
+	for (const row of rows) {
+		const parsed = parseUserAgent(row.label);
+		const device =
+			parsed.deviceKind === "mobile" ? "Mobile" : "Desktop";
+		lines.push(
+			`| ${device} | ${escapeMarkdownCell(`${parsed.displayLabel} — ${parsed.raw}`)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
+		);
+	}
+
+	lines.push("");
+	return lines.join("\n");
+}
+
 function countTable(title: string, rows: CountRow[]): string {
 	if (rows.length === 0) return "";
 
@@ -114,7 +145,7 @@ function renderSections(view: ReportView, sections: ReportSections): string {
 	if (sections.urls) parts.push(rankedTable("Top URLs", view.byUrl));
 	if (sections.referers) parts.push(rankedTable("Top referers", view.byReferer));
 	if (sections.userAgents) {
-		parts.push(rankedTable("Top user agents", view.byUserAgent));
+		parts.push(userAgentTable("Top user agents", view.byUserAgent));
 	}
 	if (sections.ips) parts.push(rankedTable("Top IPs", view.byIp));
 

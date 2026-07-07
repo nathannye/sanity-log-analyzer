@@ -10,6 +10,8 @@ interface DataTableProps {
 	hasCopyButton?: boolean;
 	copyToastMessage?: string;
 	labelAdornment?: (row: RankedRow) => ComponentChildren;
+	renderLabel?: (row: RankedRow) => ComponentChildren;
+	header?: ComponentChildren;
 }
 
 function CopyIcon() {
@@ -27,10 +29,13 @@ export function DataTable({
 	hasCopyButton = false,
 	copyToastMessage = "Copied",
 	labelAdornment,
+	renderLabel,
+	header,
 }: DataTableProps) {
 	return (
 		<section class="card">
 			<h3 class="heading-3">{title}</h3>
+			{header}
 			<div class={styles.wrap}>
 				<table class={`body-1 ${styles.table}`}>
 					<thead>
@@ -44,23 +49,27 @@ export function DataTable({
 					<tbody>
 						{rows.map((row) => (
 							<tr key={row.label}>
-								<td class={styles.labelCell} title={row.label}>
-									<div class={styles.labelCellInner}>
-										{hasCopyButton ? (
-											<button
-												type="button"
-												class={styles.copyButton}
-												data-copy-value={row.label}
-												data-copy-toast={copyToastMessage}
-												aria-label={`Copy "${row.label}"`}
-												title="Copy to clipboard"
-											>
-												<CopyIcon />
-											</button>
-										) : null}
-										<span class={styles.labelText}>{row.label}</span>
-										{labelAdornment ? labelAdornment(row) : null}
-									</div>
+								<td class={styles.labelCell} title={renderLabel ? undefined : row.label}>
+									{renderLabel ? (
+										renderLabel(row)
+									) : (
+										<div class={styles.labelCellInner}>
+											{hasCopyButton ? (
+												<button
+													type="button"
+													class={styles.copyButton}
+													data-copy-value={row.label}
+													data-copy-toast={copyToastMessage}
+													aria-label={`Copy "${row.label}"`}
+													title="Copy to clipboard"
+												>
+													<CopyIcon />
+												</button>
+											) : null}
+											<span class={styles.labelText}>{row.label}</span>
+											{labelAdornment ? labelAdornment(row) : null}
+										</div>
+									)}
 								</td>
 								<td class="num">{formatBytes(row.responseBytes)}</td>
 								<td class="num">{formatNumber(row.requests)}</td>

@@ -1,5 +1,6 @@
-import { formatBytes, formatNumber, formatReadableDate, } from "../format.js";
+import { formatBytes, formatNumber, formatPercentage, formatReadableDate, } from "../format.js";
 import { avgBytesPerRequest } from "../ranked-row.js";
+import { aggregateUserAgentStats, parseUserAgent, } from "./parse-user-agent.js";
 export function escapeMarkdownCell(value) {
     return value.replaceAll("|", "\\|").replaceAll("\n", " ").replaceAll("\r", "");
 }
@@ -29,6 +30,26 @@ function rankedTable(title, rows) {
     ];
     for (const row of rows) {
         lines.push(`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`);
+    }
+    lines.push("");
+    return lines.join("\n");
+}
+function userAgentTable(title, rows) {
+    if (rows.length === 0)
+        return "";
+    const stats = aggregateUserAgentStats(rows);
+    const lines = [
+        `### ${title}`,
+        "",
+        `Mac ${formatPercentage(stats.macPct)} · Windows ${formatPercentage(stats.windowsPct)} · Mobile ${formatPercentage(stats.mobilePct)} · Desktop ${formatPercentage(stats.desktopPct)}`,
+        "",
+        "| Device | Label | Requests | Bandwidth | Avg / req |",
+        "| --- | --- | ---: | ---: | ---: |",
+    ];
+    for (const row of rows) {
+        const parsed = parseUserAgent(row.label);
+        const device = parsed.deviceKind === "mobile" ? "Mobile" : "Desktop";
+        lines.push(`| ${device} | ${escapeMarkdownCell(`${parsed.displayLabel} — ${parsed.raw}`)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`);
     }
     lines.push("");
     return lines.join("\n");
@@ -84,7 +105,7 @@ function renderSections(view, sections) {
     if (sections.referers)
         parts.push(rankedTable("Top referers", view.byReferer));
     if (sections.userAgents) {
-        parts.push(rankedTable("Top user agents", view.byUserAgent));
+        parts.push(userAgentTable("Top user agents", view.byUserAgent));
     }
     if (sections.ips)
         parts.push(rankedTable("Top IPs", view.byIp));

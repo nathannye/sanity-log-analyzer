@@ -9,6 +9,7 @@ import { DataTable } from "./DataTable.js";
 import { Donut } from "./Donut.js";
 import { Metric } from "./Metric.js";
 import { RefererDataTable } from "./RefererDataTable.js";
+import { UserAgentDataTable } from "./UserAgentDataTable.js";
 import { UrlTabsSection } from "./UrlTabsSection.js";
 import styles from "./ViewSection.module.css";
 
@@ -148,7 +149,10 @@ export function ViewSection({
 					) : null}
 					{sections.userAgents ? (
 						<section class={styles.sectionBlock} data-section="userAgents">
-							<DataTable title="Top user agents" rows={view.byUserAgent} />
+							<UserAgentDataTable
+								title="Top user agents"
+								rows={view.byUserAgent}
+							/>
 						</section>
 					) : null}
 					{sections.ips ? (

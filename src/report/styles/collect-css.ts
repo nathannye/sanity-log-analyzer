@@ -12,6 +12,7 @@ import reportControlsCss from "../components/ReportControls.module.css?inline";
 import tableOfContentsCss from "../components/TableOfContents.module.css?inline";
 import urlDataTableCss from "../components/UrlDataTable.module.css?inline";
 import urlTabsSectionCss from "../components/UrlTabsSection.module.css?inline";
+import userAgentDataTableCss from "../components/UserAgentDataTable.module.css?inline";
 import viewSectionCss from "../components/ViewSection.module.css?inline";
 import viewToggleCss from "../components/ViewToggle.module.css?inline";
 import reportAppCss from "../ReportApp.module.css?inline";
@@ -33,6 +34,7 @@ export const reportCss = [
 	verticalBarChartCss,
 	dataTableCss,
 	refererDataTableCss,
+	userAgentDataTableCss,
 	urlTabsSectionCss,
 	urlDataTableCss,
 	groqQueryFlyoutCss,

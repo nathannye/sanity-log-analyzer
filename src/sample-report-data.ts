@@ -74,8 +74,19 @@ export const SAMPLE_REPORT: ReportData = {
 		],
 		byReferer: [{ label: "(empty)", requests: 5, responseBytes: 775 }],
 		byUserAgent: [
-			{ label: "UA-1", requests: 4, responseBytes: 700 },
-			{ label: "UA-2", requests: 1, responseBytes: 75 },
+			{
+				label:
+					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+				requests: 3,
+				responseBytes: 600,
+			},
+			{
+				label:
+					"Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+				requests: 1,
+				responseBytes: 75,
+			},
+			{ label: "curl/8.4.0", requests: 1, responseBytes: 100 },
 		],
 		byIp: [
 			{ label: "127.0.0.1", requests: 4, responseBytes: 700 },
@@ -119,7 +130,15 @@ export const SAMPLE_REPORT: ReportData = {
 			},
 		],
 		byReferer: [{ label: "(empty)", requests: 4, responseBytes: 700 }],
-		byUserAgent: [{ label: "UA-1", requests: 4, responseBytes: 700 }],
+		byUserAgent: [
+			{
+				label:
+					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+				requests: 3,
+				responseBytes: 600,
+			},
+			{ label: "curl/8.4.0", requests: 1, responseBytes: 100 },
+		],
 		byIp: [{ label: "127.0.0.1", requests: 4, responseBytes: 700 }],
 		byStatus: [{ label: "200", count: 4 }],
 		responseSizeHistogram: [{ label: "0 B - 1 KB", count: 4 }],
