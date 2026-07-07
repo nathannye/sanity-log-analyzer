@@ -13,7 +13,7 @@ test("parseUserAgent formats desktop Chrome on macOS", () => {
 	assert.equal(parsed.deviceKind, "desktop");
 	assert.equal(parsed.isTrackable, true);
 	assert.equal(parsed.osFamily, "mac");
-	assert.equal(parsed.displayLabel, "(macOS Chrome)");
+	assert.equal(parsed.displayLabel, "macOS Chrome");
 	assert.equal(parsed.raw, chromeMac);
 });
 
@@ -21,24 +21,24 @@ test("parseUserAgent formats mobile Safari on iOS", () => {
 	const parsed = parseUserAgent(safariIos);
 	assert.equal(parsed.deviceKind, "mobile");
 	assert.equal(parsed.isTrackable, true);
-	assert.equal(parsed.displayLabel, "(iOS Safari)");
+	assert.equal(parsed.displayLabel, "iOS Safari");
 });
 
 test("parseUserAgent handles bots and HTTP clients without device icons", () => {
 	const curl = parseUserAgent("curl/8.4.0");
 	assert.equal(curl.deviceKind, null);
 	assert.equal(curl.isTrackable, false);
-	assert.equal(curl.displayLabel, "(curl)");
+	assert.equal(curl.displayLabel, "curl");
 
 	const sanityClient = parseUserAgent("@sanity/client");
 	assert.equal(sanityClient.deviceKind, null);
 	assert.equal(sanityClient.isTrackable, false);
-	assert.equal(sanityClient.displayLabel, "(@sanity/client)");
+	assert.equal(sanityClient.displayLabel, "@sanity/client");
 
 	const empty = parseUserAgent("");
 	assert.equal(empty.deviceKind, null);
 	assert.equal(empty.isTrackable, false);
-	assert.equal(empty.displayLabel, "(Unknown)");
+	assert.equal(empty.displayLabel, "Unknown");
 });
 
 test("aggregateUserAgentStats excludes bots and clients from percentages", () => {

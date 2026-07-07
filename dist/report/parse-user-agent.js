@@ -41,29 +41,29 @@ function resolveDeviceKind(raw, deviceType) {
 }
 function fallbackDisplayLabel(raw) {
     if (!raw)
-        return "(Unknown)";
+        return "Unknown";
     if (/@sanity\/client/i.test(raw))
-        return "(@sanity/client)";
+        return "@sanity/client";
     if (/^curl\b/i.test(raw))
-        return "(curl)";
+        return "curl";
     if (/postman/i.test(raw))
-        return "(Postman)";
+        return "Postman";
     if (/^axios\b/i.test(raw) || /node-fetch/i.test(raw) || /^got\//i.test(raw)) {
-        return "(HTTP client)";
+        return "HTTP client";
     }
     if (/python-requests|aiohttp|httpx/i.test(raw))
-        return "(Python client)";
+        return "Python client";
     if (/^Go-http-client/i.test(raw))
-        return "(Go client)";
+        return "Go client";
     if (raw.length > 48)
-        return `(${raw.slice(0, 45)}…)`;
-    return `(${raw})`;
+        return `${raw.slice(0, 45)}…`;
+    return raw;
 }
 function buildDisplayLabel(osName, browserName, raw) {
     const parts = [osName, browserName].filter(Boolean);
     if (parts.length === 0)
         return fallbackDisplayLabel(raw);
-    return `(${parts.join(" ")})`;
+    return parts.join(" ");
 }
 function notTrackable(raw) {
     return {

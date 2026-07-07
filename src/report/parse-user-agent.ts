@@ -70,17 +70,17 @@ function resolveDeviceKind(
 }
 
 function fallbackDisplayLabel(raw: string): string {
-	if (!raw) return "(Unknown)";
-	if (/@sanity\/client/i.test(raw)) return "(@sanity/client)";
-	if (/^curl\b/i.test(raw)) return "(curl)";
-	if (/postman/i.test(raw)) return "(Postman)";
+	if (!raw) return "Unknown";
+	if (/@sanity\/client/i.test(raw)) return "@sanity/client";
+	if (/^curl\b/i.test(raw)) return "curl";
+	if (/postman/i.test(raw)) return "Postman";
 	if (/^axios\b/i.test(raw) || /node-fetch/i.test(raw) || /^got\//i.test(raw)) {
-		return "(HTTP client)";
+		return "HTTP client";
 	}
-	if (/python-requests|aiohttp|httpx/i.test(raw)) return "(Python client)";
-	if (/^Go-http-client/i.test(raw)) return "(Go client)";
-	if (raw.length > 48) return `(${raw.slice(0, 45)}…)`;
-	return `(${raw})`;
+	if (/python-requests|aiohttp|httpx/i.test(raw)) return "Python client";
+	if (/^Go-http-client/i.test(raw)) return "Go client";
+	if (raw.length > 48) return `${raw.slice(0, 45)}…`;
+	return raw;
 }
 
 function buildDisplayLabel(
@@ -90,7 +90,7 @@ function buildDisplayLabel(
 ): string {
 	const parts = [osName, browserName].filter(Boolean);
 	if (parts.length === 0) return fallbackDisplayLabel(raw);
-	return `(${parts.join(" ")})`;
+	return parts.join(" ");
 }
 
 function notTrackable(raw: string): ParsedUserAgent {

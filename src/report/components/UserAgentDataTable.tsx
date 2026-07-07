@@ -57,16 +57,17 @@ function UserAgentLabel({ raw }: { raw: string }) {
 						{parsed.deviceKind === "mobile" ? <MobileIcon /> : <DesktopIcon />}
 					</span>
 				) : null}
-				<span class={styles.parsedLabel}>{parsed.displayLabel}</span>
+				<span class={styles.parsedLabel}>
+					{parsed.deviceKind
+						? parsed.displayLabel
+						: parsed.raw || parsed.displayLabel}
+				</span>
 			</div>
-			<div
-				class={
-					parsed.deviceKind ? styles.rawLabel : styles.rawLabelWithoutIcon
-				}
-				title={parsed.raw}
-			>
-				{parsed.raw}
-			</div>
+			{parsed.deviceKind ? (
+				<div class={styles.rawLabel} title={parsed.raw}>
+					{parsed.raw}
+				</div>
+			) : null}
 		</div>
 	);
 }
