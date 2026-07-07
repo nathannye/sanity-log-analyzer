@@ -1,3 +1,4 @@
+import { formatIsoDate } from "./format.js";
 import type {
   AggregationSummary,
   Breakdown,
@@ -26,8 +27,11 @@ function topN(
 
 function sortDateRows(map: Record<string, Breakdown>): RankedRow[] {
   return Object.entries(map)
-    .map(([label, value]) => ({ label, ...value }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([isoDate, value]) => ({
+      label: formatIsoDate(isoDate),
+      ...value,
+    }));
 }
 
 function sortHourRows(map: Record<number, Breakdown>): RankedRow[] {

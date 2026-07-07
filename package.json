@@ -27,7 +27,6 @@
     "build": "npm run build:core && npm run build:report",
     "prepublishOnly": "npm run build",
     "analyze": "npm run build && node dist/cli.js",
-    "to-csv": "npm run build && node dist/to-csv.js",
     "preview:report": "vite --config vite.preview.config.ts",
     "test": "npm run build && node --test dist/index.test.js dist/progress-line.test.js dist/render.test.js dist/stream.test.js"
   },

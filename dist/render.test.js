@@ -38,7 +38,7 @@ const SAMPLE_REPORT = {
             { label: "listen", requests: 1, responseBytes: 200 },
             { label: "query", requests: 1, responseBytes: 75 },
         ],
-        byDate: [{ label: "2026-06-14", requests: 2, responseBytes: 275 }],
+        byDate: [{ label: "Jun 14, 2026", requests: 2, responseBytes: 275 }],
         byHour: [
             { label: "00:00", requests: 1, responseBytes: 200 },
             { label: "01:00", requests: 1, responseBytes: 75 },
@@ -73,7 +73,7 @@ const SAMPLE_REPORT = {
         nonStudio: { requests: 1, responseBytes: 200, requestBytes: 100 },
         byDomain: [{ label: "api", requests: 1, responseBytes: 200 }],
         byEndpoint: [{ label: "listen", requests: 1, responseBytes: 200 }],
-        byDate: [{ label: "2026-06-14", requests: 1, responseBytes: 200 }],
+        byDate: [{ label: "Jun 14, 2026", requests: 1, responseBytes: 200 }],
         byHour: [{ label: "00:00", requests: 1, responseBytes: 200 }],
         byUrl: [{ label: "https://example.com/a", requests: 1, responseBytes: 200 }],
         byReferer: [{ label: "(empty)", requests: 1, responseBytes: 200 }],

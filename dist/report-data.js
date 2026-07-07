@@ -1,3 +1,4 @@
+import { formatIsoDate } from "./format.js";
 function topN(map, limit, sortBy = "responseBytes") {
     return Object.entries(map)
         .map(([label, value]) => ({ label, ...value }))
@@ -8,8 +9,11 @@ function topN(map, limit, sortBy = "responseBytes") {
 }
 function sortDateRows(map) {
     return Object.entries(map)
-        .map(([label, value]) => ({ label, ...value }))
-        .sort((a, b) => a.label.localeCompare(b.label));
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([isoDate, value]) => ({
+        label: formatIsoDate(isoDate),
+        ...value,
+    }));
 }
 function sortHourRows(map) {
     return Array.from({ length: 24 }, (_, hour) => ({

@@ -1,50 +1,54 @@
 .section {
-  margin-bottom: 2.4rem;
-  border: 0.1rem solid var(--panel-border);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(24, 24, 27, 0.92), rgba(17, 17, 23, 0.92));
-  box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.2);
-  overflow: clip;
+	margin-bottom: 2.4rem;
+	border: 0.1rem solid var(--panel-border);
+	border-radius: var(--radius-lg);
+	background: linear-gradient(
+		180deg,
+		rgba(24, 24, 27, 0.92),
+		rgba(17, 17, 23, 0.92)
+	);
+	box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.2);
+	overflow: clip;
 }
 
 .section > summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 1.8rem 2rem;
-  border-bottom: 0.1rem solid var(--border-subtle);
+	list-style: none;
+	cursor: pointer;
+	padding: 1.8rem 2rem;
+	border-bottom: 0.1rem solid var(--border-subtle);
 }
 
 .section > summary::-webkit-details-marker {
-  display: none;
+	display: none;
 }
 
 .viewGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  gap: 1.6rem;
-  padding: 2rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	gap: 1.6rem;
+	padding: 2rem;
 }
 
 .grid2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.6rem;
-  padding: 0 2rem 2rem;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.6rem;
+	padding: 0 2rem 2rem;
 }
 
 @media (max-width: 110rem) {
-  .grid2 {
-    grid-template-columns: 1fr;
-  }
+	.grid2 {
+		grid-template-columns: 1fr;
+	}
 }
 
 .stack {
-  display: grid;
-  gap: 1.6rem;
+	display: grid;
+	gap: 1.6rem;
 }
 
 .sectionTitle {
-  color: var(--muted);
-  margin: 0.8rem 0 -0.4rem;
-  padding-left: 0.4rem;
+	color: var(--muted);
+	margin: 0.8rem 0 -0.4rem;
+	padding-left: 0.4rem;
 }

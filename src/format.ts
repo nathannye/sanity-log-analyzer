@@ -47,3 +47,8 @@ export function formatReadableDate(timestamp: string): string {
   if (Number.isNaN(date.getTime())) return "";
   return readableDateFormatter.format(date);
 }
+
+export function formatIsoDate(isoDate: string): string {
+  if (!isoDate) return "";
+  return formatReadableDate(`${isoDate}T00:00:00Z`);
+}

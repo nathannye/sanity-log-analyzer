@@ -1,3 +1,4 @@
+import { formatReadableDate } from "../../format.js";
 import type { ReportData } from "../../types.js";
 import styles from "./Header.module.css";
 
@@ -11,13 +12,14 @@ export function Header({ data }: HeaderProps) {
 			<div>
 				<h1 class={`heading-1 ${styles.title}`}>{data.title}</h1>
 				<div class={`body-1 ${styles.subtitle}`}>
-					Generated from {data.sourcePath}. The report is self-contained and
-					includes the normalized summary JSON payload inline.
+					Generated from <code>{data.sourcePath}</code>. The report is
+					self-contained and includes the normalized summary JSON payload
+					inline.
 				</div>
 			</div>
 			<div class={`body-2 ${styles.meta}`}>
-				<div>Generated {data.generatedAt}</div>
-				<div>Top N: {String(data.config.topN)}</div>
+				<div>Generated on: {formatReadableDate(data.generatedAt)}</div>
+				<div>Max table rows: {data.config.topN}</div>
 				<div>
 					{data.config.sections.billableComparison
 						? "Billable comparison enabled"

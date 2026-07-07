@@ -4,4 +4,5 @@ export declare function formatNumber(value: number): string;
 export declare function formatBytes(bytes: number): string;
 export declare function formatPercentage(value: number): string;
 export declare function formatReadableDate(timestamp: string): string;
+export declare function formatIsoDate(isoDate: string): string;
 //# sourceMappingURL=format.d.ts.map

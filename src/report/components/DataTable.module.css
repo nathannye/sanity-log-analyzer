@@ -30,7 +30,44 @@
 
 .labelCell {
   max-width: 52rem;
+}
+
+.labelCellInner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.labelText {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+
+.copyButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.copyButton:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.copyButton svg {
+  width: 1.4rem;
+  height: 1.4rem;
 }

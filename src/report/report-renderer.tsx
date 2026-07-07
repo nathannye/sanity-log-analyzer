@@ -2,6 +2,7 @@ import { render } from "preact-render-to-string";
 import { escapeJsonForHtml } from "../format.js";
 import type { ReportData } from "../types.js";
 import { ReportApp } from "./ReportApp.js";
+import { copyButtonsScript } from "./scripts/copy-buttons.js";
 import { reportCss } from "./styles/collect-css.js";
 
 export function renderReportHtml(data: ReportData): string {
@@ -19,6 +20,7 @@ export function renderReportHtml(data: ReportData): string {
 <body>
 ${body}
   <script type="application/json" id="report-data">${json}</script>
+  <script>${copyButtonsScript}</script>
 </body>
 </html>`;
 }

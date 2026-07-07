@@ -44,4 +44,9 @@ export function formatReadableDate(timestamp) {
         return "";
     return readableDateFormatter.format(date);
 }
+export function formatIsoDate(isoDate) {
+    if (!isoDate)
+        return "";
+    return formatReadableDate(`${isoDate}T00:00:00Z`);
+}
 //# sourceMappingURL=format.js.map

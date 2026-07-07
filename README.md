@@ -1,6 +1,6 @@
 # sanity-log-analyzer
 
-Parse Sanity request logs (NDJSON) into an offline HTML report or flat CSV.
+Parse Sanity request logs (NDJSON) into an offline HTML report.
 
 ## Requirements
 
@@ -23,14 +23,6 @@ sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.jso
 - Writes a self-contained HTML file (inline CSS, no server required)
 - `--config` — optional JSON file to customize title, sections, colors, top-N, histogram buckets
 - `--open` — open the report in your default browser after writing
-
-### CSV export
-
-```bash
-npm run to-csv -- <input.ndjson|.ndjson.gz>
-```
-
-- Streams log entries to `./output/logs.csv`
 
 ## Config
 
