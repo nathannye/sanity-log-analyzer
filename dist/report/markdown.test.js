@@ -10,7 +10,7 @@ test("renderReportMarkdown includes title, summary, and table sections", () => {
     const markdown = renderReportMarkdown(SAMPLE_REPORT, "billable");
     assert.ok(markdown.includes("# Sanity Log Report"));
     assert.ok(markdown.includes("## Summary"));
-    assert.ok(markdown.includes("Requests: 1"));
+    assert.ok(markdown.includes("Requests: 4"));
     assert.ok(markdown.includes("### Top domains"));
     assert.ok(markdown.includes("### Top endpoints"));
     assert.ok(markdown.includes("### Top URLs"));
@@ -19,8 +19,8 @@ test("renderReportMarkdown includes title, summary, and table sections", () => {
 test("renderReportMarkdown billable vs all views differ", () => {
     const billable = renderReportMarkdown(SAMPLE_REPORT, "billable");
     const all = renderReportMarkdown(SAMPLE_REPORT, "all");
-    assert.ok(billable.includes("Requests: 1"));
-    assert.ok(all.includes("Requests: 2"));
+    assert.ok(billable.includes("Requests: 4"));
+    assert.ok(all.includes("Requests: 5"));
     assert.notEqual(billable, all);
 });
 test("renderReportMarkdown omits disabled sections", () => {
@@ -52,12 +52,12 @@ test("markdownReportFilename uses view suffixes", () => {
 test("generateMarkdown defaults to billable view", () => {
     const markdown = generateMarkdown(SAMPLE_REPORT);
     assert.ok(markdown.includes("Billable requests"));
-    assert.ok(markdown.includes("Requests: 1"));
+    assert.ok(markdown.includes("Requests: 4"));
 });
 test("generateMarkdown supports all view", () => {
     const markdown = generateMarkdown(SAMPLE_REPORT, { view: "all" });
     assert.ok(markdown.includes("All requests"));
-    assert.ok(markdown.includes("Requests: 2"));
+    assert.ok(markdown.includes("Requests: 5"));
 });
 test("writeMarkdownReport writes expected content", async () => {
     const dir = await mkdtemp(join(tmpdir(), "sanity-log-md-"));

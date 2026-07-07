@@ -1,15 +1,14 @@
 import { render } from "preact-render-to-string";
 import { escapeJsonForHtml } from "../format.js";
 import type { ReportData } from "../types.js";
+import { renderReportMarkdown, slugifyReportFilename } from "./markdown.js";
 import { ReportApp } from "./ReportApp.js";
-import {
-	renderReportMarkdown,
-	slugifyReportFilename,
-} from "./markdown.js";
 import { copyButtonsScript } from "./scripts/copy-buttons.js";
+import { groqFlyoutScript } from "./scripts/groq-flyout.js";
 import { markdownDownloadScript } from "./scripts/markdown-download.js";
 import { toastScript } from "./scripts/toast.js";
 import { tocNavScript } from "./scripts/toc-nav.js";
+import { urlTabsScript } from "./scripts/url-tabs.js";
 import { viewToggleScript } from "./scripts/view-toggle.js";
 import { reportCss } from "./styles/collect-css.js";
 
@@ -38,6 +37,8 @@ ${body}
   <script>${copyButtonsScript}</script>
   <script>${viewToggleScript}</script>
   <script>${markdownDownloadScript}</script>
+  <script>${urlTabsScript}</script>
+  <script>${groqFlyoutScript}</script>
   <script>${tocNavScript}</script>
 </body>
 </html>`;

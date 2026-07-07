@@ -1,0 +1,44 @@
+.stats {
+	margin: 0;
+	display: grid;
+	gap: 0.6rem;
+}
+
+.row {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 1.2rem;
+	align-items: baseline;
+	font-size: var(--text-size-sm);
+}
+
+.row dt {
+	margin: 0;
+	color: var(--muted);
+}
+
+.row dd {
+	margin: 0;
+	color: var(--text);
+}
+
+.group {
+	display: grid;
+	gap: 0.6rem;
+	padding-top: 0.8rem;
+	margin-top: 0.4rem;
+	border-top: 0.1rem solid var(--border-subtle);
+}
+
+.groupLabel {
+	font-size: var(--text-size-xs);
+	font-weight: 600;
+	color: var(--text);
+	letter-spacing: 0.04em;
+}
+
+.empty {
+	margin: 0;
+	font-size: var(--text-size-sm);
+	color: var(--muted);
+}

@@ -18,6 +18,21 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
 						<a class={styles.link} href={`#${entry.slug}`} data-toc-link>
 							{entry.label}
 						</a>
+						{entry.children && entry.children.length > 0 ? (
+							<ul class={styles.subList}>
+								{entry.children.map((child) => (
+									<li key={child.slug}>
+										<a
+											class={styles.subLink}
+											href={`#${child.slug}`}
+											data-toc-link
+										>
+											{child.label}
+										</a>
+									</li>
+								))}
+							</ul>
+						) : null}
 					</li>
 				))}
 			</ul>

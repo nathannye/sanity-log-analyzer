@@ -21,7 +21,20 @@ test("renderReportHtml includes TOC links for enabled sections", () => {
   assert.ok(html.includes('href="#summary"'));
   assert.ok(html.includes('href="#domain"'));
   assert.ok(html.includes('href="#urls"'));
+  assert.ok(html.includes('href="#urls/query"'));
   assert.ok(html.includes("data-toc-link"));
+});
+
+test("renderReportHtml includes tabbed Top URLs with GROQ flyout", () => {
+  const html = renderReportHtml(SAMPLE_REPORT);
+
+  assert.ok(html.includes('data-url-tabs'));
+  assert.ok(html.includes('data-url-tab="query"'));
+  assert.ok(html.includes("Avg / req"));
+  assert.ok(html.includes("language-groq"));
+  assert.ok(html.includes("View query"));
+  assert.ok(html.includes("<dialog"));
+  assert.ok(html.includes("Array Traversals"));
 });
 
 test("renderReportHtml omits TOC links for disabled sections", () => {

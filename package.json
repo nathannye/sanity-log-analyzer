@@ -28,13 +28,17 @@
     "prepublishOnly": "npm run build",
     "analyze": "npm run build && node dist/cli.js",
     "preview:report": "vite --config vite.preview.config.ts",
-    "test": "npm run build && node --test dist/index.test.js dist/progress-line.test.js dist/render.test.js dist/report/markdown.test.js dist/stream.test.js"
+    "test": "npm run build && node --test dist/index.test.js dist/progress-line.test.js dist/render.test.js dist/report/markdown.test.js dist/report/classify-url.test.js dist/report/groq-query.test.js dist/report/highlight-groq.test.js dist/report/analyze-groq.test.js dist/report/group-urls-by-kind.test.js dist/stream.test.js"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.5",
+    "@sanity/prism-groq": "^1.1.2",
     "@types/node": "24",
+    "@types/prismjs": "^1.26.6",
+    "groq-js": "^1.30.3",
     "preact": "^10.29.5",
     "preact-render-to-string": "^6.7.0",
+    "prismjs": "^1.30.0",
     "typescript": "^5.8.3",
     "vite": "^8.1.3"
   }

@@ -4,6 +4,7 @@ import { colorVar } from "../styles/colors.js";
 import { BarList } from "./BarList.js";
 import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
+import { UrlTabsSection } from "./UrlTabsSection.js";
 import { Donut } from "./Donut.js";
 import { Metric } from "./Metric.js";
 import styles from "./ViewSection.module.css";
@@ -133,9 +134,9 @@ export function ViewSection({
 				<div class={styles.stack}>
 					<div class={`eyebrow-1 ${styles.sectionTitle}`}>Top lists</div>
 					{sections.urls ? (
-						<section class={styles.sectionBlock} data-section="urls">
-							<DataTable hasCopyButton title="Top URLs" rows={view.byUrl} />
-						</section>
+						<div class={styles.sectionBlock}>
+							<UrlTabsSection rows={view.byUrl} idPrefix={`urls-${viewKey}`} />
+						</div>
 					) : null}
 					{sections.referers ? (
 						<section class={styles.sectionBlock} data-section="referers">

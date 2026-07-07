@@ -1,0 +1,43 @@
+.language-groq .token.comment {
+	color: #71717a;
+}
+
+.language-groq .token.string {
+	color: #86efac;
+}
+
+.language-groq .token.number,
+.language-groq .token.boolean,
+.language-groq .token.null {
+	color: #fcd34d;
+}
+
+.language-groq .token.keyword-operator {
+	color: #c4b5fd;
+}
+
+.language-groq .token.function {
+	color: #7dd3fc;
+}
+
+.language-groq .token.namespace {
+	color: #fdba74;
+}
+
+.language-groq .token.variable,
+.language-groq .token.special-variable {
+	color: #f9a8d4;
+}
+
+.language-groq .token.wildcard {
+	color: #f472b6;
+}
+
+.language-groq .token.operator {
+	color: #a1a1aa;
+}
+
+.language-groq .token.spread,
+.language-groq .token.punctuation {
+	color: #d4d4d8;
+}

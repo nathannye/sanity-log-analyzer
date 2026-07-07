@@ -1,0 +1,1 @@
+{"version":3,"file":"highlight-groq.js","sourceRoot":"","sources":["../../src/report/highlight-groq.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,SAAS,CAAC;AAC5B,OAAO,oBAAoB,CAAC;AAE5B,MAAM,UAAU,aAAa,CAAC,KAAa;IAC1C,OAAO,KAAK,CAAC,SAAS,CAAC,KAAK,EAAE,KAAK,CAAC,SAAS,CAAC,IAAI,EAAE,MAAM,CAAC,CAAC;AAC7D,CAAC"}
