@@ -1,0 +1,7 @@
+*.ndjson
+.ndjson
+
+node_modules/
+dist/
+
+sample.ndjson
