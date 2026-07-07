@@ -2,7 +2,7 @@
 import { loadReportConfig } from "./config.js";
 import { formatBytes, formatPercentage } from "./format.js";
 import { analyzeLog, writeHtmlReport } from "./index.js";
-import { finishProgressLine, formatProgressMessage, updateProgressLine, } from "./progress-line.js";
+import { finishProgressLine, formatProgressMessage, setProgressMessage, startProgressSpinner, } from "./progress-line.js";
 function printHelp() {
     console.log(`Usage:
   sanity-log-analyzer <input.ndjson> <output.html> [--config config.json]
@@ -43,12 +43,12 @@ function parseArgs(argv) {
 async function main() {
     const options = parseArgs(process.argv.slice(2));
     const config = await loadReportConfig(options.configPath);
-    updateProgressLine(`Reading ${options.inputPath}...`);
+    startProgressSpinner(`Reading ${options.inputPath}...`);
     const start = Date.now();
     const report = await analyzeLog(options.inputPath, {
         config,
         onProgress: (progress) => {
-            updateProgressLine(formatProgressMessage(progress.bytesRead, progress.totalBytes, progress.percent, progress.entriesProcessed, formatBytes, formatPercentage));
+            setProgressMessage(formatProgressMessage(progress.bytesRead, progress.totalBytes, progress.percent, progress.entriesProcessed, formatBytes, formatPercentage));
         },
     });
     finishProgressLine();

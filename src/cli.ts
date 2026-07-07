@@ -5,7 +5,8 @@ import { analyzeLog, writeHtmlReport } from "./index.js";
 import {
 	finishProgressLine,
 	formatProgressMessage,
-	updateProgressLine,
+	setProgressMessage,
+	startProgressSpinner,
 } from "./progress-line.js";
 
 interface CliOptions {
@@ -62,12 +63,12 @@ async function main(): Promise<void> {
 	const options = parseArgs(process.argv.slice(2));
 	const config = await loadReportConfig(options.configPath);
 
-	updateProgressLine(`Reading ${options.inputPath}...`);
+	startProgressSpinner(`Reading ${options.inputPath}...`);
 	const start = Date.now();
 	const report = await analyzeLog(options.inputPath, {
 		config,
 		onProgress: (progress) => {
-			updateProgressLine(
+			setProgressMessage(
 				formatProgressMessage(
 					progress.bytesRead,
 					progress.totalBytes,
