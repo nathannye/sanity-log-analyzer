@@ -15,6 +15,16 @@
 		"declarationMap": true,
 		"sourceMap": true
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules", "dist"]
+	"include": ["src/**/*.ts", "src/report/render.d.ts"],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"src/report/**/*.tsx",
+		"src/report/**/*.css",
+		"src/report/preview",
+		"src/report/styles",
+		"src/report/components",
+		"src/report/utils",
+		"src/report/fixtures"
+	]
 }

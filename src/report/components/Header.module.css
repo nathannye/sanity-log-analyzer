@@ -1,0 +1,41 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 2.4rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(3.2rem, 4vw, 5.2rem);
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+.subtitle {
+  margin-top: 1rem;
+  color: var(--muted);
+  max-width: 72ch;
+}
+
+.meta {
+  display: grid;
+  gap: 0.8rem;
+  justify-items: end;
+  text-align: right;
+  color: var(--muted);
+  font-size: 1.52rem;
+}
+
+@media (max-width: 110rem) {
+  .meta {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .header {
+    align-items: start;
+  }
+}

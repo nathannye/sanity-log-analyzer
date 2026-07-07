@@ -1,0 +1,11 @@
+.page {
+  max-width: 144rem;
+  margin: 0 auto;
+  padding: 3.2rem 2rem 5.6rem;
+}
+
+.footer {
+  margin-top: 2.4rem;
+  color: var(--muted);
+  font-size: 1.44rem;
+}

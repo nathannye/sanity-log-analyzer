@@ -1,30 +1,13 @@
 import { escapeHtml, escapeJsonForHtml, formatBytes, formatNumber, formatPercentage } from "./format.js";
-import type { CountRow, RankedRow, ReportConfig, ReportData, ReportSections, ReportView } from "./types.js";
-
-interface DonutSlice {
-  label: string;
-  value: number;
+function styleForShare(filled, empty, filledColor, emptyColor) {
+    const total = filled + empty;
+    if (total <= 0)
+        return `background: ${emptyColor};`;
+    const filledPercent = (filled / total) * 100;
+    return `background: conic-gradient(${filledColor} 0 ${filledPercent}%, ${emptyColor} ${filledPercent}% 100%);`;
 }
-
-interface DonutColors {
-  primary: string;
-  secondary: string;
-}
-
-function styleForShare(
-  filled: number,
-  empty: number,
-  filledColor: string,
-  emptyColor: string,
-): string {
-  const total = filled + empty;
-  if (total <= 0) return `background: ${emptyColor};`;
-  const filledPercent = (filled / total) * 100;
-  return `background: conic-gradient(${filledColor} 0 ${filledPercent}%, ${emptyColor} ${filledPercent}% 100%);`;
-}
-
-function renderMetric(label: string, value: string, note?: string): string {
-  return `
+function renderMetric(label, value, note) {
+    return `
     <article class="metric">
       <div class="metric-label">${escapeHtml(label)}</div>
       <div class="metric-value">${escapeHtml(value)}</div>
@@ -32,11 +15,10 @@ function renderMetric(label: string, value: string, note?: string): string {
     </article>
   `;
 }
-
-function renderDonut(title: string, primary: DonutSlice, secondary: DonutSlice, colors: DonutColors): string {
-  const total = primary.value + secondary.value;
-  const primaryPct = total > 0 ? (primary.value / total) * 100 : 0;
-  return `
+function renderDonut(title, primary, secondary, colors) {
+    const total = primary.value + secondary.value;
+    const primaryPct = total > 0 ? (primary.value / total) * 100 : 0;
+    return `
     <article class="card">
       <h3>${escapeHtml(title)}</h3>
       <div class="donut-wrap">
@@ -54,17 +36,16 @@ function renderDonut(title: string, primary: DonutSlice, secondary: DonutSlice, 
     </article>
   `;
 }
-
-function renderBarList(title: string, rows: RankedRow[], accent: string): string {
-  const max = rows.reduce((largest, row) => Math.max(largest, row.responseBytes), 0);
-  return `
+function renderBarList(title, rows, accent) {
+    const max = rows.reduce((largest, row) => Math.max(largest, row.responseBytes), 0);
+    return `
     <section class="card">
       <h3>${escapeHtml(title)}</h3>
       <div class="bars">
         ${rows
-          .map((row) => {
-            const pct = max > 0 ? (row.responseBytes / max) * 100 : 0;
-            return `
+        .map((row) => {
+        const pct = max > 0 ? (row.responseBytes / max) * 100 : 0;
+        return `
               <div class="bar-row">
                 <div class="bar-head">
                   <span class="bar-label" title="${escapeHtml(row.label)}">${escapeHtml(row.label)}</span>
@@ -73,23 +54,22 @@ function renderBarList(title: string, rows: RankedRow[], accent: string): string
                 <div class="bar-track"><div class="bar-fill" style="width:${pct.toFixed(2)}%;background:${accent};"></div></div>
               </div>
             `;
-          })
-          .join("")}
+    })
+        .join("")}
       </div>
     </section>
   `;
 }
-
-function renderCountBars(title: string, rows: CountRow[], accent: string): string {
-  const max = rows.reduce((largest, row) => Math.max(largest, row.count), 0);
-  return `
+function renderCountBars(title, rows, accent) {
+    const max = rows.reduce((largest, row) => Math.max(largest, row.count), 0);
+    return `
     <section class="card">
       <h3>${escapeHtml(title)}</h3>
       <div class="bars">
         ${rows
-          .map((row) => {
-            const pct = max > 0 ? (row.count / max) * 100 : 0;
-            return `
+        .map((row) => {
+        const pct = max > 0 ? (row.count / max) * 100 : 0;
+        return `
               <div class="bar-row">
                 <div class="bar-head">
                   <span class="bar-label">${escapeHtml(row.label)}</span>
@@ -98,15 +78,14 @@ function renderCountBars(title: string, rows: CountRow[], accent: string): strin
                 <div class="bar-track"><div class="bar-fill" style="width:${pct.toFixed(2)}%;background:${accent};"></div></div>
               </div>
             `;
-          })
-          .join("")}
+    })
+        .join("")}
       </div>
     </section>
   `;
 }
-
-function renderTable(title: string, rows: RankedRow[]): string {
-  return `
+function renderTable(title, rows) {
+    return `
     <section class="card">
       <h3>${escapeHtml(title)}</h3>
       <div class="table-wrap">
@@ -120,31 +99,26 @@ function renderTable(title: string, rows: RankedRow[]): string {
           </thead>
           <tbody>
             ${rows
-              .map(
-                (row) => `
+        .map((row) => `
                 <tr>
                   <td class="label-cell" title="${escapeHtml(row.label)}">${escapeHtml(row.label)}</td>
                   <td class="num">${escapeHtml(formatBytes(row.responseBytes))}</td>
                   <td class="num">${escapeHtml(formatNumber(row.requests))}</td>
                 </tr>
-              `,
-              )
-              .join("")}
+              `)
+        .join("")}
           </tbody>
         </table>
       </div>
     </section>
   `;
 }
-
-function renderView(view: ReportView, palette: string[], sections: ReportSections): string {
-  const [primary, secondary, tertiary, quaternary, quinary, senary] = palette;
-  const summaryNote =
-    view.firstTimestamp && view.lastTimestamp
-      ? `${view.firstTimestamp} → ${view.lastTimestamp}`
-      : "No timestamps found";
-
-  return `
+function renderView(view, palette, sections) {
+    const [primary, secondary, tertiary, quaternary, quinary, senary] = palette;
+    const summaryNote = view.firstTimestamp && view.lastTimestamp
+        ? `${view.firstTimestamp} → ${view.lastTimestamp}`
+        : "No timestamps found";
+    return `
     <details class="view-section" open>
       <summary>${escapeHtml(view.label)}</summary>
       <div class="view-grid">
@@ -153,12 +127,7 @@ function renderView(view: ReportView, palette: string[], sections: ReportSection
         ${renderMetric("Request bytes", formatBytes(view.requestBytes), "Inbound payload total")}
         ${renderMetric("Studio", formatBytes(view.studio.responseBytes), `${formatNumber(view.studio.requests)} requests`)}
         ${renderMetric("Billable", formatBytes(view.nonStudio.responseBytes), `${formatNumber(view.nonStudio.requests)} requests`)}
-        ${renderDonut(
-          "Studio split",
-          { label: "Studio", value: view.studio.responseBytes },
-          { label: "Billable", value: view.nonStudio.responseBytes },
-          { primary, secondary },
-        )}
+        ${renderDonut("Studio split", { label: "Studio", value: view.studio.responseBytes }, { label: "Billable", value: view.nonStudio.responseBytes }, { primary, secondary })}
       </div>
       <div class="grid-2">
         <div class="stack">
@@ -187,10 +156,9 @@ function renderView(view: ReportView, palette: string[], sections: ReportSection
     </details>
   `;
 }
-
-export function renderReportHtml(data: ReportData): string {
-  const json = escapeJsonForHtml(data);
-  return `<!DOCTYPE html>
+export function renderReportHtml(data) {
+    const json = escapeJsonForHtml(data);
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -498,3 +466,4 @@ export function renderReportHtml(data: ReportData): string {
 </body>
 </html>`;
 }
+//# sourceMappingURL=report.js.map

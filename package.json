@@ -5,20 +5,35 @@
   "engines": {
     "node": ">=24"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
   "bin": {
-    "sanity-log-parser": "dist/analyze.js"
+    "sanity-log-analyzer": "dist/cli.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
-    "analyze": "npm run build && node dist/analyze.js",
+    "build:core": "tsc",
+    "build:report": "vite build",
+    "build": "npm run build:core && npm run build:report",
+    "prepublishOnly": "npm run build",
+    "analyze": "npm run build && node dist/cli.js",
     "to-csv": "npm run build && node dist/to-csv.js",
-    "test": "npm run build && node --test dist/aggregate.test.js dist/report.test.js"
+    "preview:report": "vite --config vite.preview.config.ts",
+    "test": "npm run build && node --test dist/index.test.js dist/progress-line.test.js dist/render.test.js"
   },
   "devDependencies": {
+    "@preact/preset-vite": "^2.10.5",
+    "@types/node": "24",
+    "preact": "^10.29.5",
+    "preact-render-to-string": "^6.7.0",
     "typescript": "^5.8.3",
-    "@types/node": "24"
+    "vite": "^8.1.3"
   }
 }

@@ -1,7 +1,6 @@
-*.ndjson
 .ndjson
+.html 
 
 node_modules/
-dist/
 
 sample.ndjson

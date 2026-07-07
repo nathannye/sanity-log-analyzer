@@ -1,5 +1,11 @@
 import { streamLogEntries } from "./stream.js";
-import type { AggregationSummary, Breakdown, LogEntry, Totals } from "./types.js";
+import type {
+  AggregationSummary,
+  Breakdown,
+  LogEntry,
+  LogProgress,
+  Totals,
+} from "./types.js";
 
 function createBreakdown(): Breakdown {
   return { requests: 0, responseBytes: 0 };
@@ -176,17 +182,13 @@ function accumulateEntry(
 export async function aggregateLogFile(
   inputPath: string,
   histogramBuckets: number[],
-  onProgress?: (count: number) => void,
+  onProgress?: (progress: LogProgress) => void,
 ): Promise<AggregationSummary> {
   const summary = createSummary(histogramBuckets);
-  let lineCount = 0;
 
-  for await (const entry of streamLogEntries(inputPath)) {
+  for await (const entry of streamLogEntries(inputPath, onProgress)) {
     accumulateEntry(summary, entry, histogramBuckets);
-    lineCount += 1;
-    if (lineCount % 100_000 === 0) onProgress?.(lineCount);
   }
 
-  onProgress?.(lineCount);
   return summary;
 }

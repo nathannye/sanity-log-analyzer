@@ -129,3 +129,10 @@ export interface ReportData {
   all: ReportView;
   billable: ReportView;
 }
+
+export interface LogProgress {
+  bytesRead: number;
+  totalBytes: number;
+  percent: number;
+  entriesProcessed: number;
+}
