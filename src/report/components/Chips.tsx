@@ -11,7 +11,7 @@ export function Chips() {
   return (
     <div class={styles.chips}>
       {CHIP_LABELS.map((label) => (
-        <div class={styles.chip} key={label}>
+        <div class={`body-2 ${styles.chip}`} key={label}>
           {label}
         </div>
       ))}

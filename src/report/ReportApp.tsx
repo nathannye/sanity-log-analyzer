@@ -28,7 +28,7 @@ export function ReportApp({ data }: ReportAppProps) {
       {data.config.sections.billableComparison ? (
         <ViewSection view={data.billable} palette={palette} sections={data.config.sections} />
       ) : null}
-      <div class={styles.footer}>
+      <div class={`body-2 ${styles.footer}`}>
         Raw report payload is embedded in <code>&lt;script type="application/json"&gt;</code> for
         downstream automation.
       </div>

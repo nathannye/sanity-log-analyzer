@@ -13,7 +13,7 @@ export function BarList({ title, rows, accent }: BarListProps) {
 
   return (
     <section class="card">
-      <h3>{title}</h3>
+      <h3 class="heading-3">{title}</h3>
       <div class={styles.bars}>
         {rows.map((row) => {
           const pct = max > 0 ? (row.responseBytes / max) * 100 : 0;

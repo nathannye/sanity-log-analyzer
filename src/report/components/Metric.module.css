@@ -10,20 +10,14 @@
 }
 
 .label {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
   color: var(--muted);
-  font-size: 1.152rem;
 }
 
 .value {
-  font-size: clamp(2.32rem, 2vw, 3.52rem);
-  font-weight: 800;
   margin-top: 1rem;
 }
 
 .note {
   color: var(--muted);
   margin-top: 0.8rem;
-  font-size: 1.472rem;
 }

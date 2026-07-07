@@ -11,8 +11,6 @@
   list-style: none;
   cursor: pointer;
   padding: 1.8rem 2rem;
-  font-size: 1.92rem;
-  font-weight: 700;
   border-bottom: 0.1rem solid var(--border-subtle);
 }
 
@@ -47,9 +45,6 @@
 
 .sectionTitle {
   color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 1.184rem;
   margin: 0.8rem 0 -0.4rem;
   padding-left: 0.4rem;
 }

@@ -1,0 +1,55 @@
+:root {
+  --text-size-xs: 1.152rem;
+  --text-size-sm: 1.44rem;
+  --text-size-md: 1.52rem;
+  --tracking-tight: -0.05em;
+  --tracking-wide: 0.1em;
+}
+
+.heading-1 {
+  font-size: clamp(3.2rem, 4vw, 5.2rem);
+  line-height: 0.95;
+  letter-spacing: var(--tracking-tight);
+}
+
+.heading-2 {
+  font-size: 1.92rem;
+  font-weight: 700;
+}
+
+.heading-3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.heading-4 {
+  font-size: 2.08rem;
+  font-weight: 700;
+}
+
+.display-1 {
+  font-size: clamp(2.32rem, 2vw, 3.52rem);
+  font-weight: 800;
+}
+
+.eyebrow-1 {
+  font-size: var(--text-size-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.body-1 {
+  font-size: var(--text-size-md);
+}
+
+.body-2 {
+  font-size: var(--text-size-sm);
+}
+
+.tracking-tight {
+  letter-spacing: var(--tracking-tight);
+}
+
+.tracking-wide {
+  letter-spacing: var(--tracking-wide);
+}

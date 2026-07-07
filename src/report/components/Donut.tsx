@@ -25,18 +25,18 @@ export function Donut({ title, primary, secondary, colors }: DonutProps) {
 
   return (
     <article class="card">
-      <h3>{title}</h3>
+      <h3 class="heading-3">{title}</h3>
       <div class={styles.wrap}>
         <div
           class={styles.donut}
           style={styleForShare(primary.value, secondary.value, colors.primary, colors.secondary)}
         >
-          <div class={styles.center}>
-            <strong>{formatBytes(total)}</strong>
+          <div class={`body-1 ${styles.center}`}>
+            <strong class="heading-4">{formatBytes(total)}</strong>
             <span>{formatPercentage(primaryPct)}</span>
           </div>
         </div>
-        <div class={styles.legend}>
+        <div class={`body-1 ${styles.legend}`}>
           <div>
             <span class={styles.swatch} style={{ background: colors.primary }} />
             {primary.label} <strong>{formatBytes(primary.value)}</strong>

@@ -9,9 +9,9 @@ interface MetricProps {
 export function Metric({ label, value, note }: MetricProps) {
   return (
     <article class={styles.metric}>
-      <div class={styles.label}>{label}</div>
-      <div class={styles.value}>{value}</div>
-      {note ? <div class={styles.note}>{note}</div> : null}
+      <div class={`eyebrow-1 ${styles.label}`}>{label}</div>
+      <div class={`display-1 ${styles.value}`}>{value}</div>
+      {note ? <div class={`body-2 ${styles.note}`}>{note}</div> : null}
     </article>
   );
 }

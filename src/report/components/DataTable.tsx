@@ -10,9 +10,9 @@ interface DataTableProps {
 export function DataTable({ title, rows }: DataTableProps) {
   return (
     <section class="card">
-      <h3>{title}</h3>
+      <h3 class="heading-3">{title}</h3>
       <div class={styles.wrap}>
-        <table class={styles.table}>
+        <table class={`body-1 ${styles.table}`}>
           <thead>
             <tr>
               <th>Label</th>

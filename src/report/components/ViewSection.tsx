@@ -22,7 +22,7 @@ export function ViewSection({ view, palette, sections }: ViewSectionProps) {
 
   return (
     <details class={styles.section} open>
-      <summary>{view.label}</summary>
+      <summary class="heading-2">{view.label}</summary>
       <div class={styles.viewGrid}>
         <Metric label="Requests" value={formatNumber(view.requests)} note={summaryNote} />
         <Metric
@@ -54,7 +54,7 @@ export function ViewSection({ view, palette, sections }: ViewSectionProps) {
       </div>
       <div class={styles.grid2}>
         <div class={styles.stack}>
-          <div class={styles.sectionTitle}>Charts</div>
+          <div class={`eyebrow-1 ${styles.sectionTitle}`}>Charts</div>
           <div class={styles.grid2}>
             {sections.domain ? (
               <BarList title="Top domains" rows={view.byDomain} accent={primary} />
@@ -85,7 +85,7 @@ export function ViewSection({ view, palette, sections }: ViewSectionProps) {
           </div>
         </div>
         <div class={styles.stack}>
-          <div class={styles.sectionTitle}>Top lists</div>
+          <div class={`eyebrow-1 ${styles.sectionTitle}`}>Top lists</div>
           {sections.urls ? <DataTable title="Top URLs" rows={view.byUrl} /> : null}
           {sections.referers ? (
             <DataTable title="Top referers" rows={view.byReferer} />
