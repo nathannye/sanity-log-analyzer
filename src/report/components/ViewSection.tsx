@@ -1,7 +1,9 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportSections, ReportView } from "../../types.js";
 import { colorVar } from "../styles/colors.js";
+import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { BarList } from "./BarList.js";
+import { CountBarChart } from "./CountBarChart.js";
 import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
 import { Donut } from "./Donut.js";
@@ -94,7 +96,7 @@ export function ViewSection({
 					<div class={styles.grid2}>
 						{sections.date ? (
 							<section class={styles.sectionBlock} data-section="date">
-								<BarList
+								<BandwidthBarChart
 									title="Daily bandwidth"
 									rows={view.byDate}
 									accent={colorVar("amber")}
@@ -103,7 +105,7 @@ export function ViewSection({
 						) : null}
 						{sections.hour ? (
 							<section class={styles.sectionBlock} data-section="hour">
-								<BarList
+								<BandwidthBarChart
 									title="Hourly bandwidth"
 									rows={view.byHour}
 									accent={colorVar("red")}
@@ -114,7 +116,7 @@ export function ViewSection({
 					<div class={styles.grid2}>
 						{sections.status ? (
 							<section class={styles.sectionBlock} data-section="status">
-								<CountBars
+								<CountBarChart
 									title="Response codes"
 									rows={view.byStatus}
 									accent={colorVar("purple")}

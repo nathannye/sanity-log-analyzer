@@ -3,6 +3,7 @@ import {
 	formatNumber,
 	formatReadableDate,
 } from "../format.js";
+import { avgBytesPerRequest } from "../ranked-row.js";
 import type {
 	CountRow,
 	RankedRow,
@@ -48,13 +49,13 @@ function rankedTable(title: string, rows: RankedRow[]): string {
 	const lines = [
 		`### ${title}`,
 		"",
-		"| Label | Requests | Bandwidth |",
-		"| --- | ---: | ---: |",
+		"| Label | Requests | Bandwidth | Avg / req |",
+		"| --- | ---: | ---: | ---: |",
 	];
 
 	for (const row of rows) {
 		lines.push(
-			`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} |`,
+			`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
 		);
 	}
 

@@ -1,4 +1,5 @@
 import { formatBytes, formatNumber, formatReadableDate, } from "../format.js";
+import { avgBytesPerRequest } from "../ranked-row.js";
 export function escapeMarkdownCell(value) {
     return value.replaceAll("|", "\\|").replaceAll("\n", " ").replaceAll("\r", "");
 }
@@ -23,11 +24,11 @@ function rankedTable(title, rows) {
     const lines = [
         `### ${title}`,
         "",
-        "| Label | Requests | Bandwidth |",
-        "| --- | ---: | ---: |",
+        "| Label | Requests | Bandwidth | Avg / req |",
+        "| --- | ---: | ---: | ---: |",
     ];
     for (const row of rows) {
-        lines.push(`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} |`);
+        lines.push(`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`);
     }
     lines.push("");
     return lines.join("\n");

@@ -1,4 +1,5 @@
 import { formatBytes, formatNumber } from "../../format.js";
+import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
 import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
 import tableStyles from "./DataTable.module.css";
@@ -24,10 +25,6 @@ function CopyIcon() {
 			<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
 		</svg>
 	);
-}
-
-function avgBytesPerRequest(row: RankedRow): number {
-	return row.requests > 0 ? row.responseBytes / row.requests : 0;
 }
 
 export function UrlDataTable({

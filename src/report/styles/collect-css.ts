@@ -1,3 +1,4 @@
+import verticalBarChartCss from "../components/VerticalBarChart.module.css?inline";
 import barListCss from "../components/BarList.module.css?inline";
 import dataTableCss from "../components/DataTable.module.css?inline";
 import refererDataTableCss from "../components/RefererDataTable.module.css?inline";
@@ -29,6 +30,7 @@ export const reportCss = [
 	metricCss,
 	donutCss,
 	barListCss,
+	verticalBarChartCss,
 	dataTableCss,
 	refererDataTableCss,
 	urlTabsSectionCss,
