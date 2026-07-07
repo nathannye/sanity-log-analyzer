@@ -1,6 +1,6 @@
 import type { LogProgress, PartialReportConfig, ReportData } from "./types.js";
+export { DEFAULT_REPORT_CONFIG, resolveReportConfig } from "./config.js";
 export type { LogProgress, PartialReportConfig, ReportConfig, ReportData, ReportSections, ReportView, } from "./types.js";
-export { resolveReportConfig, DEFAULT_REPORT_CONFIG } from "./config.js";
 export interface AnalyzeLogOptions {
     config?: PartialReportConfig;
     onProgress?: (progress: LogProgress) => void;
