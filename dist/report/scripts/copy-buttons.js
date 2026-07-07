@@ -5,8 +5,9 @@ if(!btn)return;
 e.preventDefault();
 var value=btn.getAttribute("data-copy-value");
 if(!value)return;
+var message=btn.getAttribute("data-copy-toast")||"Copied";
 navigator.clipboard.writeText(value).then(function(){
-window.__showReportToast("Copied");
+window.__showReportToast(message);
 }).catch(function(){});
 });
 })();`;

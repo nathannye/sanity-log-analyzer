@@ -82,9 +82,9 @@ function walkNode(node, stats, inFuncArg) {
         }
     }
 }
-export function analyzeGroqQuery(query) {
+export function analyzeGroqQuery(query, params) {
     try {
-        const ast = parse(query);
+        const ast = parse(query, params ? { params } : {});
         const stats = emptyStats();
         walkNode(ast, stats, false);
         return stats;

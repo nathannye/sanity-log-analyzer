@@ -6,5 +6,5 @@ export interface GroqQueryStats {
     arrayTraversals: number;
     functionCalls: Record<string, number>;
 }
-export declare function analyzeGroqQuery(query: string): GroqQueryStats | null;
+export declare function analyzeGroqQuery(query: string, params?: Record<string, unknown>): GroqQueryStats | null;
 //# sourceMappingURL=analyze-groq.d.ts.map

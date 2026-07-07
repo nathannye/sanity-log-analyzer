@@ -74,9 +74,10 @@ pre {
 	bottom: 2.4rem;
 	left: 50%;
 	z-index: 9999;
+	margin: 0;
 	padding: 0.8rem 1.6rem;
 	border-radius: var(--radius-pill);
-	background: var(--panel);
+	background: #18181b;
 	border: 0.1rem solid var(--border-faint);
 	color: var(--text);
 	font-size: var(--text-size-sm);
@@ -87,7 +88,6 @@ pre {
 	transition:
 		opacity 0.2s ease,
 		transform 0.2s ease;
-	backdrop-filter: blur(0.8rem);
 	box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.35);
 }
 

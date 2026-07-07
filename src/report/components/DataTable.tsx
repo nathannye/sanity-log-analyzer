@@ -6,6 +6,7 @@ interface DataTableProps {
   title: string;
   rows: RankedRow[];
   hasCopyButton?: boolean;
+  copyToastMessage?: string;
 }
 
 function CopyIcon() {
@@ -17,7 +18,12 @@ function CopyIcon() {
   );
 }
 
-export function DataTable({ title, rows, hasCopyButton = false }: DataTableProps) {
+export function DataTable({
+  title,
+  rows,
+  hasCopyButton = false,
+  copyToastMessage = "Copied",
+}: DataTableProps) {
   return (
     <section class="card">
       <h3 class="heading-3">{title}</h3>
@@ -40,6 +46,7 @@ export function DataTable({ title, rows, hasCopyButton = false }: DataTableProps
                         type="button"
                         class={styles.copyButton}
                         data-copy-value={row.label}
+                        data-copy-toast={copyToastMessage}
                         aria-label={`Copy "${row.label}"`}
                         title="Copy to clipboard"
                       >

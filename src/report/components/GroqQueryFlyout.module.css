@@ -56,8 +56,65 @@
 	height: 1.4rem;
 }
 
+.copyButton {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.4rem 0.8rem;
+	border: 0.1rem solid var(--border-faint);
+	border-radius: var(--radius-pill);
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--muted);
+	cursor: pointer;
+	font-size: var(--text-size-xs);
+	font-weight: 600;
+}
+
+.copyButton:hover {
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.copyButtonLabel {
+	line-height: 1;
+}
+
+.copyButton svg {
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
 .section + .section {
 	margin-top: 1.6rem;
+	padding-top: 1.6rem;
+	border-top: 0.1rem solid var(--border-subtle);
+}
+
+.stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.8rem;
+	margin: 0;
+}
+
+.stat {
+	margin: 0;
+	padding: 1rem 1.2rem;
+	border: 0.1rem solid var(--border-subtle);
+	border-radius: var(--radius-sm);
+	background: rgba(0, 0, 0, 0.2);
+}
+
+.statLabel {
+	margin: 0;
+	font-size: var(--text-size-xs);
+	color: var(--muted);
+}
+
+.statValue {
+	margin: 0.4rem 0 0;
+	font-size: var(--text-size-sm);
+	font-variant-numeric: tabular-nums;
 }
 
 .sectionLabel {

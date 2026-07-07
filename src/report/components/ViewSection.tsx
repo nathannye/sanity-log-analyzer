@@ -4,10 +4,10 @@ import { colorVar } from "../styles/colors.js";
 import { BarList } from "./BarList.js";
 import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
-import { RefererDataTable } from "./RefererDataTable.js";
-import { UrlTabsSection } from "./UrlTabsSection.js";
 import { Donut } from "./Donut.js";
 import { Metric } from "./Metric.js";
+import { RefererDataTable } from "./RefererDataTable.js";
+import { UrlTabsSection } from "./UrlTabsSection.js";
 import styles from "./ViewSection.module.css";
 
 interface ViewSectionProps {
@@ -151,7 +151,12 @@ export function ViewSection({
 					) : null}
 					{sections.ips ? (
 						<section class={styles.sectionBlock} data-section="ips">
-							<DataTable hasCopyButton title="Top IPs" rows={view.byIp} />
+							<DataTable
+								hasCopyButton
+								copyToastMessage="Copied IP"
+								title="Top IPs"
+								rows={view.byIp}
+							/>
 						</section>
 					) : null}
 				</div>

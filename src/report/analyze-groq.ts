@@ -96,9 +96,12 @@ function walkNode(node: unknown, stats: GroqQueryStats, inFuncArg: boolean): voi
 	}
 }
 
-export function analyzeGroqQuery(query: string): GroqQueryStats | null {
+export function analyzeGroqQuery(
+	query: string,
+	params?: Record<string, unknown>,
+): GroqQueryStats | null {
 	try {
-		const ast = parse(query);
+		const ast = parse(query, params ? { params } : {});
 		const stats = emptyStats();
 		walkNode(ast, stats, false);
 		return stats;

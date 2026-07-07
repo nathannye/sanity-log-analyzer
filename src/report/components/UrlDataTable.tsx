@@ -1,6 +1,6 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import type { RankedRow } from "../../types.js";
-import { extractGroqQuery } from "../groq-query.js";
+import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
 import tableStyles from "./DataTable.module.css";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
 import styles from "./UrlDataTable.module.css";
@@ -53,6 +53,8 @@ export function UrlDataTable({
 				<tbody>
 					{rows.map((row, index) => {
 						const groqQuery = showFlyout ? extractGroqQuery(row.label) : null;
+						const groqParams =
+							groqQuery !== null ? extractGroqParams(row.label) : null;
 						const flyoutId = groqQuery
 							? `${idPrefix}-flyout-${index}`
 							: undefined;
@@ -65,6 +67,7 @@ export function UrlDataTable({
 											type="button"
 											class={tableStyles.copyButton}
 											data-copy-value={row.label}
+											data-copy-toast="Copied URL"
 											aria-label={`Copy "${row.label}"`}
 											title="Copy to clipboard"
 										>
@@ -83,7 +86,13 @@ export function UrlDataTable({
 										) : null}
 									</div>
 									{flyoutId && groqQuery ? (
-										<GroqQueryFlyout id={flyoutId} query={groqQuery} />
+										<GroqQueryFlyout
+											id={flyoutId}
+											query={groqQuery}
+											params={groqParams}
+											requests={row.requests}
+											responseBytes={row.responseBytes}
+										/>
 									) : null}
 								</td>
 								<td class="num">{formatBytes(row.responseBytes)}</td>
