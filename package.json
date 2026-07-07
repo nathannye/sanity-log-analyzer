@@ -1,9 +1,9 @@
 {
-  "name": "sanity-log-parser",
-  "version": "0.1.0",
+  "name": "sanity-log-analyzer",
+  "version": "0.0.1",
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "bin": {
     "sanity-log-parser": "dist/analyze.js"
@@ -18,7 +18,7 @@
     "test": "npm run build && node --test dist/aggregate.test.js dist/report.test.js"
   },
   "devDependencies": {
-    "@types/node": "^22.15.21",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@types/node": "24"
   }
 }
