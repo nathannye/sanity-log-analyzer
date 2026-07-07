@@ -72,19 +72,28 @@ function userAgentTable(title: string, rows: RankedRow[]): string {
 	if (rows.length === 0) return "";
 
 	const stats = aggregateUserAgentStats(rows);
-	const lines = [
-		`### ${title}`,
-		"",
-		`Mac ${formatPercentage(stats.macPct)} · Windows ${formatPercentage(stats.windowsPct)} · Mobile ${formatPercentage(stats.mobilePct)} · Desktop ${formatPercentage(stats.desktopPct)}`,
-		"",
+	const lines = [`### ${title}`, ""];
+
+	if (stats.trackableRequests > 0) {
+		lines.push(
+			`Mac ${formatPercentage(stats.macPct)} · Windows ${formatPercentage(stats.windowsPct)} · Mobile ${formatPercentage(stats.mobilePct)} · Desktop ${formatPercentage(stats.desktopPct)}`,
+			"",
+		);
+	}
+
+	lines.push(
 		"| Device | Label | Requests | Bandwidth | Avg / req |",
 		"| --- | --- | ---: | ---: | ---: |",
-	];
+	);
 
 	for (const row of rows) {
 		const parsed = parseUserAgent(row.label);
 		const device =
-			parsed.deviceKind === "mobile" ? "Mobile" : "Desktop";
+			parsed.deviceKind === "mobile"
+				? "Mobile"
+				: parsed.deviceKind === "desktop"
+					? "Desktop"
+					: "—";
 		lines.push(
 			`| ${device} | ${escapeMarkdownCell(`${parsed.displayLabel} — ${parsed.raw}`)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
 		);

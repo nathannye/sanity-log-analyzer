@@ -1,22 +1,34 @@
 import { UAParser } from "ua-parser-js";
+import { isBot } from "ua-parser-js/bot-detection";
 
 export type DeviceKind = "desktop" | "mobile";
 export type OsFamily = "mac" | "windows" | "other";
 
 export interface ParsedUserAgent {
-	deviceKind: DeviceKind;
-	osFamily: OsFamily;
+	/** Set when the UA has an explicit mobile/desktop signal and is a browser. */
+	deviceKind: DeviceKind | null;
+	osFamily: OsFamily | null;
+	/** Browser traffic only; bots and HTTP clients are excluded from summary stats. */
+	isTrackable: boolean;
 	displayLabel: string;
 	raw: string;
 }
 
 export interface UserAgentAggregateStats {
-	totalRequests: number;
+	trackableRequests: number;
 	macPct: number;
 	windowsPct: number;
 	mobilePct: number;
 	desktopPct: number;
 }
+
+const NON_BROWSER_CLIENT =
+	/^@sanity\/client\b|\bsanity\/client\b|^curl\b|^axios\b|node-fetch|^got\/|python-requests|aiohttp|httpx|^Go-http-client|^okhttp\b|^Java\/|^libwww-perl|postmanruntime/i;
+
+const EXPLICIT_MOBILE =
+	/\bMobile\b|iPhone|iPod|Android.+Mobile|Windows Phone/i;
+const EXPLICIT_DESKTOP =
+	/Macintosh|Windows NT|Win64|X11; Linux|X11; Ubuntu|CrOS/i;
 
 function normalizeBrowserName(name: string | undefined): string | undefined {
 	if (!name) return undefined;
@@ -40,8 +52,26 @@ function isMobileDeviceType(type: string | undefined): boolean {
 	return type === "mobile" || type === "tablet" || type === "wearable";
 }
 
+function isNonBrowserClient(raw: string): boolean {
+	return NON_BROWSER_CLIENT.test(raw);
+}
+
+function resolveDeviceKind(
+	raw: string,
+	deviceType: string | undefined,
+): DeviceKind | null {
+	if (isMobileDeviceType(deviceType) || EXPLICIT_MOBILE.test(raw)) {
+		return "mobile";
+	}
+	if (EXPLICIT_DESKTOP.test(raw)) {
+		return "desktop";
+	}
+	return null;
+}
+
 function fallbackDisplayLabel(raw: string): string {
 	if (!raw) return "(Unknown)";
+	if (/@sanity\/client/i.test(raw)) return "(@sanity/client)";
 	if (/^curl\b/i.test(raw)) return "(curl)";
 	if (/postman/i.test(raw)) return "(Postman)";
 	if (/^axios\b/i.test(raw) || /node-fetch/i.test(raw) || /^got\//i.test(raw)) {
@@ -63,28 +93,37 @@ function buildDisplayLabel(
 	return `(${parts.join(" ")})`;
 }
 
+function notTrackable(raw: string): ParsedUserAgent {
+	return {
+		deviceKind: null,
+		osFamily: null,
+		isTrackable: false,
+		displayLabel: fallbackDisplayLabel(raw),
+		raw,
+	};
+}
+
 export function parseUserAgent(raw: string): ParsedUserAgent {
 	const trimmed = raw.trim();
-	if (!trimmed) {
-		return {
-			deviceKind: "desktop",
-			osFamily: "other",
-			displayLabel: "(Unknown)",
-			raw,
-		};
+	if (!trimmed) return notTrackable(raw);
+	if (isNonBrowserClient(trimmed) || isBot(trimmed)) {
+		return notTrackable(raw);
 	}
 
-	const { browser, os, device } = new UAParser(trimmed).getResult();
-	const osName = normalizeOsName(os.name);
-	const browserName = normalizeBrowserName(browser.name);
-	const deviceKind: DeviceKind = isMobileDeviceType(device.type)
-		? "mobile"
-		: "desktop";
+	const result = new UAParser(trimmed).getResult();
+	if (isBot(result) || !result.browser.name) {
+		return notTrackable(raw);
+	}
+
+	const osName = normalizeOsName(result.os.name);
+	const browserName = normalizeBrowserName(result.browser.name);
+	const deviceKind = resolveDeviceKind(trimmed, result.device.type);
 	const osFamily = classifyOsFamily(osName);
 
 	return {
 		deviceKind,
 		osFamily,
+		isTrackable: deviceKind !== null,
 		displayLabel: buildDisplayLabel(osName, browserName, trimmed),
 		raw,
 	};
@@ -93,7 +132,7 @@ export function parseUserAgent(raw: string): ParsedUserAgent {
 export function aggregateUserAgentStats(
 	rows: Array<{ label: string; requests: number }>,
 ): UserAgentAggregateStats {
-	let totalRequests = 0;
+	let trackableRequests = 0;
 	let macRequests = 0;
 	let windowsRequests = 0;
 	let mobileRequests = 0;
@@ -101,18 +140,20 @@ export function aggregateUserAgentStats(
 
 	for (const row of rows) {
 		const parsed = parseUserAgent(row.label);
-		totalRequests += row.requests;
+		if (!parsed.isTrackable || !parsed.deviceKind) continue;
+
+		trackableRequests += row.requests;
 		if (parsed.osFamily === "mac") macRequests += row.requests;
 		if (parsed.osFamily === "windows") windowsRequests += row.requests;
 		if (parsed.deviceKind === "mobile") mobileRequests += row.requests;
-		else desktopRequests += row.requests;
+		if (parsed.deviceKind === "desktop") desktopRequests += row.requests;
 	}
 
 	const toPct = (count: number) =>
-		totalRequests > 0 ? (count / totalRequests) * 100 : 0;
+		trackableRequests > 0 ? (count / trackableRequests) * 100 : 0;
 
 	return {
-		totalRequests,
+		trackableRequests,
 		macPct: toPct(macRequests),
 		windowsPct: toPct(windowsRequests),
 		mobilePct: toPct(mobileRequests),

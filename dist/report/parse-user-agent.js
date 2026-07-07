@@ -1,4 +1,8 @@
 import { UAParser } from "ua-parser-js";
+import { isBot } from "ua-parser-js/bot-detection";
+const NON_BROWSER_CLIENT = /^@sanity\/client\b|\bsanity\/client\b|^curl\b|^axios\b|node-fetch|^got\/|python-requests|aiohttp|httpx|^Go-http-client|^okhttp\b|^Java\/|^libwww-perl|postmanruntime/i;
+const EXPLICIT_MOBILE = /\bMobile\b|iPhone|iPod|Android.+Mobile|Windows Phone/i;
+const EXPLICIT_DESKTOP = /Macintosh|Windows NT|Win64|X11; Linux|X11; Ubuntu|CrOS/i;
 function normalizeBrowserName(name) {
     if (!name)
         return undefined;
@@ -23,9 +27,23 @@ function classifyOsFamily(osName) {
 function isMobileDeviceType(type) {
     return type === "mobile" || type === "tablet" || type === "wearable";
 }
+function isNonBrowserClient(raw) {
+    return NON_BROWSER_CLIENT.test(raw);
+}
+function resolveDeviceKind(raw, deviceType) {
+    if (isMobileDeviceType(deviceType) || EXPLICIT_MOBILE.test(raw)) {
+        return "mobile";
+    }
+    if (EXPLICIT_DESKTOP.test(raw)) {
+        return "desktop";
+    }
+    return null;
+}
 function fallbackDisplayLabel(raw) {
     if (!raw)
         return "(Unknown)";
+    if (/@sanity\/client/i.test(raw))
+        return "(@sanity/client)";
     if (/^curl\b/i.test(raw))
         return "(curl)";
     if (/postman/i.test(raw))
@@ -47,51 +65,61 @@ function buildDisplayLabel(osName, browserName, raw) {
         return fallbackDisplayLabel(raw);
     return `(${parts.join(" ")})`;
 }
+function notTrackable(raw) {
+    return {
+        deviceKind: null,
+        osFamily: null,
+        isTrackable: false,
+        displayLabel: fallbackDisplayLabel(raw),
+        raw,
+    };
+}
 export function parseUserAgent(raw) {
     const trimmed = raw.trim();
-    if (!trimmed) {
-        return {
-            deviceKind: "desktop",
-            osFamily: "other",
-            displayLabel: "(Unknown)",
-            raw,
-        };
+    if (!trimmed)
+        return notTrackable(raw);
+    if (isNonBrowserClient(trimmed) || isBot(trimmed)) {
+        return notTrackable(raw);
     }
-    const { browser, os, device } = new UAParser(trimmed).getResult();
-    const osName = normalizeOsName(os.name);
-    const browserName = normalizeBrowserName(browser.name);
-    const deviceKind = isMobileDeviceType(device.type)
-        ? "mobile"
-        : "desktop";
+    const result = new UAParser(trimmed).getResult();
+    if (isBot(result) || !result.browser.name) {
+        return notTrackable(raw);
+    }
+    const osName = normalizeOsName(result.os.name);
+    const browserName = normalizeBrowserName(result.browser.name);
+    const deviceKind = resolveDeviceKind(trimmed, result.device.type);
     const osFamily = classifyOsFamily(osName);
     return {
         deviceKind,
         osFamily,
+        isTrackable: deviceKind !== null,
         displayLabel: buildDisplayLabel(osName, browserName, trimmed),
         raw,
     };
 }
 export function aggregateUserAgentStats(rows) {
-    let totalRequests = 0;
+    let trackableRequests = 0;
     let macRequests = 0;
     let windowsRequests = 0;
     let mobileRequests = 0;
     let desktopRequests = 0;
     for (const row of rows) {
         const parsed = parseUserAgent(row.label);
-        totalRequests += row.requests;
+        if (!parsed.isTrackable || !parsed.deviceKind)
+            continue;
+        trackableRequests += row.requests;
         if (parsed.osFamily === "mac")
             macRequests += row.requests;
         if (parsed.osFamily === "windows")
             windowsRequests += row.requests;
         if (parsed.deviceKind === "mobile")
             mobileRequests += row.requests;
-        else
+        if (parsed.deviceKind === "desktop")
             desktopRequests += row.requests;
     }
-    const toPct = (count) => totalRequests > 0 ? (count / totalRequests) * 100 : 0;
+    const toPct = (count) => trackableRequests > 0 ? (count / trackableRequests) * 100 : 0;
     return {
-        totalRequests,
+        trackableRequests,
         macPct: toPct(macRequests),
         windowsPct: toPct(windowsRequests),
         mobilePct: toPct(mobileRequests),

@@ -44,18 +44,27 @@ function MobileIcon() {
 
 function UserAgentLabel({ raw }: { raw: string }) {
 	const parsed = parseUserAgent(raw);
-	const DeviceIcon = parsed.deviceKind === "mobile" ? MobileIcon : DesktopIcon;
-	const deviceLabel = parsed.deviceKind === "mobile" ? "Mobile" : "Desktop";
 
 	return (
 		<div class={styles.labelStack}>
 			<div class={styles.labelHead}>
-				<span class={styles.deviceIcon} title={deviceLabel} aria-label={deviceLabel}>
-					<DeviceIcon />
-				</span>
+				{parsed.deviceKind ? (
+					<span
+						class={styles.deviceIcon}
+						title={parsed.deviceKind === "mobile" ? "Mobile" : "Desktop"}
+						aria-label={parsed.deviceKind === "mobile" ? "Mobile" : "Desktop"}
+					>
+						{parsed.deviceKind === "mobile" ? <MobileIcon /> : <DesktopIcon />}
+					</span>
+				) : null}
 				<span class={styles.parsedLabel}>{parsed.displayLabel}</span>
 			</div>
-			<div class={styles.rawLabel} title={parsed.raw}>
+			<div
+				class={
+					parsed.deviceKind ? styles.rawLabel : styles.rawLabelWithoutIcon
+				}
+				title={parsed.raw}
+			>
 				{parsed.raw}
 			</div>
 		</div>
@@ -64,7 +73,7 @@ function UserAgentLabel({ raw }: { raw: string }) {
 
 function UserAgentSummary({ rows }: { rows: RankedRow[] }) {
 	const stats = aggregateUserAgentStats(rows);
-	if (stats.totalRequests === 0) return null;
+	if (stats.trackableRequests === 0) return null;
 
 	return (
 		<div class={styles.summary}>

@@ -1,13 +1,16 @@
 export type DeviceKind = "desktop" | "mobile";
 export type OsFamily = "mac" | "windows" | "other";
 export interface ParsedUserAgent {
-    deviceKind: DeviceKind;
-    osFamily: OsFamily;
+    /** Set when the UA has an explicit mobile/desktop signal and is a browser. */
+    deviceKind: DeviceKind | null;
+    osFamily: OsFamily | null;
+    /** Browser traffic only; bots and HTTP clients are excluded from summary stats. */
+    isTrackable: boolean;
     displayLabel: string;
     raw: string;
 }
 export interface UserAgentAggregateStats {
-    totalRequests: number;
+    trackableRequests: number;
     macPct: number;
     windowsPct: number;
     mobilePct: number;
