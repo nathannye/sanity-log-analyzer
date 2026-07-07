@@ -3,7 +3,7 @@
 	--text-size-sm: 1.44rem;
 	--text-size-md: 1.52rem;
 	--tracking-tight: 0.02em;
-	--tracking-wide: 0.1em;
+	--tracking-wide: 0.0275em;
 }
 
 .heading-1 {
@@ -36,6 +36,7 @@
 	font-size: var(--text-size-xs);
 	letter-spacing: var(--tracking-wide);
 	text-transform: uppercase;
+	font-weight: 700;
 }
 
 .body-1 {
