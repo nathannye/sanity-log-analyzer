@@ -1,4 +1,5 @@
 import { analyzeGroqQuery } from "../analyze-groq.js";
+import { formatGroqForDisplay } from "../format-groq.js";
 import { highlightGroq } from "../highlight-groq.js";
 import { GroqQueryStatsView } from "./GroqQueryStats.js";
 import styles from "./GroqQueryFlyout.module.css";
@@ -24,8 +25,9 @@ function CopyIcon() {
 }
 
 export function GroqQueryFlyout({ id, query }: GroqQueryFlyoutProps) {
-	const highlighted = highlightGroq(query);
-	const stats = analyzeGroqQuery(query);
+	const formatted = formatGroqForDisplay(query);
+	const highlighted = highlightGroq(formatted);
+	const stats = analyzeGroqQuery(formatted);
 
 	return (
 		<dialog id={id} class={styles.dialog} data-groq-flyout>
@@ -35,7 +37,7 @@ export function GroqQueryFlyout({ id, query }: GroqQueryFlyoutProps) {
 					<button
 						type="button"
 						class={styles.iconButton}
-						data-copy-value={query}
+						data-copy-value={formatted}
 						aria-label="Copy GROQ query"
 						title="Copy query"
 					>

@@ -4,6 +4,7 @@ import { colorVar } from "../styles/colors.js";
 import { BarList } from "./BarList.js";
 import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
+import { RefererDataTable } from "./RefererDataTable.js";
 import { UrlTabsSection } from "./UrlTabsSection.js";
 import { Donut } from "./Donut.js";
 import { Metric } from "./Metric.js";
@@ -140,7 +141,7 @@ export function ViewSection({
 					) : null}
 					{sections.referers ? (
 						<section class={styles.sectionBlock} data-section="referers">
-							<DataTable title="Top referers" rows={view.byReferer} />
+							<RefererDataTable title="Top referers" rows={view.byReferer} />
 						</section>
 					) : null}
 					{sections.userAgents ? (

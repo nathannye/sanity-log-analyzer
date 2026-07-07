@@ -1,5 +1,6 @@
 import barListCss from "../components/BarList.module.css?inline";
 import dataTableCss from "../components/DataTable.module.css?inline";
+import refererDataTableCss from "../components/RefererDataTable.module.css?inline";
 import donutCss from "../components/Donut.module.css?inline";
 import groqQueryFlyoutCss from "../components/GroqQueryFlyout.module.css?inline";
 import groqQueryStatsCss from "../components/GroqQueryStats.module.css?inline";
@@ -29,6 +30,7 @@ export const reportCss = [
 	donutCss,
 	barListCss,
 	dataTableCss,
+	refererDataTableCss,
 	urlTabsSectionCss,
 	urlDataTableCss,
 	groqQueryFlyoutCss,
