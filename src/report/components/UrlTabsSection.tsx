@@ -5,7 +5,6 @@ import {
 	visibleUrlTabs,
 } from "../group-urls-by-kind.js";
 import { Button } from "./Button.js";
-import styles from "./UrlTabsSection.module.css";
 import { UrlDataTable } from "./UrlDataTable.js";
 
 interface UrlTabsSectionProps {
@@ -20,13 +19,17 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 
 	return (
 		<section
-			class={`card ${styles.section}`}
+			class="card scroll-mt-20"
 			data-section="urls"
 			data-url-tabs
 			data-default-url-tab={activeTab}
 		>
 			<h3 class="heading-3">Top URLs</h3>
-			<div class={styles.tabList} role="tablist" aria-label="URL categories">
+			<div
+				class="mt-12 flex flex-wrap gap-6"
+				role="tablist"
+				aria-label="URL categories"
+			>
 				{tabs.map((tab) => (
 					<Button
 						key={tab.id}
@@ -44,7 +47,7 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 				<div
 					key={tab.id}
 					id={`${idPrefix}-panel-${tab.id}`}
-					class={styles.panel}
+					class="mt-12"
 					role="tabpanel"
 					data-url-panel={tab.id}
 					hidden={tab.id !== activeTab || undefined}

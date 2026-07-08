@@ -5,7 +5,6 @@ import {
 	parseUserAgent,
 } from "../parse-user-agent.js";
 import { DataTable } from "./DataTable.js";
-import styles from "./UserAgentDataTable.module.css";
 
 interface UserAgentDataTableProps {
 	title: string;
@@ -50,28 +49,32 @@ function UserAgentLabel({ raw }: { raw: string }) {
 	const parsed = parseUserAgent(raw);
 
 	return (
-		<div class={styles.labelStack}>
-			<div class={styles.labelHead}>
+		<div class="flex min-w-0 flex-col gap-3">
+			<div class="flex min-w-0 items-center gap-6">
 				{parsed.deviceKind ? (
 					<span
-						class={styles.deviceIcon}
+						class="inline-flex size-16 shrink-0 items-center justify-center text-muted [&>svg]:size-14"
 						title={parsed.deviceKind === "mobile" ? "Mobile" : "Desktop"}
 						aria-label={parsed.deviceKind === "mobile" ? "Mobile" : "Desktop"}
 					>
 						{parsed.deviceKind === "mobile" ? <MobileIcon /> : <DesktopIcon />}
 					</span>
 				) : null}
-				<span class={styles.parsedLabel}>
+				<span class="min-w-0 truncate">
 					{parsed.deviceKind
 						? parsed.displayLabel
 						: parsed.raw || parsed.displayLabel}
 				</span>
 				{isSanityUserAgent(raw) ? (
-					<span class={styles.chip}>Sanity client</span>
+					<span class="badge-blue">Sanity client</span>
 				) : null}
 			</div>
 			{parsed.deviceKind ? (
-				<div class={styles.rawLabel} title={parsed.raw}>
+				<div
+					class="truncate pl-22 leading-[1.35] text-muted"
+					style={{ fontSize: "var(--text-size-xs)" }}
+					title={parsed.raw}
+				>
 					{parsed.raw}
 				</div>
 			) : null}
@@ -84,21 +87,21 @@ function UserAgentSummary({ rows }: { rows: RankedRow[] }) {
 	if (stats.trackableRequests === 0) return null;
 
 	return (
-		<div class={styles.summary}>
-			<span class={styles.stat}>
-				<strong>Mac</strong>
+		<div class="mt-12 flex flex-wrap gap-8">
+			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
+				<strong class="body-2 font-semibold text-text">Mac</strong>
 				{formatPercentage(stats.macPct)}
 			</span>
-			<span class={styles.stat}>
-				<strong>Windows</strong>
+			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
+				<strong class="body-2 font-semibold text-text">Windows</strong>
 				{formatPercentage(stats.windowsPct)}
 			</span>
-			<span class={styles.stat}>
-				<strong>Mobile</strong>
+			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
+				<strong class="body-2 font-semibold text-text">Mobile</strong>
 				{formatPercentage(stats.mobilePct)}
 			</span>
-			<span class={styles.stat}>
-				<strong>Desktop</strong>
+			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
+				<strong class="body-2 font-semibold text-text">Desktop</strong>
 				{formatPercentage(stats.desktopPct)}
 			</span>
 		</div>

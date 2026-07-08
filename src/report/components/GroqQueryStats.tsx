@@ -1,5 +1,4 @@
 import type { GroqQueryStats } from "../analyze-groq.js";
-import styles from "./GroqQueryStats.module.css";
 
 interface GroqQueryStatsViewProps {
 	stats: GroqQueryStats;
@@ -27,24 +26,35 @@ export function GroqQueryStatsView({ stats }: GroqQueryStatsViewProps) {
 		.sort(([a], [b]) => a.localeCompare(b));
 
 	if (topEntries.length === 0 && functionEntries.length === 0) {
-		return <p class={styles.empty}>No structural features detected.</p>;
+		return <p class="empty body-2">No structural features detected.</p>;
 	}
 
 	return (
-		<dl class={styles.stats}>
+		<dl class="m-0 grid gap-6">
 			{topEntries.map((key) => (
-				<div class={styles.row} key={key}>
-					<dt>{formatLabel(key)}</dt>
-					<dd class="num">{stats[key]}</dd>
+				<div
+					class="flex items-baseline justify-between gap-12 border-t border-border-subtle pt-6 first:border-t-0 first:pt-0"
+					key={key}
+				>
+					<dt class="body-2 m-0 text-text">{formatLabel(key)}</dt>
+					<dd class="num m-0">{stats[key]}</dd>
 				</div>
 			))}
 			{functionEntries.length > 0 ? (
-				<div class={styles.group}>
-					<div class={styles.groupLabel}>functionCalls</div>
+				<div class="mt-4 grid gap-4 border-t border-border-subtle pt-8">
+					<div
+						class="font-semibold text-text"
+						style={{ fontSize: "var(--text-size-xs)" }}
+					>
+						functionCalls
+					</div>
 					{functionEntries.map(([name, count]) => (
-						<div class={styles.row} key={name}>
-							<dt>{name}</dt>
-							<dd class="num">{count}</dd>
+						<div
+							class="flex items-baseline justify-between gap-12"
+							key={name}
+						>
+							<dt class="body-2 m-0 text-muted">{name}</dt>
+							<dd class="num m-0">{count}</dd>
 						</div>
 					))}
 				</div>

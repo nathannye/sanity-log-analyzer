@@ -5,7 +5,7 @@ import type { ReportData } from "../../types.js";
 import { copyButtonsScript } from "../scripts/copy-buttons.js";
 import { tocNavScript } from "../scripts/toc-nav.js";
 import { viewToggleScript } from "../scripts/view-toggle.js";
-import "../styles/global.css";
+import "../styles/theme.css";
 
 new Function(copyButtonsScript)();
 new Function(viewToggleScript)();

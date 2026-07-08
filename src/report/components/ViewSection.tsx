@@ -13,7 +13,6 @@ import { Metric } from "./Metric.js";
 import { RefererDataTable } from "./RefererDataTable.js";
 import { UserAgentDataTable } from "./UserAgentDataTable.js";
 import { UrlTabsSection } from "./UrlTabsSection.js";
-import styles from "./ViewSection.module.css";
 
 interface ViewSectionProps {
 	view: ReportView;
@@ -37,8 +36,8 @@ export function ViewSection({
 	return (
 		<div data-report-view={viewKey} hidden={hidden || undefined}>
 			<FindingsSummary summary={findingsSummary} />
-			<section class={styles.sectionBlock} data-section="summary">
-				<div class={styles.viewGrid}>
+			<section class="scroll-mt-20" data-section="summary">
+				<div class="mb-24 flex flex-wrap gap-16 [&>*]:min-w-[130px] [&>*]:flex-1 [&>*]:basis-[130px]">
 					<Metric
 						label="Requests"
 						value={formatNumber(view.requests)}
@@ -75,12 +74,12 @@ export function ViewSection({
 					/>
 				</div>
 			</section>
-			<div class={styles.grid2}>
-				<div class={styles.stack}>
-					<div class={`eyebrow-1 ${styles.sectionTitle}`}>Charts</div>
-					<div class={styles.grid2}>
+			<div class="mb-24 grid grid-cols-1 gap-16 lg:grid-cols-2">
+				<div class="grid gap-16">
+					<div class="eyebrow-1 section-title">Charts</div>
+					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.domain ? (
-							<section class={styles.sectionBlock} data-section="domain">
+							<section class="scroll-mt-20" data-section="domain">
 								<BarList
 									title="Top domains"
 									rows={view.byDomain}
@@ -89,7 +88,7 @@ export function ViewSection({
 							</section>
 						) : null}
 						{sections.endpoint ? (
-							<section class={styles.sectionBlock} data-section="endpoint">
+							<section class="scroll-mt-20" data-section="endpoint">
 								<BarList
 									title="Top endpoints"
 									rows={view.byEndpoint}
@@ -98,9 +97,9 @@ export function ViewSection({
 							</section>
 						) : null}
 					</div>
-					<div class={styles.grid2}>
+					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.date ? (
-							<section class={styles.sectionBlock} data-section="date">
+							<section class="scroll-mt-20" data-section="date">
 								<BandwidthBarChart
 									title="Daily bandwidth"
 									rows={view.byDate}
@@ -109,7 +108,7 @@ export function ViewSection({
 							</section>
 						) : null}
 						{sections.hour ? (
-							<section class={styles.sectionBlock} data-section="hour">
+							<section class="scroll-mt-20" data-section="hour">
 								<BandwidthBarChart
 									title="Hourly bandwidth"
 									rows={view.byHour}
@@ -118,9 +117,9 @@ export function ViewSection({
 							</section>
 						) : null}
 					</div>
-					<div class={styles.grid2}>
+					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.status ? (
-							<section class={styles.sectionBlock} data-section="status">
+							<section class="scroll-mt-20" data-section="status">
 								<CountBarChart
 									title="Response codes"
 									rows={view.byStatus}
@@ -129,7 +128,7 @@ export function ViewSection({
 							</section>
 						) : null}
 						{sections.histogram ? (
-							<section class={styles.sectionBlock} data-section="histogram">
+							<section class="scroll-mt-20" data-section="histogram">
 								<CountBars
 									title="Response size buckets"
 									rows={view.responseSizeHistogram}
@@ -139,20 +138,20 @@ export function ViewSection({
 						) : null}
 					</div>
 				</div>
-				<div class={styles.stack}>
-					<div class={`eyebrow-1 ${styles.sectionTitle}`}>Top lists</div>
+				<div class="grid gap-16">
+					<div class="eyebrow-1 section-title">Top lists</div>
 					{sections.urls ? (
-						<div class={styles.sectionBlock}>
+						<div class="scroll-mt-20">
 							<UrlTabsSection rows={view.byUrl} idPrefix={`urls-${viewKey}`} />
 						</div>
 					) : null}
 					{sections.referers ? (
-						<section class={styles.sectionBlock} data-section="referers">
+						<section class="scroll-mt-20" data-section="referers">
 							<RefererDataTable title="Top referers" rows={view.byReferer} />
 						</section>
 					) : null}
 					{sections.userAgents ? (
-						<section class={styles.sectionBlock} data-section="userAgents">
+						<section class="scroll-mt-20" data-section="userAgents">
 							<UserAgentDataTable
 								title="Top user agents"
 								rows={view.byUserAgent}
@@ -160,7 +159,7 @@ export function ViewSection({
 						</section>
 					) : null}
 					{sections.ips ? (
-						<section class={styles.sectionBlock} data-section="ips">
+						<section class="scroll-mt-20" data-section="ips">
 							<DataTable
 								hasCopyButton
 								copyToastMessage="Copied IP"

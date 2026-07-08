@@ -13,13 +13,10 @@ import {
 } from "../parse-image-url.js";
 import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
-import buttonStyles from "./Button.module.css";
-import tableStyles from "./DataTable.module.css";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
 import { CopyIcon, ErrorIcon, ExternalLinkIcon, WarningIcon } from "./icons.js";
 import { SortableTableHeader } from "./SortableTableHeader.js";
 import { Tooltip } from "./Tooltip.js";
-import styles from "./UrlDataTable.module.css";
 
 interface UrlDataTableProps {
 	rows: RankedRow[];
@@ -40,7 +37,7 @@ export function UrlDataTable({
 	idPrefix,
 }: UrlDataTableProps) {
 	if (rows.length === 0) {
-		return <p class={styles.empty}>No URLs in this category.</p>;
+		return <p class="empty body-2 py-12">No URLs in this category.</p>;
 	}
 
 	const isImageTable = variant === "image";
@@ -48,11 +45,8 @@ export function UrlDataTable({
 	const showExternalLink = isImageTable || isFileTable;
 
 	return (
-		<div class={tableStyles.wrap}>
-			<table
-				class={`body-1 ${tableStyles.table}`}
-				data-sortable-table
-			>
+		<div class="data-table-wrap">
+			<table class="body-1 data-table" data-sortable-table>
 				<thead>
 					<tr>
 						<SortableTableHeader
@@ -108,10 +102,7 @@ export function UrlDataTable({
 							groqQuery !== null ? extractGroqParams(row.label) : null;
 						const hasSpreadOperator =
 							groqQuery !== null
-								? hasGroqSpreadOperator(
-										groqQuery,
-										groqParams ?? undefined,
-									)
+								? hasGroqSpreadOperator(groqQuery, groqParams ?? undefined)
 								: false;
 						const flyoutId = groqQuery
 							? `${idPrefix}-flyout-${index}`
@@ -146,10 +137,10 @@ export function UrlDataTable({
 									: {})}
 							>
 								<td
-									class={tableStyles.labelCell}
+									class="max-w-520"
 									title={isImageTable ? row.label : undefined}
 								>
-									<div class={tableStyles.labelCellInner}>
+									<div class="flex min-w-0 items-center gap-6">
 										<Button
 											variant="ghost-icon-sm"
 											icon={<CopyIcon />}
@@ -163,21 +154,21 @@ export function UrlDataTable({
 												href={toInlineAssetUrl(row.label)}
 												target="_blank"
 												rel="noopener noreferrer"
-												class={`${buttonStyles.button} ${buttonStyles.ghostIconSm}`}
+												class="btn-ghost-sm"
 												aria-label={`Open "${isImageTable ? (imageDetails?.id ?? row.label) : row.label}" in new tab`}
 												title="Open in new tab"
 											>
-												<span class={buttonStyles.icon}>
+												<span class="btn-icon">
 													<ExternalLinkIcon />
 												</span>
 											</a>
 										) : null}
-										<span class={tableStyles.labelText}>
+										<span class="min-w-0 flex-1 truncate">
 											{isImageTable ? imageDetails?.id : row.label}
 										</span>
 										{isFileTable && isMp4Url(row.label) ? (
 											<Tooltip content="Consider using HLS streaming services like Mux instead of serving large single MP4 files to reduce bandwidth and improve playback.">
-												<span class={styles.warningIcon}>
+												<span class="inline-flex shrink-0 text-[var(--color-amber,#f59e0b)] [&>svg]:size-14">
 													<WarningIcon />
 												</span>
 											</Tooltip>
@@ -186,7 +177,7 @@ export function UrlDataTable({
 											<Tooltip
 												content={`This query ${GROQ_SPREAD_WARNING}.`}
 											>
-												<span class={styles.warningIcon}>
+												<span class="inline-flex shrink-0 text-[var(--color-amber,#f59e0b)] [&>svg]:size-14">
 													<WarningIcon />
 												</span>
 											</Tooltip>
@@ -214,24 +205,24 @@ export function UrlDataTable({
 								{isImageTable && imageDetails ? (
 									<>
 										<td class="num">
-											<div class={styles.metricCell}>
+											<div class="inline-flex items-center gap-6">
 												<span>{formatMetric(imageDetails.width)}</span>
 												{hasImageWidthError(imageDetails.width) ? (
 													<Tooltip content="Width exceeds 2000px">
-														<span class={styles.errorBadge}>Too large</span>
+														<span class="badge-red">Too large</span>
 													</Tooltip>
 												) : null}
 											</div>
 										</td>
 										<td class="num">
-											<div class={styles.metricCell}>
+											<div class="inline-flex items-center gap-6">
 												<span>{formatMetric(imageDetails.quality)}</span>
 												{hasImageQualityError(
 													imageDetails.quality,
 													imageDetails.isSvg,
 												) ? (
 													<Tooltip content="Quality exceeds 87">
-														<span class={styles.errorIcon}>
+														<span class="inline-flex shrink-0 text-[var(--color-red,#ef4444)] [&>svg]:size-14">
 															<ErrorIcon />
 														</span>
 													</Tooltip>
@@ -239,11 +230,11 @@ export function UrlDataTable({
 											</div>
 										</td>
 										<td>
-											<div class={styles.metricCell}>
+											<div class="inline-flex items-center gap-6">
 												<span>{formatMetric(imageDetails.format)}</span>
 												{hasImageFormatError(imageDetails.format) ? (
 													<Tooltip content='Format should be "auto"'>
-														<span class={styles.errorIcon}>
+														<span class="inline-flex shrink-0 text-[var(--color-red,#ef4444)] [&>svg]:size-14">
 															<ErrorIcon />
 														</span>
 													</Tooltip>

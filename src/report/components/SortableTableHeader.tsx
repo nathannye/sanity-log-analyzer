@@ -1,4 +1,3 @@
-import styles from "./DataTable.module.css";
 import { SortIcon } from "./icons.js";
 
 export type SortColumnType = "string" | "number";
@@ -20,14 +19,14 @@ export function SortableTableHeader({
 		<th class={className}>
 			<button
 				type="button"
-				class={styles.sortHeader}
+				class="sort-header"
 				data-sort-key={sortKey}
 				data-sort-type={sortType}
 				data-sort-direction="none"
 				aria-sort="none"
 			>
-				<span class={styles.sortHeaderLabel}>{label}</span>
-				<span class={styles.sortIcon}>
+				<span class="leading-[1.2]">{label}</span>
+				<span class="sort-icon">
 					<SortIcon />
 				</span>
 			</button>

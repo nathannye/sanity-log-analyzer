@@ -1,7 +1,5 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import type { ReportSummary } from "../summarize.js";
-import tableStyles from "./DataTable.module.css";
-import styles from "./FindingsSummary.module.css";
 
 interface FindingsSummaryProps {
 	summary: ReportSummary;
@@ -14,9 +12,9 @@ const HEALTH_LABEL: Record<ReportSummary["overallHealth"], string> = {
 };
 
 const HEALTH_CLASS: Record<ReportSummary["overallHealth"], string> = {
-	green: styles.toneGreen,
-	yellow: styles.toneYellow,
-	red: styles.toneRed,
+	green: "tone-green",
+	yellow: "tone-yellow",
+	red: "tone-red",
 };
 
 function priorityLabel(priority: "critical" | "warning"): string {
@@ -24,23 +22,22 @@ function priorityLabel(priority: "critical" | "warning"): string {
 }
 
 export function FindingsSummary({ summary }: FindingsSummaryProps) {
-	const issueTotal =
-		summary.issueCounts.critical + summary.issueCounts.warning;
+	const issueTotal = summary.issueCounts.critical + summary.issueCounts.warning;
 
 	return (
-		<section class={styles.root} data-section="findings">
-			<div class={styles.cards}>
+		<section class="mb-24 grid scroll-mt-20 gap-16" data-section="findings">
+			<div class="grid grid-cols-1 gap-16 lg:grid-cols-3">
 				<article
-					class={`card ${styles.statCard} ${HEALTH_CLASS[summary.overallHealth]}`}
+					class={`card card-metric flex items-start gap-12 ${HEALTH_CLASS[summary.overallHealth]}`}
 					data-health={summary.overallHealth}
 				>
-					<span class={styles.dot} aria-hidden="true" />
-					<div class={styles.cardBody}>
-						<div class={`eyebrow-1 ${styles.cardLabel}`}>Overall health</div>
-						<div class={`display-1 ${styles.cardValue}`}>
+					<span class="status-dot" aria-hidden="true" />
+					<div class="grid min-h-full min-w-0 flex-1 content-between">
+						<div class="eyebrow-1 text-muted">Overall health</div>
+						<div class="display-1 mt-10 text-text">
 							{HEALTH_LABEL[summary.overallHealth]}
 						</div>
-						<div class={`body-2 ${styles.cardNote}`}>
+						<div class="body-2 mt-8 text-muted">
 							{issueTotal === 0
 								? "No critical or warning findings"
 								: `${formatNumber(issueTotal)} ${issueTotal === 1 ? "issue" : "issues"} detected`}
@@ -48,47 +45,47 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 					</div>
 				</article>
 
-				<article class={`card ${styles.statCard} ${styles.toneRed}`}>
-					<span class={styles.dot} aria-hidden="true" />
-					<div class={styles.cardBody}>
-						<div class={`eyebrow-1 ${styles.cardLabel}`}>Critical</div>
-						<div class={`display-1 ${styles.cardValue}`}>
+				<article class="card card-metric flex items-start gap-12 tone-red">
+					<span class="status-dot" aria-hidden="true" />
+					<div class="grid min-h-full min-w-0 flex-1 content-between">
+						<div class="eyebrow-1 text-muted">Critical</div>
+						<div class="display-1 mt-10 text-text">
 							{formatNumber(summary.issueCounts.critical)}
 						</div>
-						<div class={`body-2 ${styles.cardNote}`}>High-impact findings</div>
+						<div class="body-2 mt-8 text-muted">High-impact findings</div>
 					</div>
 				</article>
 
-				<article class={`card ${styles.statCard} ${styles.toneYellow}`}>
-					<span class={styles.dot} aria-hidden="true" />
-					<div class={styles.cardBody}>
-						<div class={`eyebrow-1 ${styles.cardLabel}`}>Warnings</div>
-						<div class={`display-1 ${styles.cardValue}`}>
+				<article class="card card-metric flex items-start gap-12 tone-yellow">
+					<span class="status-dot" aria-hidden="true" />
+					<div class="grid min-h-full min-w-0 flex-1 content-between">
+						<div class="eyebrow-1 text-muted">Warnings</div>
+						<div class="display-1 mt-10 text-text">
 							{formatNumber(summary.issueCounts.warning)}
 						</div>
-						<div class={`body-2 ${styles.cardNote}`}>Worth reviewing</div>
+						<div class="body-2 mt-8 text-muted">Worth reviewing</div>
 					</div>
 				</article>
 
-				<article class={`card ${styles.statCard} ${styles.toneGreen}`}>
-					<span class={styles.dot} aria-hidden="true" />
-					<div class={styles.cardBody}>
-						<div class={`eyebrow-1 ${styles.cardLabel}`}>Passed</div>
-						<div class={`display-1 ${styles.cardValue}`}>
+				<article class="card card-metric flex items-start gap-12 tone-green">
+					<span class="status-dot" aria-hidden="true" />
+					<div class="grid min-h-full min-w-0 flex-1 content-between">
+						<div class="eyebrow-1 text-muted">Passed</div>
+						<div class="display-1 mt-10 text-text">
 							{formatNumber(summary.issueCounts.passed)}
 						</div>
-						<div class={`body-2 ${styles.cardNote}`}>Healthy signals</div>
+						<div class="body-2 mt-8 text-muted">Healthy signals</div>
 					</div>
 				</article>
 
 				{summary.estimatedSavingsBytes !== undefined ? (
-					<article class={`card ${styles.statCard}`}>
-						<div class={styles.cardBody}>
-							<div class={`eyebrow-1 ${styles.cardLabel}`}>Est. savings</div>
-							<div class={`display-1 ${styles.cardValue}`}>
+					<article class="card card-metric flex items-start gap-12">
+						<div class="grid min-h-full min-w-0 flex-1 content-between">
+							<div class="eyebrow-1 text-muted">Est. savings</div>
+							<div class="display-1 mt-10 text-text">
 								{formatBytes(summary.estimatedSavingsBytes)}
 							</div>
-							<div class={`body-2 ${styles.cardNote}`}>
+							<div class="body-2 mt-8 text-muted">
 								From explicit byte opportunities
 							</div>
 						</div>
@@ -96,15 +93,15 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 				) : null}
 			</div>
 
-			<div class={styles.opportunities}>
-				<div class={`eyebrow-1 ${styles.sectionTitle}`}>Top opportunities</div>
+			<div class="grid gap-0">
+				<div class="eyebrow-1 section-title">Top opportunities</div>
 				{summary.topOpportunities.length === 0 ? (
-					<p class={`body-1 card ${styles.empty}`}>
+					<p class="body-1 empty card mt-12">
 						No optimization opportunities detected for this view.
 					</p>
 				) : (
-					<div class={tableStyles.wrap}>
-						<table class={`body-1 ${tableStyles.table}`}>
+					<div class="data-table-wrap">
+						<table class="body-1 data-table">
 							<thead>
 								<tr>
 									<th>Priority</th>
@@ -118,13 +115,13 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 									<tr key={`${item.priority}-${item.issue}`}>
 										<td>
 											<span
-												class={`${styles.priority} ${
+												class={`priority ${
 													item.priority === "critical"
-														? styles.priorityCritical
-														: styles.priorityWarning
+														? "priority-critical"
+														: "priority-warning"
 												}`}
 											>
-												<span class={styles.priorityDot} aria-hidden="true" />
+												<span class="priority-dot" aria-hidden="true" />
 												{priorityLabel(item.priority)}
 											</span>
 										</td>

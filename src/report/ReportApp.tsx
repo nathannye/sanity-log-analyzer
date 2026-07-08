@@ -3,7 +3,6 @@ import { Header } from "./components/Header.js";
 import { ReportControls } from "./components/ReportControls.js";
 import { TableOfContents } from "./components/TableOfContents.js";
 import { ViewSection } from "./components/ViewSection.js";
-import styles from "./ReportApp.module.css";
 import { paletteColorVars } from "./styles/colors.js";
 
 interface ReportAppProps {
@@ -18,14 +17,17 @@ export function ReportApp({ data }: ReportAppProps) {
 		: data.all.byUrl;
 
 	return (
-		<main class={styles.page} style={colorStyle}>
+		<main
+			class="mx-auto max-w-1600 px-20 pb-56 pt-32"
+			style={colorStyle}
+		>
 			<Header data={data} />
-			<div class={styles.layout}>
+			<div class="grid grid-cols-1 items-start gap-24 lg:grid-cols-[22rem_minmax(0,1fr)]">
 				<TableOfContents
 					sections={data.config.sections}
 					urlRows={tocUrlRows}
 				/>
-				<div class={styles.content}>
+				<div class="min-w-0">
 					<ReportControls showToggle={showBillableComparison} />
 					{showBillableComparison ? (
 						<>
@@ -48,7 +50,7 @@ export function ReportApp({ data }: ReportAppProps) {
 							viewKey="all"
 						/>
 					)}
-					<div class={`body-2 ${styles.footer}`}>
+					<div class="body-2 mt-24 text-muted">
 						Raw report payload is embedded in{" "}
 						<code>&lt;script type="application/json"&gt;</code> for downstream
 						automation.

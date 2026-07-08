@@ -1,5 +1,3 @@
-import styles from "./Metric.module.css";
-
 interface MetricProps {
 	label: string;
 	value: string;
@@ -8,10 +6,10 @@ interface MetricProps {
 
 export function Metric({ label, value, note }: MetricProps) {
 	return (
-		<article class={`card card--metric ${styles.metric}`}>
-			<div class={`eyebrow-1 ${styles.label}`}>{label}</div>
-			<div class={`display-1 ${styles.value}`}>{value}</div>
-			{note ? <div class={`body-2 ${styles.note}`}>{note}</div> : null}
+		<article class="card card-metric grid content-between gap-0">
+			<div class="eyebrow-1 text-muted">{label}</div>
+			<div class="display-1 mt-auto pt-10">{value}</div>
+			{note ? <div class="body-2 mt-8 text-muted">{note}</div> : null}
 		</article>
 	);
 }

@@ -7,7 +7,6 @@ import {
 import { formatGroqForDisplay } from "../format-groq.js";
 import { highlightGroq } from "../highlight-groq.js";
 import { Button } from "./Button.js";
-import styles from "./GroqQueryFlyout.module.css";
 import { GroqQueryStatsView } from "./GroqQueryStats.js";
 import { CopyIcon } from "./icons.js";
 
@@ -40,10 +39,14 @@ export function GroqQueryFlyout({
 			: null;
 
 	return (
-		<dialog id={id} class={styles.dialog} data-groq-flyout>
-			<div class={styles.panel}>
-				<div class={styles.header}>
-					<h4 class={`heading-3 ${styles.title}`}>GROQ query</h4>
+		<dialog
+			id={id}
+			class="dialog w-full max-w-[min(72rem,calc(100vw-3.2rem))] border border-border-faint bg-panel p-0 text-text shadow-[0_1.6rem_4.8rem_rgba(0,0,0,0.45)] rounded-md"
+			data-groq-flyout
+		>
+			<div class="px-16 pt-12 pb-16">
+				<div class="mb-12 flex items-center gap-8">
+					<h4 class="heading-3 mb-0 flex-1 text-[1.4rem]">GROQ query</h4>
 					<Button
 						variant="outline-pill"
 						icon={<CopyIcon />}
@@ -61,31 +64,43 @@ export function GroqQueryFlyout({
 						aria-label="Close"
 					/>
 				</div>
-				<div class={styles.section}>
-					<div class={`eyebrow-1 ${styles.sectionLabel}`}>Usage</div>
-					<dl class={styles.stats}>
-						<div class={styles.stat}>
-							<dt class={styles.statLabel}>Bandwidth</dt>
-							<dd class={styles.statValue}>{formatBytes(responseBytes)}</dd>
+				<div>
+					<div class="eyebrow-1 mb-8 text-muted">Usage</div>
+					<dl class="m-0 grid grid-cols-3 gap-8">
+						<div class="m-0 rounded-sm border border-border-subtle bg-black/20 px-12 py-10">
+							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
+								Bandwidth
+							</dt>
+							<dd class="body-2 mt-4 mb-0 tabular-nums">
+								{formatBytes(responseBytes)}
+							</dd>
 						</div>
-						<div class={styles.stat}>
-							<dt class={styles.statLabel}>Requests</dt>
-							<dd class={styles.statValue}>{formatNumber(requests)}</dd>
+						<div class="m-0 rounded-sm border border-border-subtle bg-black/20 px-12 py-10">
+							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
+								Requests
+							</dt>
+							<dd class="body-2 mt-4 mb-0 tabular-nums">
+								{formatNumber(requests)}
+							</dd>
 						</div>
-						<div class={styles.stat}>
-							<dt class={styles.statLabel}>Avg / req</dt>
-							<dd class={styles.statValue}>{formatBytes(avgBytes)}</dd>
+						<div class="m-0 rounded-sm border border-border-subtle bg-black/20 px-12 py-10">
+							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
+								Avg / req
+							</dt>
+							<dd class="body-2 mt-4 mb-0 tabular-nums">
+								{formatBytes(avgBytes)}
+							</dd>
 						</div>
 					</dl>
 				</div>
 				{hasSpreadOperator ? (
-					<p class={styles.warning}>
+					<p class="body-2 mt-22 mb-14 rounded-sm border border-[var(--color-amber,#f59e0b)] px-10 py-8 leading-[1.5] text-[var(--color-amber)] bg-[var(--color-amber-light,rgba(245,158,11,0.12))]">
 						This query {GROQ_SPREAD_WARNING}.
 					</p>
 				) : null}
-				<div class={styles.section}>
-					<div class={`eyebrow-1 ${styles.sectionLabel}`}>Query</div>
-					<pre class={styles.pre}>
+				<div class="mt-16 border-t border-border-subtle pt-16">
+					<div class="eyebrow-1 mb-8 text-muted">Query</div>
+					<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-border-subtle bg-black/35 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
 						<code
 							class="language-groq"
 							dangerouslySetInnerHTML={{ __html: highlighted }}
@@ -93,22 +108,22 @@ export function GroqQueryFlyout({
 					</pre>
 				</div>
 				{formattedParams ? (
-					<div class={styles.section}>
-						<div class={`eyebrow-1 ${styles.sectionLabel}`}>Params</div>
-						<pre class={styles.pre}>
+					<div class="mt-16 border-t border-border-subtle pt-16">
+						<div class="eyebrow-1 mb-8 text-muted">Params</div>
+						<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-border-subtle bg-black/35 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
 							<code>{formattedParams}</code>
 						</pre>
 					</div>
 				) : null}
-				<div class={styles.section}>
-					<div class={`eyebrow-1 ${styles.sectionLabel}`}>Structure</div>
+				<div class="mt-16 border-t border-border-subtle pt-16">
+					<div class="eyebrow-1 mb-8 text-muted">Structure</div>
 					{stats ? (
 						<GroqQueryStatsView stats={stats} />
 					) : (
-						<p class={styles.error}>Could not analyze query structure.</p>
+						<p class="body-2 empty m-0">Could not analyze query structure.</p>
 					)}
 				</div>
-				<p class={styles.note}>
+				<p class="body-2 mt-22 text-muted">
 					Want to learn more about making efficient queries? Check out Sanity's
 					guide on{" "}
 					<a

@@ -34,31 +34,37 @@ export function VerticalBarChart({
 		<section class="card">
 			<h3 class="heading-3">{title}</h3>
 			{rows.length === 0 ? (
-				<p class={styles.empty}>{emptyMessage}</p>
+				<p class="empty body-2 mt-12">{emptyMessage}</p>
 			) : (
-				<div class={styles.chart}>
-					<div class={styles.yAxis} aria-hidden="true">
+				<div class="mt-12 flex min-h-0 gap-8">
+					<div
+						class="mb-32 flex h-268 w-56 shrink-0 flex-col justify-between"
+						aria-hidden="true"
+					>
 						{ticks
 							.slice()
 							.reverse()
 							.map((tick) => (
-								<span key={tick} class={styles.yTick}>
+								<span
+									key={tick}
+									class="eyebrow-1 text-right leading-none tabular-nums text-muted"
+								>
 									{formatAxisTick(tick)}
 								</span>
 							))}
 					</div>
-					<div class={styles.plotArea}>
-						<div class={styles.barRegion}>
+					<div class="min-w-0 flex-1">
+						<div class="relative h-300 max-h-300">
 							{ticks.map((tick) => (
 								<div
 									key={tick}
-									class={styles.gridLine}
+									class="pointer-events-none absolute right-0 left-0 h-0 border-t border-white/6"
 									style={{
 										bottom: `${LABEL_AREA_REM + (tick / axisMax) * BAR_AREA_REM}rem`,
 									}}
 								/>
 							))}
-							<div class={styles.bars}>
+							<div class="relative z-1 box-border flex h-full items-stretch gap-4 overflow-x-auto pb-32">
 								{rows.map((row) => {
 									const heightPct =
 										axisMax > 0
@@ -68,19 +74,23 @@ export function VerticalBarChart({
 									return (
 										<div
 											key={row.label}
-											class={styles.barColumn}
+											class={`${styles.barColumn} relative flex min-h-0 min-w-16 flex-1 flex-col items-stretch`}
 											data-tip={row.tip}
 										>
-											<div class={styles.barTrack}>
+											<div class="flex min-h-0 flex-1 items-end">
 												<div
-													class={styles.bar}
+													class={`${styles.bar} w-full min-h-2 rounded-t-sm`}
 													style={{
 														height: `${heightPct.toFixed(2)}%`,
 														background: accent,
 													}}
 												/>
 											</div>
-											<span class={styles.xLabel} title={row.label}>
+											<span
+												class="mt-8 h-24 max-w-full shrink-0 truncate text-center leading-[1.2] text-muted"
+												style={{ fontSize: "var(--text-size-xs)" }}
+												title={row.label}
+											>
 												{row.label}
 											</span>
 										</div>

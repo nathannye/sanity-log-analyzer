@@ -1,54 +1,8 @@
-.wrap {
-	display: grid;
-	gap: 1.6rem;
-	justify-items: center;
-	margin-top: 1.2rem;
-}
-
-.donut {
-	width: 100%;
-	aspect-ratio: 1 / 1;
-	border-radius: 50%;
-	padding: 2.2rem;
-	display: grid;
-	place-items: center;
-	position: relative;
-}
-
 .donut::after {
 	content: "";
 	position: absolute;
 	inset: 2.4rem;
 	border-radius: 50%;
 	background: rgba(10, 10, 12, 0.95);
-	border: 0.1rem solid var(--border-subtle);
-}
-
-.center {
-	position: relative;
-	z-index: 1;
-	display: grid;
-	justify-items: center;
-	gap: 0.4rem;
-	text-align: center;
-}
-
-.legend {
-	display: grid;
-	gap: 1rem;
-	width: 100%;
-	color: var(--muted);
-}
-
-.legend strong {
-	color: var(--text);
-}
-
-.swatch {
-	display: inline-block;
-	width: 1.1rem;
-	height: 1.1rem;
-	border-radius: var(--radius-pill);
-	margin-right: 0.8rem;
-	vertical-align: -0.1rem;
+	border: 0.1rem solid var(--color-border-subtle);
 }

@@ -4,7 +4,6 @@ import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
 import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
-import styles from "./DataTable.module.css";
 import { CopyIcon } from "./icons.js";
 import { SortableTableHeader } from "./SortableTableHeader.js";
 
@@ -31,11 +30,8 @@ export function DataTable({
 		<section class="card">
 			<h3 class="heading-3">{title}</h3>
 			{header}
-			<div class={styles.wrap}>
-				<table
-					class={`body-1 ${styles.table}`}
-					data-sortable-table
-				>
+			<div class="data-table-wrap">
+				<table class="body-1 data-table" data-sortable-table>
 					<thead>
 						<tr>
 							<SortableTableHeader
@@ -73,11 +69,14 @@ export function DataTable({
 								data-sort-requests={encodeSortValue(row.requests)}
 								data-sort-avg={encodeSortValue(avgBytesPerRequest(row))}
 							>
-								<td class={styles.labelCell} title={renderLabel ? undefined : row.label}>
+								<td
+									class="max-w-520"
+									title={renderLabel ? undefined : row.label}
+								>
 									{renderLabel ? (
 										renderLabel(row)
 									) : (
-										<div class={styles.labelCellInner}>
+										<div class="flex min-w-0 items-center gap-6">
 											{hasCopyButton ? (
 												<Button
 													variant="ghost-icon-sm"
@@ -88,16 +87,14 @@ export function DataTable({
 													title="Copy to clipboard"
 												/>
 											) : null}
-											<span class={styles.labelText}>{row.label}</span>
+											<span class="min-w-0 flex-1 truncate">{row.label}</span>
 											{labelAdornment ? labelAdornment(row) : null}
 										</div>
 									)}
 								</td>
 								<td class="num">{formatBytes(row.responseBytes)}</td>
 								<td class="num">{formatNumber(row.requests)}</td>
-								<td class="num">
-									{formatBytes(avgBytesPerRequest(row))}
-								</td>
+								<td class="num">{formatBytes(avgBytesPerRequest(row))}</td>
 							</tr>
 						))}
 					</tbody>
