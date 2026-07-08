@@ -2752,7 +2752,7 @@ function buildHealthySignals(view, context) {
     healthy.push({ summary: "No oversized image widths detected" });
   }
   if (images.imageRows.length > 0 && images.qualityRows.length === 0) {
-    healthy.push({ summary: "No high image quality settings detected" });
+    healthy.push({ summary: "No unreasonably high image quality settings detected" });
   }
   if (view.byUrlKind.file.requests > 0 && mp4Rows.length === 0) {
     healthy.push({ summary: "No progressive MP4 downloads detected" });
