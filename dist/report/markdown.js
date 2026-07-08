@@ -6,6 +6,7 @@ import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import { hasImageFormatError, hasImageQualityError, hasImageWidthError, parseImageUrl, } from "./parse-image-url.js";
 import { aggregateUserAgentStats, parseUserAgent, } from "./parse-user-agent.js";
+import { buildReportSummary, summaryHeadline, } from "./summarize.js";
 export function escapeMarkdownCell(value) {
     return value.replaceAll("|", "\\|").replaceAll("\n", " ").replaceAll("\r", "");
 }
@@ -25,6 +26,33 @@ export function markdownReportFilename(data, view) {
     return `${base}${suffix}.md`;
 }
 const MP4_WARNING = "consider HLS streaming instead of MP4";
+function renderSummaryGroup(title, items) {
+    if (items.length === 0)
+        return "";
+    return [
+        `### ${title}`,
+        "",
+        ...items.slice(0, 5).map((item) => `- ${item.summary}`),
+        "",
+    ].join("\n");
+}
+function buildExecutiveSummary(view) {
+    const summary = buildReportSummary(view);
+    const critical = summary.findings.filter((f) => f.severity === "critical");
+    const warnings = summary.findings.filter((f) => f.severity === "warning");
+    const passed = summary.signals;
+    return [
+        "## Executive Summary",
+        "",
+        summaryHeadline(summary),
+        "",
+        renderSummaryGroup("Critical", critical),
+        renderSummaryGroup("Warnings", warnings),
+        renderSummaryGroup("Passed", passed),
+    ]
+        .filter(Boolean)
+        .join("\n");
+}
 function formatImageMetric(value, issue) {
     if (value === null)
         return "—";
@@ -227,6 +255,8 @@ export function renderReportMarkdown(data, viewKey) {
         `- Generated: ${data.generatedAt}`,
         `- View: ${view.label}`,
         `- Max table rows: ${data.config.topN}`,
+        "",
+        buildExecutiveSummary(view),
         "",
         renderSummary(view),
         renderSections(view, data.config.sections),

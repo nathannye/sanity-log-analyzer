@@ -1,0 +1,165 @@
+.root {
+	scroll-margin-top: 2rem;
+	margin-bottom: 2.4rem;
+	display: grid;
+	gap: 1.6rem;
+}
+
+.hero {
+	display: grid;
+	grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.4fr);
+	gap: 1.6rem;
+}
+
+@media (max-width: 70rem) {
+	.hero {
+		grid-template-columns: 1fr;
+	}
+}
+
+.health {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.2rem;
+	min-height: 12rem;
+	padding: 1.6rem;
+	border: 0.1rem solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	background: var(--panel);
+	backdrop-filter: blur(0.8rem);
+}
+
+.healthDot {
+	width: 1.2rem;
+	height: 1.2rem;
+	margin-top: 0.6rem;
+	border-radius: 50%;
+	flex-shrink: 0;
+	box-shadow: 0 0 1.6rem currentColor;
+}
+
+.healthGreen {
+	border-color: color-mix(in srgb, var(--color-green) 35%, transparent);
+}
+
+.healthGreen .healthDot {
+	background: var(--color-green);
+	color: var(--color-green);
+}
+
+.healthYellow {
+	border-color: color-mix(in srgb, var(--color-amber) 40%, transparent);
+}
+
+.healthYellow .healthDot {
+	background: var(--color-amber);
+	color: var(--color-amber);
+}
+
+.healthRed {
+	border-color: color-mix(in srgb, var(--color-red) 45%, transparent);
+}
+
+.healthRed .healthDot {
+	background: var(--color-red);
+	color: var(--color-red);
+}
+
+.healthEyebrow {
+	color: var(--muted);
+}
+
+.healthLabel {
+	margin-top: 0.6rem;
+}
+
+.healthNote {
+	color: var(--muted);
+	margin-top: 0.8rem;
+}
+
+.glance {
+	display: grid;
+	gap: 0.8rem;
+	align-content: start;
+}
+
+.glanceTitle {
+	color: var(--muted);
+	padding-left: 0.4rem;
+}
+
+.metrics {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.2rem;
+}
+
+.metrics > * {
+	flex: 1 1 12rem;
+	min-width: 12rem;
+}
+
+.opportunities {
+	display: grid;
+	gap: 0.8rem;
+}
+
+.empty {
+	margin: 0;
+	padding: 1.6rem;
+	border: 0.1rem solid var(--border-subtle);
+	border-radius: var(--radius-md);
+	background: var(--panel);
+	color: var(--muted);
+}
+
+.tableWrap {
+	overflow: auto;
+	border-radius: var(--radius-sm);
+	border: 0.1rem solid var(--border-subtle);
+	background: var(--panel);
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.table th,
+.table td {
+	padding: 1rem 1.2rem;
+	border-bottom: 0.1rem solid rgba(255, 255, 255, 0.07);
+	text-align: left;
+	vertical-align: top;
+}
+
+.table th {
+	color: var(--muted);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.priority {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.2rem 0.7rem;
+	border-radius: var(--radius-pill);
+	font-size: 1.2rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+.priorityCritical {
+	color: var(--color-red);
+	background: color-mix(in srgb, var(--color-red) 18%, transparent);
+}
+
+.priorityWarning {
+	color: var(--color-amber);
+	background: color-mix(in srgb, var(--color-amber) 18%, transparent);
+}

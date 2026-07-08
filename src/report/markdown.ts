@@ -19,6 +19,11 @@ import {
 	aggregateUserAgentStats,
 	parseUserAgent,
 } from "./parse-user-agent.js";
+import {
+	buildReportSummary,
+	summaryHeadline,
+	type ReportFinding,
+} from "./summarize.js";
 import type {
 	CountRow,
 	RankedRow,
@@ -59,6 +64,41 @@ export function markdownReportFilename(
 }
 
 const MP4_WARNING = "consider HLS streaming instead of MP4";
+
+type SummaryGroupTitle = "Critical" | "Warnings" | "Passed";
+
+function renderSummaryGroup(
+	title: SummaryGroupTitle,
+	items: ReportFinding[],
+): string {
+	if (items.length === 0) return "";
+
+	return [
+		`### ${title}`,
+		"",
+		...items.slice(0, 5).map((item) => `- ${item.summary}`),
+		"",
+	].join("\n");
+}
+
+function buildExecutiveSummary(view: ReportView): string {
+	const summary = buildReportSummary(view);
+	const critical = summary.findings.filter((f) => f.severity === "critical");
+	const warnings = summary.findings.filter((f) => f.severity === "warning");
+	const passed = summary.signals;
+
+	return [
+		"## Executive Summary",
+		"",
+		summaryHeadline(summary),
+		"",
+		renderSummaryGroup("Critical", critical),
+		renderSummaryGroup("Warnings", warnings),
+		renderSummaryGroup("Passed", passed),
+	]
+		.filter(Boolean)
+		.join("\n");
+}
 
 function formatImageMetric(
 	value: string | number | null,
@@ -323,6 +363,8 @@ export function renderReportMarkdown(
 		`- Generated: ${data.generatedAt}`,
 		`- View: ${view.label}`,
 		`- Max table rows: ${data.config.topN}`,
+		"",
+		buildExecutiveSummary(view),
 		"",
 		renderSummary(view),
 		renderSections(view, data.config.sections),

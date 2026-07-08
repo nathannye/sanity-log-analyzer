@@ -5,6 +5,7 @@ import {
 	hasImageQualityError,
 	hasImageWidthError,
 	parseImageUrl,
+	toInlineAssetUrl,
 } from "./parse-image-url.js";
 
 describe("parseImageUrl", () => {
@@ -55,5 +56,21 @@ describe("image url flags", () => {
 		assert.equal(hasImageFormatError("webp"), true);
 		assert.equal(hasImageFormatError("auto"), false);
 		assert.equal(hasImageFormatError(null), false);
+	});
+});
+
+describe("toInlineAssetUrl", () => {
+	it("removes the Sanity CDN dl download param", () => {
+		assert.equal(
+			toInlineAssetUrl(
+				"https://cdn.sanity.io/images/p/d/a.jpg?w=100&dl=null&q=71",
+			),
+			"https://cdn.sanity.io/images/p/d/a.jpg?w=100&q=71",
+		);
+	});
+
+	it("leaves urls without dl unchanged", () => {
+		const url = "https://cdn.sanity.io/images/p/d/a.jpg?w=100";
+		assert.equal(toInlineAssetUrl(url), url);
 	});
 });

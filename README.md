@@ -80,3 +80,7 @@ The HTML report also includes a **Download markdown for LLM** button that export
 
 - Newline-delimited JSON (`.ndjson`) or gzip-compressed (`.ndjson.gz`)
 - One Sanity API request log entry per line
+
+## Roadmap
+- [ ] Redesign of components and layout
+- [ ] Support Sanity (request tagging)[https://www.sanity.io/docs/platform-management/reference-api-request-tags]

@@ -63,6 +63,18 @@ export function parseImageUrl(url: string): ParsedImageUrl {
 	}
 }
 
+/** Strip Sanity CDN `dl` so the asset opens inline instead of downloading. */
+export function toInlineAssetUrl(url: string): string {
+	try {
+		const parsed = new URL(url);
+		if (!parsed.searchParams.has("dl")) return url;
+		parsed.searchParams.delete("dl");
+		return parsed.toString();
+	} catch {
+		return url;
+	}
+}
+
 export function hasImageWidthError(width: number | null): boolean {
 	return width !== null && width > 2000;
 }

@@ -1,5 +1,6 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportSections, ReportView } from "../../types.js";
+import { buildReportSummary } from "../summarize.js";
 import { colorVar } from "../styles/colors.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { BarList } from "./BarList.js";
@@ -7,6 +8,7 @@ import { CountBarChart } from "./CountBarChart.js";
 import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
 import { Donut } from "./Donut.js";
+import { FindingsSummary } from "./FindingsSummary.js";
 import { Metric } from "./Metric.js";
 import { RefererDataTable } from "./RefererDataTable.js";
 import { UserAgentDataTable } from "./UserAgentDataTable.js";
@@ -30,9 +32,11 @@ export function ViewSection({
 		view.firstTimestamp && view.lastTimestamp
 			? `${formatReadableDate(view.firstTimestamp)} → ${formatReadableDate(view.lastTimestamp)}`
 			: "No timestamps found";
+	const findingsSummary = buildReportSummary(view);
 
 	return (
 		<div data-report-view={viewKey} hidden={hidden || undefined}>
+			<FindingsSummary summary={findingsSummary} />
 			<section class={styles.sectionBlock} data-section="summary">
 				<div class={styles.viewGrid}>
 					<Metric

@@ -4,6 +4,11 @@
 	vertical-align: middle;
 }
 
+.wrap:hover {
+	/* Lift above sticky table headers (z-index: 2) while open */
+	z-index: 3;
+}
+
 .tooltip {
 	position: absolute;
 	left: 50%;

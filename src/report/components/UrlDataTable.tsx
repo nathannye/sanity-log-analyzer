@@ -9,6 +9,7 @@ import {
 	hasImageQualityError,
 	hasImageWidthError,
 	parseImageUrl,
+	toInlineAssetUrl,
 } from "../parse-image-url.js";
 import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
@@ -159,7 +160,7 @@ export function UrlDataTable({
 										/>
 										{showExternalLink ? (
 											<a
-												href={row.label}
+												href={toInlineAssetUrl(row.label)}
 												target="_blank"
 												rel="noopener noreferrer"
 												class={`${buttonStyles.button} ${buttonStyles.ghostIconSm}`}

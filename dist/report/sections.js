@@ -13,6 +13,7 @@ function getUrlTabChildren(urlRows) {
     }));
 }
 const TOC_SECTIONS = [
+    { slug: "findings", label: "Findings" },
     { slug: "summary", label: "Summary" },
     { slug: "domain", label: "Top domains", configKey: "domain" },
     { slug: "endpoint", label: "Top endpoints", configKey: "endpoint" },

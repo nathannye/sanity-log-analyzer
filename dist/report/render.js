@@ -3200,90 +3200,98 @@ function nr(e) {
 	}
 }
 function rr(e) {
+	try {
+		let t = new URL(e);
+		return t.searchParams.has("dl") ? (t.searchParams.delete("dl"), t.toString()) : e;
+	} catch {
+		return e;
+	}
+}
+function ir(e) {
 	return e !== null && e > 2e3;
 }
-function ir(e, t) {
+function ar(e, t) {
 	return !t && e !== null && e > 87;
 }
-function ar(e) {
+function or(e) {
 	return e !== null && e !== "auto";
 }
 //#endregion
 //#region node_modules/ua-parser-js/src/main/ua-parser.mjs
-var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
+var sr = "2.0.10", cr = 500, lr = "user-agent", ur = "", dr = "?", F = {
 	FUNCTION: "function",
 	OBJECT: "object",
 	STRING: "string",
 	UNDEFINED: "undefined"
-}, dr = "browser", fr = "cpu", pr = "device", mr = "engine", hr = "os", gr = "result", I = "name", L = "type", R = "vendor", z = "version", _r = "architecture", vr = "major", B = "model", yr = "console", V = "mobile", H = "tablet", U = "smarttv", br = "wearable", xr = "xr", Sr = "embedded", Cr = "fetcher", wr = "inapp", Tr = "brands", Er = "formFactors", Dr = "fullVersionList", Or = "platform", kr = "platformVersion", Ar = "bitness", jr = "sec-ch-ua", Mr = jr + "-full-version-list", Nr = jr + "-arch", Pr = jr + "-" + Ar, Fr = jr + "-form-factors", Ir = jr + "-" + V, Lr = jr + "-" + B, Rr = jr + "-" + Or, zr = Rr + "-version", Br = [
-	Tr,
-	Dr,
+}, fr = "browser", pr = "cpu", mr = "device", hr = "engine", gr = "os", _r = "result", I = "name", L = "type", R = "vendor", z = "version", vr = "architecture", yr = "major", B = "model", br = "console", V = "mobile", H = "tablet", U = "smarttv", xr = "wearable", Sr = "xr", Cr = "embedded", wr = "fetcher", Tr = "inapp", Er = "brands", Dr = "formFactors", Or = "fullVersionList", kr = "platform", Ar = "platformVersion", jr = "bitness", Mr = "sec-ch-ua", Nr = Mr + "-full-version-list", Pr = Mr + "-arch", Fr = Mr + "-" + jr, Ir = Mr + "-form-factors", Lr = Mr + "-" + V, Rr = Mr + "-" + B, zr = Mr + "-" + kr, Br = zr + "-version", Vr = [
+	Er,
+	Or,
 	V,
 	B,
-	Or,
 	kr,
-	_r,
-	Er,
-	Ar
-], Vr = "Amazon", Hr = "Apple", Ur = "ASUS", Wr = "BlackBerry", Gr = "Google", Kr = "Huawei", qr = "Lenovo", Jr = "Honor", Yr = "LG", Xr = "Microsoft", Zr = "Motorola", Qr = "Nvidia", $r = "OnePlus", ei = "OPPO", ti = "Samsung", ni = "Sharp", ri = "Sony", ii = "Xiaomi", ai = "Zebra", oi = "Chrome", si = "Chromium", ci = "Chromecast", li = "Edge", ui = "Firefox", di = "Opera", fi = "Facebook", pi = "Sogou", mi = "Mobile ", hi = " Browser", gi = "Windows", _i = typeof window !== F.UNDEFINED && window.navigator ? window.navigator : void 0, vi = _i && _i.userAgentData ? _i.userAgentData : void 0, yi = function(e, t) {
+	Ar,
+	vr,
+	Dr,
+	jr
+], Hr = "Amazon", Ur = "Apple", Wr = "ASUS", Gr = "BlackBerry", Kr = "Google", qr = "Huawei", Jr = "Lenovo", Yr = "Honor", Xr = "LG", Zr = "Microsoft", Qr = "Motorola", $r = "Nvidia", ei = "OnePlus", ti = "OPPO", ni = "Samsung", ri = "Sharp", ii = "Sony", ai = "Xiaomi", oi = "Zebra", si = "Chrome", ci = "Chromium", li = "Chromecast", ui = "Edge", di = "Firefox", fi = "Opera", pi = "Facebook", mi = "Sogou", hi = "Mobile ", gi = " Browser", _i = "Windows", vi = typeof window !== F.UNDEFINED && window.navigator ? window.navigator : void 0, yi = vi && vi.userAgentData ? vi.userAgentData : void 0, bi = function(e, t) {
 	var n = {}, r = t;
-	if (!Si(t)) for (var i in r = {}, t) for (var a in t[i]) r[a] = t[i][a].concat(r[a] ? r[a] : []);
+	if (!Ci(t)) for (var i in r = {}, t) for (var a in t[i]) r[a] = t[i][a].concat(r[a] ? r[a] : []);
 	for (var o in e) n[o] = r[o] && r[o].length % 2 == 0 ? r[o].concat(e[o]) : e[o];
 	return n;
-}, bi = function(e) {
+}, xi = function(e) {
 	for (var t = {}, n = 0; n < e.length; n++) t[e[n].toUpperCase()] = e[n];
 	return t;
-}, xi = function(e, t) {
+}, Si = function(e, t) {
 	if (typeof e === F.OBJECT && e.length > 0) {
-		for (var n in e) if (Ti(t) == Ti(e[n])) return !0;
+		for (var n in e) if (Ei(t) == Ei(e[n])) return !0;
 		return !1;
 	}
-	return Ci(e) ? Ti(t) == Ti(e) : !1;
-}, Si = function(e, t) {
-	for (var n in e) return /^(browser|cpu|device|engine|os)$/.test(n) || (t ? Si(e[n]) : !1);
-}, Ci = function(e) {
-	return typeof e === F.STRING;
+	return wi(e) ? Ei(t) == Ei(e) : !1;
+}, Ci = function(e, t) {
+	for (var n in e) return /^(browser|cpu|device|engine|os)$/.test(n) || (t ? Ci(e[n]) : !1);
 }, wi = function(e) {
+	return typeof e === F.STRING;
+}, Ti = function(e) {
 	if (e) {
-		for (var t = [], n = Di(e).split(","), r = 0; r < n.length; r++) if (n[r].indexOf(";") > -1) {
-			var i = Ai(n[r]).split(";v=");
+		for (var t = [], n = Oi(e).split(","), r = 0; r < n.length; r++) if (n[r].indexOf(";") > -1) {
+			var i = ji(n[r]).split(";v=");
 			t[r] = {
 				brand: i[0],
 				version: i[1]
 			};
-		} else t[r] = Ai(n[r]);
+		} else t[r] = ji(n[r]);
 		return t;
 	}
-}, Ti = function(e) {
-	return Ci(e) ? e.toLowerCase() : e;
 }, Ei = function(e) {
-	return Ci(e) ? ki(/[^\d\.]/g, e).split(".")[0] : void 0;
+	return wi(e) ? e.toLowerCase() : e;
 }, Di = function(e) {
-	return Ci(e) ? Ai(ki(/\\?\"/g, e), sr) : void 0;
+	return wi(e) ? Ai(/[^\d\.]/g, e).split(".")[0] : void 0;
 }, Oi = function(e) {
+	return wi(e) ? ji(Ai(/\\?\"/g, e), cr) : void 0;
+}, ki = function(e) {
 	for (var t in e) if (e.hasOwnProperty(t)) {
 		var n = e[t];
 		typeof n == F.OBJECT && n.length == 2 ? this[n[0]] = n[1] : this[n] = void 0;
 	}
 	return this;
-}, ki = function(e, t) {
-	return Ci(t) ? t.replace(e, lr) : t;
 }, Ai = function(e, t) {
-	return e = ki(/^\s\s*/, String(e)), typeof t === F.UNDEFINED ? e : e.substring(0, t);
+	return wi(t) ? t.replace(e, ur) : t;
 }, ji = function(e, t) {
+	return e = Ai(/^\s\s*/, String(e)), typeof t === F.UNDEFINED ? e : e.substring(0, t);
+}, Mi = function(e, t) {
 	if (!(!e || !t)) for (var n = 0, r, i, a, o, s, c; n < t.length && !s;) {
 		var l = t[n], u = t[n + 1];
 		for (r = i = 0; r < l.length && !s && l[r];) if (s = l[r++].exec(e), s) for (a = 0; a < u.length; a++) c = s[++i], o = u[a], typeof o === F.OBJECT && o.length > 0 ? o.length === 2 ? typeof o[1] == F.FUNCTION ? this[o[0]] = o[1].call(this, c) : this[o[0]] = o[1] : o.length >= 3 && (typeof o[1] === F.FUNCTION && !(o[1].exec && o[1].test) ? o.length > 3 ? this[o[0]] = c ? o[1].apply(this, o.slice(2)) : void 0 : this[o[0]] = c ? o[1].call(this, c, o[2]) : void 0 : o.length == 3 ? this[o[0]] = c ? c.replace(o[1], o[2]) : void 0 : o.length == 4 ? this[o[0]] = c ? o[3].call(this, c.replace(o[1], o[2])) : void 0 : o.length > 4 && (this[o[0]] = c ? o[3].apply(this, [c.replace(o[1], o[2])].concat(o.slice(4))) : void 0)) : this[o] = c || void 0;
 		n += 2;
 	}
-}, Mi = function(e, t) {
-	return t.test.test(e) ? t.ifTrue : t.ifFalse;
 }, Ni = function(e, t) {
+	return t.test.test(e) ? t.ifTrue : t.ifFalse;
+}, Pi = function(e, t) {
 	for (var n in t) if (typeof t[n] === F.OBJECT && t[n].length > 0) {
-		for (var r = 0; r < t[n].length; r++) if (xi(t[n][r], e)) return n === ur ? void 0 : n;
-	} else if (xi(t[n], e)) return n === ur ? void 0 : n;
+		for (var r = 0; r < t[n].length; r++) if (Si(t[n][r], e)) return n === dr ? void 0 : n;
+	} else if (Si(t[n], e)) return n === dr ? void 0 : n;
 	return t.hasOwnProperty("*") ? t["*"] : e;
-}, Pi = {
+}, Fi = {
 	ME: "4.90",
 	"NT 3.51": "3.51",
 	"NT 4.0": "4.0",
@@ -3295,7 +3303,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 	"8.1": "6.3",
 	10: ["6.4", "10.0"],
 	NT: ""
-}, Fi = {
+}, Ii = {
 	embedded: "Automotive",
 	mobile: "Mobile",
 	tablet: ["Tablet", "EInk"],
@@ -3304,7 +3312,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 	xr: ["VR", "XR"],
 	"?": ["Desktop", "Unknown"],
 	"*": void 0
-}, Ii = {
+}, Li = {
 	Chrome: "Google Chrome",
 	Edge: "Microsoft Edge",
 	"Edge WebView2": "Microsoft Edge WebView2",
@@ -3314,15 +3322,15 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 	"MIUI Browser": "Miui Browser",
 	"Opera Mobi": "OperaMobile",
 	Yandex: "YaBrowser"
-}, Li = {
+}, Ri = {
 	browser: [
 		[/\b(?:crmo|crios)\/([\w\.]+)/i],
-		[z, [I, mi + "Chrome"]],
+		[z, [I, hi + "Chrome"]],
 		[/webview.+edge\/([\w\.]+)/i],
 		[
 			z,
-			[I, li + " WebView"],
-			[L, wr]
+			[I, ui + " WebView"],
+			[L, Tr]
 		],
 		[/edg(?:e|ios|a)?\/([\w\.]+)/i],
 		[z, [I, "Edge"]],
@@ -3333,11 +3341,11 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		],
 		[I, z],
 		[/opios[\/ ]+([\w\.]+)/i],
-		[z, [I, di + " Mini"]],
+		[z, [I, fi + " Mini"]],
 		[/\bop(?:rg)?x\/([\w\.]+)/i],
-		[z, [I, di + " GX"]],
+		[z, [I, fi + " GX"]],
 		[/\bopr\/([\w\.]+)/i],
-		[z, [I, di]],
+		[z, [I, fi]],
 		[/\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i],
 		[z, [I, "Baidu"]],
 		[/\b(?:mxbrowser|mxios|myie2)\/?([-\w\.]*)\b/i],
@@ -3373,31 +3381,31 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/ya(?:search)?browser\/([\w\.]+)/i],
 		[z, [I, "Yandex"]],
 		[/slbrowser\/([\w\.]+)/i],
-		[z, [I, "Smart " + qr + hi]],
+		[z, [I, "Smart " + Jr + gi]],
 		[/(av(?:ast|g|ira))\/([\w\.]+)/i],
 		[[
 			I,
 			/(.+)/,
-			"$1 Secure" + hi
+			"$1 Secure" + gi
 		], z],
 		[/norton\/([\w\.]+)/i],
-		[z, [I, "Norton Private" + hi]],
+		[z, [I, "Norton Private" + gi]],
 		[/\bfocus\/([\w\.]+)/i],
-		[z, [I, ui + " Focus"]],
+		[z, [I, di + " Focus"]],
 		[/ mms\/([\w\.]+)$/i],
-		[z, [I, di + " Neon"]],
+		[z, [I, fi + " Neon"]],
 		[/ opt\/([\w\.]+)$/i],
-		[z, [I, di + " Touch"]],
+		[z, [I, fi + " Touch"]],
 		[/coc_coc\w+\/([\w\.]+)/i],
 		[z, [I, "Coc Coc"]],
 		[/dolfin\/([\w\.]+)/i],
 		[z, [I, "Dolphin"]],
 		[/coast\/([\w\.]+)/i],
-		[z, [I, di + " Coast"]],
+		[z, [I, fi + " Coast"]],
 		[/miuibrowser\/([\w\.]+)/i],
-		[z, [I, "MIUI" + hi]],
+		[z, [I, "MIUI" + gi]],
 		[/fxios\/([\w\.-]+)/i],
-		[z, [I, mi + ui]],
+		[z, [I, hi + di]],
 		[/\bqihoobrowser\/?([\w\.]*)/i],
 		[z, [I, "360"]],
 		[/\b(qq)\/([\w\.]+)/i],
@@ -3410,16 +3418,16 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[[
 			I,
 			/(.+)/,
-			"$1" + hi
+			"$1" + gi
 		], z],
 		[/ HBPC\/([\w\.]+)/],
-		[z, [I, Kr + hi]],
+		[z, [I, qr + gi]],
 		[/samsungbrowser\/([\w\.]+)/i],
-		[z, [I, ti + " Internet"]],
+		[z, [I, ni + " Internet"]],
 		[/metasr[\/ ]?([\d\.]+)/i],
-		[z, [I, pi + " Explorer"]],
+		[z, [I, mi + " Explorer"]],
 		[/(sogou)mo\w+\/([\d\.]+)/i],
-		[[I, pi + " Mobile"], z],
+		[[I, mi + " Mobile"], z],
 		[
 			/(electron)\/([\w\.]+) safari/i,
 			/(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,
@@ -3432,9 +3440,9 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[z, I],
 		[/((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i],
 		[
-			[I, fi],
+			[I, pi],
 			z,
-			[L, wr]
+			[L, Tr]
 		],
 		[
 			/(kakao(?:talk|story))[\/ ]([\w\.]+)/i,
@@ -3450,22 +3458,22 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[
 			I,
 			z,
-			[L, wr]
+			[L, Tr]
 		],
 		[/\bgsa\/([\w\.]+) .*safari\//i],
 		[
 			z,
 			[I, "GSA"],
-			[L, wr]
+			[L, Tr]
 		],
 		[/(?:musical_ly|trill)(?:.+app_?version\/|_)([\w\.]+)/i],
 		[
 			z,
 			[I, "TikTok"],
-			[L, wr]
+			[L, Tr]
 		],
 		[/\[(linkedin)app\]/i],
-		[I, [L, wr]],
+		[I, [L, Tr]],
 		[/(zalo(?:app)?)[\/\sa-z]*([\w\.-]+)/i],
 		[
 			[
@@ -3474,36 +3482,36 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				"Zalo"
 			],
 			z,
-			[L, wr]
+			[L, Tr]
 		],
 		[/(chromium)[\/ ]([-\w\.]+)/i],
 		[I, z],
 		[/ome-(lighthouse)$/i],
-		[I, [L, Cr]],
+		[I, [L, wr]],
 		[/headlesschrome(?:\/([\w\.]+)| )/i],
-		[z, [I, oi + " Headless"]],
+		[z, [I, si + " Headless"]],
 		[/wv\).+chrome\/([\w\.]+).+edgw\//i],
 		[
 			z,
-			[I, li + " WebView2"],
-			[L, wr]
+			[I, ui + " WebView2"],
+			[L, Tr]
 		],
 		[/; wv\).+(chrome)\/([\w\.]+)/i],
 		[
-			[I, oi + " WebView"],
+			[I, si + " WebView"],
 			z,
-			[L, wr]
+			[L, Tr]
 		],
 		[/droid.+ version\/([\w\.]+)\b.+(?:mobile safari|safari)/i],
-		[z, [I, "Android" + hi]],
+		[z, [I, "Android" + gi]],
 		[/chrome\/([\w\.]+) mobile/i],
-		[z, [I, mi + "Chrome"]],
+		[z, [I, hi + "Chrome"]],
 		[/(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i],
 		[I, z],
 		[/version\/([\w\.\,]+) .*mobile(?:\/\w+ | ?)safari/i],
-		[z, [I, mi + "Safari"]],
+		[z, [I, hi + "Safari"]],
 		[/iphone .*mobile(?:\/\w+ | ?)safari/i],
-		[[I, mi + "Safari"]],
+		[[I, hi + "Safari"]],
 		[/version\/([\w\.\,]+) .*(safari)/i],
 		[z, I],
 		[/webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i],
@@ -3511,13 +3519,13 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/(webkit|khtml)\/([\w\.]+)/i],
 		[I, z],
 		[/(?:mobile|tablet);.*(firefox)\/([\w\.-]+)/i],
-		[[I, mi + ui], z],
+		[[I, hi + di], z],
 		[/(navigator|netscape\d?)\/([-\w\.]+)/i],
 		[[I, "Netscape"], z],
 		[/(wolvic|librewolf)\/([\w\.]+)/i],
 		[I, z],
 		[/mobile vr; rv:([\w\.]+)\).+firefox/i],
-		[z, [I, ui + " Reality"]],
+		[z, [I, di + " Reality"]],
 		[
 			/ekiohf.+(flow)\/([\w\.]+)/i,
 			/(swiftfox)/i,
@@ -3537,43 +3545,43 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[I, [
 			z,
 			/[^\d\.]+./,
-			lr
+			ur
 		]]
 	],
 	cpu: [
 		[/\b((amd|x|x86[-_]?|wow|win)64)\b/i],
-		[[_r, "amd64"]],
+		[[vr, "amd64"]],
 		[/(ia32(?=;))/i, /\b((i[346]|x)86)(pc)?\b/i],
-		[[_r, "ia32"]],
+		[[vr, "ia32"]],
 		[/\b(aarch64|arm(v?[89]e?l?|_?64))\b/i],
-		[[_r, "arm64"]],
+		[[vr, "arm64"]],
 		[/\b(arm(v[67])?ht?n?[fl]p?)\b/i],
-		[[_r, "armhf"]],
+		[[vr, "armhf"]],
 		[/( (ce|mobile); ppc;|\/[\w\.]+arm\b)/i],
-		[[_r, "arm"]],
+		[[vr, "arm"]],
 		[/ sun4\w[;\)]/i],
-		[[_r, "sparc"]],
+		[[vr, "sparc"]],
 		[
 			/\b(avr32|ia64(?=;)|68k(?=\))|\barm(?=v([1-7]|[5-7]1)l?|;|eabi)|(irix|mips|sparc)(64)?\b|pa-risc)/i,
 			/((ppc|powerpc)(64)?)( mac|;|\))/i,
 			/(?:osf1|[freopnt]{3,4}bsd) (alpha)/i
 		],
 		[[
-			_r,
+			vr,
 			/ower/,
-			lr,
-			Ti
+			ur,
+			Ei
 		]],
 		[/mc680.0/i],
-		[[_r, "68k"]],
+		[[vr, "68k"]],
 		[/winnt.+\[axp/i],
-		[[_r, "alpha"]]
+		[[vr, "alpha"]]
 	],
 	device: [
 		[/\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i],
 		[
 			B,
-			[R, ti],
+			[R, ni],
 			[L, H]
 		],
 		[
@@ -3583,51 +3591,51 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		],
 		[
 			B,
-			[R, ti],
+			[R, ni],
 			[L, V]
 		],
 		[/(?:\/|\()(ip(?:hone|od)[\w, ]*)[\/\);]/i],
 		[
 			B,
-			[R, Hr],
+			[R, Ur],
 			[L, V]
 		],
 		[/\b(?:ios|apple\w+)\/.+[\(\/](ipad)/i, /\b(ipad)[\d,]*[;\] ].+(mac |i(pad)?)os/i],
 		[
 			B,
-			[R, Hr],
+			[R, Ur],
 			[L, H]
 		],
 		[/(macintosh);/i],
-		[B, [R, Hr]],
+		[B, [R, Ur]],
 		[/\b(sh-?[altvz]?\d\d[a-ekm]?)/i],
 		[
 			B,
-			[R, ni],
+			[R, ri],
 			[L, V]
 		],
 		[/\b((?:brt|eln|hey2?|gdi|jdn)-a?[lnw]09|(?:ag[rm]3?|jdn2|kob2)-a?[lw]0[09]hn)(?: bui|\)|;)/i],
 		[
 			B,
-			[R, Jr],
+			[R, Yr],
 			[L, H]
 		],
 		[/honor([-\w ]+)[;\)]/i],
 		[
 			B,
-			[R, Jr],
+			[R, Yr],
 			[L, V]
 		],
 		[/\b((?:ag[rs][2356]?k?|bah[234]?|bg[2o]|bt[kv]|cmr|cpn|db[ry]2?|jdn2|got|kob2?k?|mon|pce|scm|sht?|[tw]gr|vrd)-[ad]?[lw][0125][09]b?|605hw|bg2-u03|(?:gem|fdr|m2|ple|t1)-[7a]0[1-4][lu]|t1-a2[13][lw]|mediapad[\w\. ]*(?= bui|\)))\b(?!.+d\/s)/i],
 		[
 			B,
-			[R, Kr],
+			[R, qr],
 			[L, H]
 		],
 		[/(?:huawei) ?([-\w ]+)[;\)]/i, /\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][\dc][adnt]?)\b(?!.+d\/s)/i],
 		[
 			B,
-			[R, Kr],
+			[R, qr],
 			[L, V]
 		],
 		[/oid[^\)]+; (2[\dbc]{4}(182|283|rp\w{2})[cgl]|m2105k81a?c)(?: bui|\))/i, /\b(?:xiao)?((?:red)?mi[-_ ]?pad[\w- ]*)(?: bui|\))/i],
@@ -3637,7 +3645,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				/_/g,
 				" "
 			],
-			[R, ii],
+			[R, ai],
 			[L, H]
 		],
 		[
@@ -3653,19 +3661,19 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				/_/g,
 				" "
 			],
-			[R, ii],
+			[R, ai],
 			[L, V]
 		],
 		[/droid.+; (cph2[3-6]\d[13579]|((gm|hd)19|(ac|be|in|kb)20|(d[en]|eb|le|mt)21|ne22)[0-2]\d|p[g-l]\w[1m]10)\b/i, /(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i],
 		[
 			B,
-			[R, $r],
+			[R, ei],
 			[L, V]
 		],
 		[/; (\w+) bui.+ oppo/i, /\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i],
 		[
 			B,
-			[R, ei],
+			[R, ti],
 			[L, V]
 		],
 		[/\b(opd2(\d{3}a?))(?: bui|\))/i],
@@ -3673,7 +3681,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 			B,
 			[
 				R,
-				Ni,
+				Pi,
 				{
 					OnePlus: [
 						"203",
@@ -3683,7 +3691,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 						"413",
 						"415"
 					],
-					"*": ei
+					"*": ti
 				}
 			],
 			[L, H]
@@ -3709,13 +3717,13 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/(ideatab[-\w ]+|602lv|d-42a|a101lv|a2109a|a3500-hv|s[56]000|pb-6505[my]|tb-?x?\d{3,4}(?:f[cu]|xu|[av])|yt\d?-[jx]?\d+[lfmx])( bui|;|\)|\/)/i, /lenovo ?(b[68]0[08]0-?[hf]?|tab(?:[\w- ]+?)|tb[\w-]{6,7})( bui|;|\)|\/)/i],
 		[
 			B,
-			[R, qr],
+			[R, Jr],
 			[L, H]
 		],
 		[/lenovo[-_ ]?([-\w ]+?)(?: bui|\)|\/)/i],
 		[
 			B,
-			[R, qr],
+			[R, Jr],
 			[L, V]
 		],
 		[
@@ -3725,19 +3733,19 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		],
 		[
 			B,
-			[R, Zr],
+			[R, Qr],
 			[L, V]
 		],
 		[/\b(mz60\d|xoom[2 ]{0,2}) build\//i],
 		[
 			B,
-			[R, Zr],
+			[R, Qr],
 			[L, H]
 		],
 		[/\b(?:lg)?([vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i],
 		[
 			B,
-			[R, Yr],
+			[R, Xr],
 			[L, H]
 		],
 		[
@@ -3747,7 +3755,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		],
 		[
 			B,
-			[R, Yr],
+			[R, Xr],
 			[L, V]
 		],
 		[/(nokia) (t[12][01])/i],
@@ -3769,13 +3777,13 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/(pixel (c|tablet))\b/i],
 		[
 			B,
-			[R, Gr],
+			[R, Kr],
 			[L, H]
 		],
 		[/droid.+;(?: google)? (g(01[13]a|020[aem]|025[jn]|1b60|1f8f|2ybb|4s1m|576d|5nz6|8hhn|8vou|a02099|c15s|d1yq|e2ae|ec77|gh2x|kv4x|p4bc|pj41|r83y|tt9q|ur25|wvk6)|pixel[\d ]*a?( pro)?( xl)?( fold)?( \(5g\))?)( bui|\))/i],
 		[
 			B,
-			[R, Gr],
+			[R, Kr],
 			[L, V]
 		],
 		[/(google) (pixelbook( go)?)/i],
@@ -3783,13 +3791,13 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/droid.+; (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-\w\w\d\d)(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i],
 		[
 			B,
-			[R, ri],
+			[R, ii],
 			[L, V]
 		],
 		[/sony tablet [ps]/i, /\b(?:sony)?sgp\w+(?: bui|\))/i],
 		[
 			[B, "Xperia Tablet"],
-			[R, ri],
+			[R, ii],
 			[L, H]
 		],
 		[
@@ -3799,7 +3807,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		],
 		[
 			B,
-			[R, Vr],
+			[R, Hr],
 			[L, H]
 		],
 		[/((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i],
@@ -3809,7 +3817,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				/(.+)/g,
 				"Fire Phone $1"
 			],
-			[R, Vr],
+			[R, Hr],
 			[L, V]
 		],
 		[/(playbook);[-\w\),; ]+(rim)/i],
@@ -3821,19 +3829,19 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/\b((?:bb[a-f]|st[hv])100-\d)/i, /(?:blackberry|\(bb10;) (\w+)/i],
 		[
 			B,
-			[R, Wr],
+			[R, Gr],
 			[L, V]
 		],
 		[/(?:\b|asus_)(transfo[prime ]{4,10} \w+|eeepc|slider \w+|nexus 7|padfone|p00[cj])/i],
 		[
 			B,
-			[R, Ur],
+			[R, Wr],
 			[L, H]
 		],
 		[/ (z[bes]6[027][012][km][ls]|zenfone \d\w?)\b/i],
 		[
 			B,
-			[R, Ur],
+			[R, Wr],
 			[L, V]
 		],
 		[/(nexus 9)/i],
@@ -3870,11 +3878,11 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		],
 		[/(itel) ((\w+))/i],
 		[
-			[R, Ti],
+			[R, Ei],
 			B,
 			[
 				L,
-				Ni,
+				Pi,
 				{
 					tablet: ["p10001l", "w7001"],
 					"*": "mobile"
@@ -3952,7 +3960,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 			B,
 			[
 				L,
-				Mi,
+				Ni,
 				{
 					test: /ta?b/i,
 					ifTrue: H,
@@ -3994,7 +4002,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/(surface duo)/i],
 		[
 			B,
-			[R, Xr],
+			[R, Zr],
 			[L, H]
 		],
 		[/droid [\d\.]+; (fp\du?)(?: b|\))/i],
@@ -4006,7 +4014,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/((?:tegranote|shield t(?!.+d tv))[\w- ]*?)(?: b|\))/i],
 		[
 			B,
-			[R, Qr],
+			[R, $r],
 			[L, H]
 		],
 		[/(sprint) (\w+)/i],
@@ -4022,19 +4030,19 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				/\./g,
 				" "
 			],
-			[R, Xr],
+			[R, Zr],
 			[L, V]
 		],
 		[/droid.+; ([c6]+|et5[16]|mc[239][23]x?|vc8[03]x?)\)/i],
 		[
 			B,
-			[R, ai],
+			[R, oi],
 			[L, H]
 		],
 		[/droid.+; (ec30|ps20|tc[2-8]\d[kx])\)/i],
 		[
 			B,
-			[R, ai],
+			[R, oi],
 			[L, V]
 		],
 		[/(philips)[\w ]+tv/i, /smart-tv.+(samsung)/i],
@@ -4046,7 +4054,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				/^/,
 				"SmartTV"
 			],
-			[R, ti],
+			[R, ni],
 			[L, U]
 		],
 		[/(vizio)(?: |.+model\/)(\w+-\w+)/i, /tcast.+(lg)e?. ([-\w]+)/i],
@@ -4056,17 +4064,17 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 			[L, U]
 		],
 		[/(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i],
-		[[R, Yr], [L, U]],
+		[[R, Xr], [L, U]],
 		[/(apple) ?tv/i],
 		[
 			R,
-			[B, Hr + " TV"],
+			[B, Ur + " TV"],
 			[L, U]
 		],
 		[/crkey.*devicetype\/chromecast/i],
 		[
-			[B, ci + " Third Generation"],
-			[R, Gr],
+			[B, li + " Third Generation"],
+			[R, Kr],
 			[L, U]
 		],
 		[/crkey.*devicetype\/([^/]*)/i],
@@ -4076,55 +4084,55 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				/^/,
 				"Chromecast "
 			],
-			[R, Gr],
+			[R, Kr],
 			[L, U]
 		],
 		[/fuchsia.*crkey/i],
 		[
-			[B, ci + " Nest Hub"],
-			[R, Gr],
+			[B, li + " Nest Hub"],
+			[R, Kr],
 			[L, U]
 		],
 		[/crkey/i],
 		[
-			[B, ci],
-			[R, Gr],
+			[B, li],
+			[R, Kr],
 			[L, U]
 		],
 		[/(portaltv)/i],
 		[
 			B,
-			[R, fi],
+			[R, pi],
 			[L, U]
 		],
 		[/droid.+aft(\w+)( bui|\))/i],
 		[
 			B,
-			[R, Vr],
+			[R, Hr],
 			[L, U]
 		],
 		[/(shield \w+ tv)/i],
 		[
 			B,
-			[R, Qr],
+			[R, $r],
 			[L, U]
 		],
 		[/\(dtv[\);].+(aquos)/i, /(aquos-tv[\w ]+)\)/i],
 		[
 			B,
-			[R, ni],
+			[R, ri],
 			[L, U]
 		],
 		[/(bravia[\w ]+)( bui|\))/i],
 		[
 			B,
-			[R, ri],
+			[R, ii],
 			[L, U]
 		],
 		[/(mi(tv|box)-?\w+) bui/i],
 		[
 			B,
-			[R, ii],
+			[R, ai],
 			[L, U]
 		],
 		[/Hbbtv.*(technisat) (.*);/i],
@@ -4139,23 +4147,23 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				R,
 				/.+\/(\w+)/,
 				"$1",
-				Ni,
+				Pi,
 				{ LG: "lge" }
 			],
-			[B, Ai],
+			[B, ji],
 			[L, U]
 		],
 		[/(playstation \w+)/i],
 		[
 			B,
-			[R, ri],
-			[L, yr]
+			[R, ii],
+			[L, br]
 		],
 		[/\b(xbox(?: one)?(?!; xbox))[\); ]/i],
 		[
 			B,
-			[R, Xr],
-			[L, yr]
+			[R, Zr],
+			[L, br]
 		],
 		[
 			/(ouya)/i,
@@ -4167,7 +4175,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[
 			[
 				R,
-				Ni,
+				Pi,
 				{
 					Nvidia: "Shield",
 					Anbernic: "RGCUBE",
@@ -4175,98 +4183,98 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 				}
 			],
 			B,
-			[L, yr]
+			[L, br]
 		],
 		[/\b(sm-[lr]\d\d[0156][fnuw]?s?|gear live)\b/i],
 		[
 			B,
-			[R, ti],
-			[L, br]
+			[R, ni],
+			[L, xr]
 		],
 		[/((pebble))app/i, /(asus|google|lg|oppo|xiaomi) ((pixel |zen)?watch[\w ]*)( bui|\))/i],
 		[
 			R,
 			B,
-			[L, br]
+			[L, xr]
 		],
 		[/(ow(?:19|20)?we?[1-3]{1,3})/i],
 		[
 			B,
-			[R, ei],
-			[L, br]
+			[R, ti],
+			[L, xr]
 		],
 		[/(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i],
 		[
 			B,
-			[R, Hr],
-			[L, br]
+			[R, Ur],
+			[L, xr]
 		],
 		[/(opwwe\d{3})/i],
 		[
 			B,
-			[R, $r],
-			[L, br]
+			[R, ei],
+			[L, xr]
 		],
 		[/(moto 360)/i],
 		[
 			B,
-			[R, Zr],
-			[L, br]
+			[R, Qr],
+			[L, xr]
 		],
 		[/(smartwatch 3)/i],
 		[
 			B,
-			[R, ri],
-			[L, br]
+			[R, ii],
+			[L, xr]
 		],
 		[/(g watch r)/i],
 		[
 			B,
-			[R, Yr],
-			[L, br]
+			[R, Xr],
+			[L, xr]
 		],
 		[/droid.+; (wt63?0{2,3})\)/i],
 		[
 			B,
-			[R, ai],
-			[L, br]
+			[R, oi],
+			[L, xr]
 		],
 		[/droid.+; (glass) \d/i],
 		[
 			B,
-			[R, Gr],
-			[L, xr]
+			[R, Kr],
+			[L, Sr]
 		],
 		[/(pico) ([\w ]+) os\d/i],
 		[
 			R,
 			B,
-			[L, xr]
+			[L, Sr]
 		],
 		[/(quest( \d| pro)?s?).+vr/i],
 		[
 			B,
-			[R, fi],
-			[L, xr]
+			[R, pi],
+			[L, Sr]
 		],
 		[/mobile vr; rv.+firefox/i],
-		[[L, xr]],
+		[[L, Sr]],
 		[/(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i],
-		[R, [L, Sr]],
+		[R, [L, Cr]],
 		[/(aeobc)\b/i],
 		[
 			B,
-			[R, Vr],
-			[L, Sr]
+			[R, Hr],
+			[L, Cr]
 		],
 		[/(homepod).+mac os/i],
 		[
 			B,
-			[R, Hr],
-			[L, Sr]
+			[R, Ur],
+			[L, Cr]
 		],
 		[/windows iot/i],
-		[[L, Sr]],
+		[[L, Cr]],
 		[/droid.+; ([\w- ]+) (4k|android|smart|google)[- ]?tv/i],
 		[B, [L, U]],
 		[/\b((4k|android|smart|opera)[- ]?tv|tv; rv:|large screen[\w ]+safari)\b/i],
@@ -4274,7 +4282,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew|; hmsc).+?(mobile|vr|\d) safari/i],
 		[B, [
 			L,
-			Ni,
+			Pi,
 			{
 				mobile: "Mobile",
 				xr: "VR",
@@ -4290,7 +4298,7 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 	],
 	engine: [
 		[/windows.+ edge\/([\w\.]+)/i],
-		[z, [I, li + "HTML"]],
+		[z, [I, ui + "HTML"]],
 		[/(arkweb)\/([\w\.]+)/i],
 		[I, z],
 		[/webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i],
@@ -4317,8 +4325,8 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 			"R"
 		], [
 			z,
-			Ni,
-			Pi
+			Pi,
+			Fi
 		]],
 		[/(windows (?:phone|mobile|iot))(?: os)?[\/ ]?([\d\.]*( se)?)/i, /(windows)[\/ ](1[01]|2000|3\.1|7|8(\.1)?|9[58]|me|server 20\d\d( r2)?|vista|xp)/i],
 		[I, z],
@@ -4327,9 +4335,9 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 			z,
 			/(;|\))/g,
 			"",
-			Ni,
-			Pi
-		], [I, gi]],
+			Pi,
+			Fi
+		], [I, _i]],
 		[/(windows ce)\/?([\d\.]*)/i],
 		[I, z],
 		[
@@ -4350,15 +4358,15 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 			"."
 		]],
 		[/android ([\d\.]+).*crkey/i],
-		[z, [I, ci + " Android"]],
+		[z, [I, li + " Android"]],
 		[/fuchsia.*crkey\/([\d\.]+)/i],
-		[z, [I, ci + " Fuchsia"]],
+		[z, [I, li + " Fuchsia"]],
 		[/crkey\/([\d\.]+).*devicetype\/smartspeaker/i],
-		[z, [I, ci + " SmartSpeaker"]],
+		[z, [I, li + " SmartSpeaker"]],
 		[/linux.*crkey\/([\d\.]+)/i],
-		[z, [I, ci + " Linux"]],
+		[z, [I, li + " Linux"]],
 		[/crkey\/([\d\.]+)/i],
-		[z, [I, ci]],
+		[z, [I, li]],
 		[/droid ([\w\.]+)\b.+(android[- ]x86)/i],
 		[z, I],
 		[/(ubuntu) ([\w\.]+) like android/i],
@@ -4370,17 +4378,17 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/(harmonyos)[\/ ]?([\d\.]*)/i, /(android|bada|blackberry|kaios|maemo|meego|openharmony|qnx|rim tablet os|sailfish|series40|symbian|tizen)\w*[-\/\.; ]?([\d\.]*)/i],
 		[I, z],
 		[/\(bb(10);/i],
-		[z, [I, Wr]],
+		[z, [I, Gr]],
 		[/(?:symbian ?os|symbos|s60(?=;)|series ?60)[-\/ ]?([\w\.]*)/i],
 		[z, [I, "Symbian"]],
 		[/mozilla\/[\d\.]+ \((?:mobile[;\w ]*|tablet|tv|[^\)]*(?:viera|lg(?:l25|-d300)|alcatel ?o.+|y300-f1)); rv:([\w\.]+)\).+gecko\//i],
-		[z, [I, ui + " OS"]],
+		[z, [I, di + " OS"]],
 		[/\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i, /webos(?:[ \/]?|\.tv-20(?=2[2-9]))(\d[\d\.]*)/i],
 		[z, [I, "webOS"]],
 		[/web0s;.+?(?:chr[o0]me|safari)\/(\d+)/i],
 		[[
 			z,
-			Ni,
+			Pi,
 			{
 				25: "120",
 				24: "108",
@@ -4424,55 +4432,55 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		[/\b(beos|os\/2|amigaos|openvms|hp-ux|serenityos)/i, /(unix) ?([\w\.]*)/i],
 		[I, z]
 	]
-}, Ri = (function() {
+}, zi = (function() {
 	var e = {
 		init: {},
 		isIgnore: {},
 		isIgnoreRgx: {},
 		toString: {}
 	};
-	return Oi.call(e.init, [
-		[dr, [
+	return ki.call(e.init, [
+		[fr, [
 			I,
 			z,
-			vr,
+			yr,
 			L
 		]],
-		[fr, [_r]],
-		[pr, [
+		[pr, [vr]],
+		[mr, [
 			L,
 			B,
 			R
 		]],
-		[mr, [I, z]],
-		[hr, [I, z]]
-	]), Oi.call(e.isIgnore, [
-		[dr, [z, vr]],
-		[mr, [z]],
-		[hr, [z]]
-	]), Oi.call(e.isIgnoreRgx, [[dr, / ?browser$/i], [hr, / ?os$/i]]), Oi.call(e.toString, [
-		[dr, [I, z]],
-		[fr, [_r]],
-		[pr, [R, B]],
-		[mr, [I, z]],
-		[hr, [I, z]]
+		[hr, [I, z]],
+		[gr, [I, z]]
+	]), ki.call(e.isIgnore, [
+		[fr, [z, yr]],
+		[hr, [z]],
+		[gr, [z]]
+	]), ki.call(e.isIgnoreRgx, [[fr, / ?browser$/i], [gr, / ?os$/i]]), ki.call(e.toString, [
+		[fr, [I, z]],
+		[pr, [vr]],
+		[mr, [R, B]],
+		[hr, [I, z]],
+		[gr, [I, z]]
 	]), e;
-})(), zi = function(e, t) {
-	var n = Ri.init[t], r = Ri.isIgnore[t] || 0, i = Ri.isIgnoreRgx[t] || 0, a = Ri.toString[t] || 0;
+})(), Bi = function(e, t) {
+	var n = zi.init[t], r = zi.isIgnore[t] || 0, i = zi.isIgnoreRgx[t] || 0, a = zi.toString[t] || 0;
 	function o() {
-		Oi.call(this, n);
+		ki.call(this, n);
 	}
 	return o.prototype.getItem = function() {
 		return e;
 	}, o.prototype.withClientHints = function() {
-		return vi ? vi.getHighEntropyValues(Br).then(function(t) {
-			return e.setCH(new Bi(t, !1)).parseCH().get();
+		return yi ? yi.getHighEntropyValues(Vr).then(function(t) {
+			return e.setCH(new Vi(t, !1)).parseCH().get();
 		}) : e.parseCH().get();
 	}, o.prototype.withFeatureCheck = function() {
 		return e.detectFeature().get();
-	}, t != gr && (o.prototype.is = function(e) {
+	}, t != _r && (o.prototype.is = function(e) {
 		var t = !1;
-		for (var n in this) if (this.hasOwnProperty(n) && !xi(r, n) && Ti(i ? ki(i, this[n]) : this[n]) == Ti(i ? ki(i, e) : e)) {
+		for (var n in this) if (this.hasOwnProperty(n) && !Si(r, n) && Ei(i ? Ai(i, this[n]) : this[n]) == Ei(i ? Ai(i, e) : e)) {
 			if (t = !0, e != F.UNDEFINED) break;
 		} else if (e == F.UNDEFINED && t) {
 			t = !t;
@@ -4480,8 +4488,8 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		}
 		return t;
 	}, o.prototype.toString = function() {
-		var e = lr;
-		for (var t in a) typeof this[a[t]] !== F.UNDEFINED && (e += (e ? " " : lr) + this[a[t]]);
+		var e = ur;
+		for (var t in a) typeof this[a[t]] !== F.UNDEFINED && (e += (e ? " " : ur) + this[a[t]]);
 		return e || F.UNDEFINED;
 	}), o.prototype.then = function(e) {
 		var t = this, n = function() {
@@ -4497,59 +4505,59 @@ var or = "2.0.10", sr = 500, cr = "user-agent", lr = "", ur = "?", F = {
 		return e(r), r;
 	}, new o();
 };
-function Bi(e, t) {
-	if (e ||= {}, Oi.call(this, Br), t) Oi.call(this, [
-		[Tr, wi(e[jr])],
-		[Dr, wi(e[Mr])],
-		[V, /\?1/.test(e[Ir])],
-		[B, Di(e[Lr])],
-		[Or, Di(e[Rr])],
-		[kr, Di(e[zr])],
-		[_r, Di(e[Nr])],
-		[Er, wi(e[Fr])],
-		[Ar, Di(e[Pr])]
+function Vi(e, t) {
+	if (e ||= {}, ki.call(this, Vr), t) ki.call(this, [
+		[Er, Ti(e[Mr])],
+		[Or, Ti(e[Nr])],
+		[V, /\?1/.test(e[Lr])],
+		[B, Oi(e[Rr])],
+		[kr, Oi(e[zr])],
+		[Ar, Oi(e[Br])],
+		[vr, Oi(e[Pr])],
+		[Dr, Ti(e[Ir])],
+		[jr, Oi(e[Fr])]
 	]);
 	else for (var n in e) this.hasOwnProperty(n) && typeof e[n] !== F.UNDEFINED && (this[n] = e[n]);
 }
-function Vi(e, t, n, r) {
-	return Oi.call(this, [
+function Hi(e, t, n, r) {
+	return ki.call(this, [
 		["itemType", e],
 		["ua", t],
 		["uaCH", r],
 		["rgxMap", n],
-		["data", zi(this, e)]
+		["data", Bi(this, e)]
 	]), this;
 }
-Vi.prototype.get = function(e) {
+Hi.prototype.get = function(e) {
 	return e ? this.data.hasOwnProperty(e) ? this.data[e] : void 0 : this.data;
-}, Vi.prototype.set = function(e, t) {
+}, Hi.prototype.set = function(e, t) {
 	return this.data[e] = t, this;
-}, Vi.prototype.setCH = function(e) {
+}, Hi.prototype.setCH = function(e) {
 	return this.uaCH = e, this;
-}, Vi.prototype.detectFeature = function() {
-	if (_i && _i.userAgent == this.ua) switch (this.itemType) {
-		case dr:
-			_i.brave && typeof _i.brave.isBrave == F.FUNCTION && this.set(I, "Brave");
+}, Hi.prototype.detectFeature = function() {
+	if (vi && vi.userAgent == this.ua) switch (this.itemType) {
+		case fr:
+			vi.brave && typeof vi.brave.isBrave == F.FUNCTION && this.set(I, "Brave");
 			break;
-		case pr:
-			!this.get(L) && vi && vi[V] && this.set(L, V), this.get(B) == "Macintosh" && _i && typeof _i.standalone !== F.UNDEFINED && _i.maxTouchPoints && _i.maxTouchPoints > 2 && this.set(B, "iPad").set(L, H);
-			break;
-		case hr:
-			!this.get(I) && vi && vi[Or] && this.set(I, vi[Or]);
+		case mr:
+			!this.get(L) && yi && yi[V] && this.set(L, V), this.get(B) == "Macintosh" && vi && typeof vi.standalone !== F.UNDEFINED && vi.maxTouchPoints && vi.maxTouchPoints > 2 && this.set(B, "iPad").set(L, H);
 			break;
 		case gr:
+			!this.get(I) && yi && yi[kr] && this.set(I, yi[kr]);
+			break;
+		case _r:
 			var e = this.data, t = function(t) {
 				return e[t].getItem().detectFeature().get();
 			};
-			this.set(dr, t(dr)).set(fr, t(fr)).set(pr, t(pr)).set(mr, t(mr)).set(hr, t(hr));
+			this.set(fr, t(fr)).set(pr, t(pr)).set(mr, t(mr)).set(hr, t(hr)).set(gr, t(gr));
 	}
 	return this;
-}, Vi.prototype.parseUA = function() {
-	switch (this.itemType != gr && ji.call(this.data, this.ua, this.rgxMap), this.itemType) {
-		case dr:
-			this.set(vr, Ei(this.get(z)));
+}, Hi.prototype.parseUA = function() {
+	switch (this.itemType != _r && Mi.call(this.data, this.ua, this.rgxMap), this.itemType) {
+		case fr:
+			this.set(yr, Di(this.get(z)));
 			break;
-		case hr:
+		case gr:
 			if (this.get(I) == "iOS" && this.get(z) && /^1[89][^\d]/.exec(this.get(z))) {
 				var e = /\) Version\/((\d+)[\d\.]*)/.exec(this.ua);
 				e && parseInt(e[2], 10) >= 26 && this.set(z, e[1]);
@@ -4557,51 +4565,51 @@ Vi.prototype.get = function(e) {
 			break;
 	}
 	return this;
-}, Vi.prototype.parseCH = function() {
+}, Hi.prototype.parseCH = function() {
 	var e = this.uaCH, t = this.rgxMap;
 	switch (this.itemType) {
-		case dr:
-		case mr:
-			var n = e[Dr] || e[Tr], r;
+		case fr:
+		case hr:
+			var n = e[Or] || e[Er], r;
 			if (n) for (var i = 0; i < n.length; i++) {
 				var a = n[i].brand || n[i], o = n[i].version;
-				this.itemType == dr && !/not.a.brand/i.test(a) && (!r || /Chrom/.test(r) && a != si || r == li && /WebView2/.test(a)) && (a = Ni(a, Ii), r = this.get(I), r && !/Chrom/.test(r) && /Chrom/.test(a) || this.set(I, a).set(z, o).set(vr, Ei(o)), r = a), this.itemType == mr && a == si && this.set(z, o);
+				this.itemType == fr && !/not.a.brand/i.test(a) && (!r || /Chrom/.test(r) && a != ci || r == ui && /WebView2/.test(a)) && (a = Pi(a, Li), r = this.get(I), r && !/Chrom/.test(r) && /Chrom/.test(a) || this.set(I, a).set(z, o).set(yr, Di(o)), r = a), this.itemType == hr && a == ci && this.set(z, o);
 			}
-			break;
-		case fr:
-			var s = e[_r];
-			s && (s && e[Ar] == "64" && (s += "64"), ji.call(this.data, s + ";", t));
 			break;
 		case pr:
+			var s = e[vr];
+			s && (s && e[jr] == "64" && (s += "64"), Mi.call(this.data, s + ";", t));
+			break;
+		case mr:
 			if (e[V] && this.set(L, V), e[B] && (this.set(B, e[B]), !this.get(L) || !this.get(R))) {
 				var c = {};
-				ji.call(c, "droid 9; " + e[B] + ")", t), !this.get(L) && c.type && this.set(L, c.type), !this.get(R) && c.vendor && this.set(R, c.vendor);
+				Mi.call(c, "droid 9; " + e[B] + ")", t), !this.get(L) && c.type && this.set(L, c.type), !this.get(R) && c.vendor && this.set(R, c.vendor);
 			}
-			if (e[Er]) {
+			if (e[Dr]) {
 				var l;
-				if (typeof e[Er] != "string") for (var u = 0; !l && u < e[Er].length;) l = Ni(e[Er][u++], Fi);
-				else l = Ni(e[Er], Fi);
+				if (typeof e[Dr] != "string") for (var u = 0; !l && u < e[Dr].length;) l = Pi(e[Dr][u++], Ii);
+				else l = Pi(e[Dr], Ii);
 				this.set(L, l);
 			}
 			break;
-		case hr:
-			var d = e[Or];
-			if (d) {
-				var f = e[kr];
-				d == gi && (f = parseInt(Ei(f), 10) >= 13 ? "11" : "10"), this.set(I, d).set(z, f);
-			}
-			this.get(I) == gi && e[B] == "Xbox" && this.set(I, "Xbox").set(z, void 0);
-			break;
 		case gr:
+			var d = e[kr];
+			if (d) {
+				var f = e[Ar];
+				d == _i && (f = parseInt(Di(f), 10) >= 13 ? "11" : "10"), this.set(I, d).set(z, f);
+			}
+			this.get(I) == _i && e[B] == "Xbox" && this.set(I, "Xbox").set(z, void 0);
+			break;
+		case _r:
 			var p = this.data, m = function(t) {
 				return p[t].getItem().setCH(e).parseCH().get();
 			};
-			this.set(dr, m(dr)).set(fr, m(fr)).set(pr, m(pr)).set(mr, m(mr)).set(hr, m(hr));
+			this.set(fr, m(fr)).set(pr, m(pr)).set(mr, m(mr)).set(hr, m(hr)).set(gr, m(gr));
 	}
 	return this;
 };
-function Hi(e, t, n) {
-	if (typeof e === F.OBJECT ? (Si(e, !0) ? (typeof t === F.OBJECT && (n = t), t = e) : (n = e, t = void 0), e = void 0) : typeof e === F.STRING && !Si(t, !0) && (n = t, t = void 0), n) if (typeof n.append === F.FUNCTION) {
+function Ui(e, t, n) {
+	if (typeof e === F.OBJECT ? (Ci(e, !0) ? (typeof t === F.OBJECT && (n = t), t = e) : (n = e, t = void 0), e = void 0) : typeof e === F.STRING && !Ci(t, !0) && (n = t, t = void 0), n) if (typeof n.append === F.FUNCTION) {
 		var r = {};
 		n.forEach(function(e, t) {
 			r[String(t).toLowerCase()] = e;
@@ -4611,51 +4619,51 @@ function Hi(e, t, n) {
 		for (var a in n) n.hasOwnProperty(a) && (i[String(a).toLowerCase()] = n[a]);
 		n = i;
 	}
-	if (!(this instanceof Hi)) return new Hi(e, t, n).getResult();
-	var o = typeof e === F.STRING ? e : n && n[cr] ? n[cr] : _i && _i.userAgent ? _i.userAgent : lr, s = new Bi(n, !0), c = Li, l = function(e) {
-		return e == gr ? function() {
-			return new Vi(e, o, c, s).set("ua", o).set(dr, this.getBrowser()).set(fr, this.getCPU()).set(pr, this.getDevice()).set(mr, this.getEngine()).set(hr, this.getOS()).get();
+	if (!(this instanceof Ui)) return new Ui(e, t, n).getResult();
+	var o = typeof e === F.STRING ? e : n && n[lr] ? n[lr] : vi && vi.userAgent ? vi.userAgent : ur, s = new Vi(n, !0), c = Ri, l = function(e) {
+		return e == _r ? function() {
+			return new Hi(e, o, c, s).set("ua", o).set(fr, this.getBrowser()).set(pr, this.getCPU()).set(mr, this.getDevice()).set(hr, this.getEngine()).set(gr, this.getOS()).get();
 		} : function() {
-			return new Vi(e, o, c[e], s).parseUA().get();
+			return new Hi(e, o, c[e], s).parseUA().get();
 		};
 	};
-	return Oi.call(this, [
-		["getBrowser", l(dr)],
-		["getCPU", l(fr)],
-		["getDevice", l(pr)],
-		["getEngine", l(mr)],
-		["getOS", l(hr)],
-		["getResult", l(gr)],
+	return ki.call(this, [
+		["getBrowser", l(fr)],
+		["getCPU", l(pr)],
+		["getDevice", l(mr)],
+		["getEngine", l(hr)],
+		["getOS", l(gr)],
+		["getResult", l(_r)],
 		["getUA", function() {
 			return o;
 		}],
 		["setUA", function(e) {
-			return Ci(e) && (o = Ai(e, sr)), this;
+			return wi(e) && (o = ji(e, cr)), this;
 		}],
 		["useExtension", function(e) {
-			return e && (c = yi(c, e)), this;
+			return e && (c = bi(c, e)), this;
 		}]
 	]).setUA(o).useExtension(t), this;
 }
-Hi.VERSION = or, Hi.BROWSER = bi([
+Ui.VERSION = sr, Ui.BROWSER = xi([
 	I,
 	z,
-	vr,
+	yr,
 	L
-]), Hi.CPU = bi([_r]), Hi.DEVICE = bi([
+]), Ui.CPU = xi([vr]), Ui.DEVICE = xi([
 	B,
 	R,
 	L,
-	yr,
+	br,
 	V,
 	U,
 	H,
-	br,
-	Sr
-]), Hi.ENGINE = Hi.OS = bi([I, z]);
+	xr,
+	Cr
+]), Ui.ENGINE = Ui.OS = xi([I, z]);
 //#endregion
 //#region node_modules/ua-parser-js/src/extensions/ua-parser-extensions.mjs
-var W = "model", G = "name", K = "type", q = "vendor", J = "version", Ui = "mobile", Wi = "tablet", Gi = "crawler", Ki = "cli", qi = "email", Ji = "fetcher", Yi = "inapp", Xi = "mediaplayer", Zi = "library", Qi = function(e) {
+var W = "model", G = "name", K = "type", q = "vendor", J = "version", Wi = "mobile", Gi = "tablet", Ki = "crawler", qi = "cli", Ji = "email", Yi = "fetcher", Xi = "inapp", Zi = "mediaplayer", Qi = "library", $i = function(e) {
 	return {
 		YahooMobile: "Yahoo Mail",
 		YahooMail: "Yahoo Mail",
@@ -4664,11 +4672,11 @@ var W = "model", G = "name", K = "type", q = "vendor", J = "version", Ui = "mobi
 		Zdesktop: "Zimbra",
 		zdesktop: "Zimbra"
 	}[e] || e;
-}, $i = Object.freeze({ browser: [[/(wget|curl|lynx|elinks|httpie|powershell)[\/ ]\(?([\w\.-]+)/i], [
+}, ea = Object.freeze({ browser: [[/(wget|curl|lynx|elinks|httpie|powershell)[\/ ]\(?([\w\.-]+)/i], [
 	G,
 	J,
-	[K, Ki]
-]] }), ea = Object.freeze({ browser: [
+	[K, qi]
+]] }), ta = Object.freeze({ browser: [
 	[
 		/((?:adidx|ahrefs|amazon|(?:amzn|oai)-search|awario(?:smart|rss)?|bing|brave|cc|contx|coveo|criteo|dot|duckduck(?:go-favicons-)?|exa|facebook|gpt|iask|kagi|kangaroo |linkedin|mj12|mojeek|onespot-scraper|perplexity|sbintuitions|semrush|seznam|surdotly|swift|yep)bot)\/([\w\.-]+)/i,
 		/(algolia crawler(?: renderscript)?)\/?([\w\.]*)/i,
@@ -4692,13 +4700,13 @@ var W = "model", G = "name", K = "type", q = "vendor", J = "version", Ui = "mobi
 	[
 		G,
 		J,
-		[K, Gi]
+		[K, Ki]
 	],
 	[/(ev-crawler)\/([\w\.]+)/i],
 	[
 		[G, "Headline"],
 		J,
-		[K, Gi]
+		[K, Ki]
 	],
 	[/(yandexbot\/([\w\.]+); mirrordetector)/i],
 	[
@@ -4708,10 +4716,10 @@ var W = "model", G = "name", K = "type", q = "vendor", J = "version", Ui = "mobi
 			""
 		],
 		J,
-		[K, Gi]
+		[K, Ki]
 	],
 	[/((?:adsbot|apis|mediapartners)-google(?:-mobile)?|google-?(?:other|cloudvertexbot|extended|notebooklm|safety))/i, /\b((ai2|aspiegel|atlassian-|dataforseo|deepseek|imagesift|petal|seekport|turnitin|v0|yacy)bot|360spider-?(image|video)?|baidu-ads|botify|(byte|tiktok)spider|cohere-training-data-crawler|elastic(?=\/s)|marginalia|proximic|siteimprove(?=bot|\.com)|teoma|webzio|yahoo! slurp)/i],
-	[G, [K, Gi]]
+	[G, [K, Ki]]
 ] });
 Object.freeze({ device: [
 	[
@@ -4725,161 +4733,161 @@ Object.freeze({ device: [
 	[
 		q,
 		W,
-		[K, Wi]
+		[K, Gi]
 	],
 	[/(u304aa)/i],
 	[
 		W,
 		[q, "AT&T"],
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\bsie-(\w*)/i],
 	[
 		W,
 		[q, "Siemens"],
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\b(rct\w+) b/i],
 	[
 		W,
 		[q, "RCA"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(venue[\d ]{2,7}) b/i],
 	[
 		W,
 		[q, "Dell"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(q(?:mv|ta)\w+) b/i],
 	[
 		W,
 		[q, "Verizon"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(?:barnes[& ]+noble |bn[rt])([\w\+ ]*) b/i],
 	[
 		W,
 		[q, "Barnes & Noble"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(tm\d{3}\w+) b/i],
 	[
 		W,
 		[q, "NuVision"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(k88) b/i],
 	[
 		W,
 		[q, "ZTE"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(nx\d{3}j) b/i],
 	[
 		W,
 		[q, "ZTE"],
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\b(gen\d{3}) b.+49h/i],
 	[
 		W,
 		[q, "Swiss"],
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\b(zur\d{3}) b/i],
 	[
 		W,
 		[q, "Swiss"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/^((zeki)?tb.*\b) b/i],
 	[
 		W,
 		[q, "Zeki"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b([yr]\d{2}) b/i, /\b(?:dragon[- ]+touch |dt)(\w{5}) b/i],
 	[
 		W,
 		[q, "Dragon Touch"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(ns-?\w{0,9}) b/i],
 	[
 		W,
 		[q, "Insignia"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b((nxa|next)-?\w{0,9}) b/i],
 	[
 		W,
 		[q, "NextBook"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(xtreme\_)?(v(1[045]|2[015]|[3469]0|7[05])) b/i],
 	[
 		[q, "Voice"],
 		W,
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\b(lvtel\-)?(v1[12]) b/i],
 	[
 		[q, "LvTel"],
 		W,
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\b(ph-1) /i],
 	[
 		W,
 		[q, "Essential"],
-		[K, Ui]
+		[K, Wi]
 	],
 	[/\b(v(100md|700na|7011|917g).*\b) b/i],
 	[
 		W,
 		[q, "Envizen"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\b(trio[-\w\. ]+) b/i],
 	[
 		W,
 		[q, "MachSpeed"],
-		[K, Wi]
+		[K, Gi]
 	],
 	[/\btu_(1491) b/i],
 	[
 		W,
 		[q, "Rotor"],
-		[K, Wi]
+		[K, Gi]
 	]
 ] }), Object.freeze({ browser: [
 	[/(android)\/([\w\.-]+email)/i],
 	[
 		G,
 		J,
-		[K, qi]
+		[K, Ji]
 	],
 	[/* @__PURE__ */ RegExp("((?:air|aqua|blue|claws|daum|fair|fox|k-9|mac|nylas|pegasus|poco|poly|proton|samsung|squirrel|yahoo) ?e?mail(?:-desktop| app| bridge)?|microsoft outlook|r2mail2|spicebird|turnpike|yahoomobile|(?:microsoft )?outlook(?:-express)?|macoutlook|windows-live-mail|alpine|balsa|barca|canary|emclient|eudora|evolution|geary|gnus|horde::imp|incredimail|kmail2?|kontact|lotus-notes|mail(?:bird|mate|spring)|mutt|navermailapp|newton|nine|postbox|rainloop|roundcube webmail|spar(?:row|kdesktop)|sylpheed|the bat!|thunderbird|trojita|tutanota-desktop|wanderlust|zdesktop|zohomail-desktop)(?:m.+ail; |[\\/ ])([\\w\\.-]+)", "i")],
 	[
-		[G, Qi],
+		[G, $i],
 		J,
-		[K, qi]
+		[K, Ji]
 	],
 	[/(mail)\/([\w\.]+) cf/i],
 	[
 		G,
 		J,
-		[K, qi]
+		[K, Ji]
 	],
 	[/(zimbra)\/([\w\.-]+)/i],
 	[
 		G,
 		J,
-		[K, qi]
+		[K, Ji]
 	]
 ] });
-var ta = Object.freeze({
+var na = Object.freeze({
 	browser: [
 		[
 			/(asana|ahrefssiteaudit|(?:bing|microsoft)preview|blueno|(?:amzn|chatgpt|claude|mistralai|perplexity)-user|cohere-ai|flipboardproxy|hubspot page fetcher|mastodon|(?:bitly|bufferlinkpreview|discord|duckassist|linkedin|pinterest|reddit|roger|siteaudit|twitter|uptime(?:ro)?|zoom)bot|google-site-verification|iframely|kakaotalk-scrap|meta-externalfetcher|y!?j-dlc|yandex(?:calendar|direct(?:dyn)?|fordomain|pagechecker|searchshop)|yadirectfetcher|whatsapp)\/([\w\.]+)/i,
@@ -4892,10 +4900,10 @@ var ta = Object.freeze({
 		[
 			G,
 			J,
-			[K, Ji]
+			[K, Yi]
 		],
 		[/((?:better uptime |keybase|telegram|vercel)bot|lighthouse$|feedfetcher-google|gemini-deep-research|google(?:docs|imageproxy|-read-aloud|-pagerenderer|producer)|snap url preview|vercel(flags|tracing|-(favicon|screenshot)-bot)|virustotal(?=cloud)|yandex(?:sitelinks|userproxy))/i],
-		[G, [K, Ji]]
+		[G, [K, Yi]]
 	],
 	os: [[/whatsapp\/[\d\.]+ (a|i)/i], [[G, (e) => e == "A" ? "Android" : "iOS"]]]
 });
@@ -4904,33 +4912,33 @@ Object.freeze({ browser: [
 	[
 		G,
 		J,
-		[K, Yi]
+		[K, Xi]
 	],
 	[/(evernote) win/i, /(teams)mobile-(ios|and)/i],
-	[G, [K, Yi]],
+	[G, [K, Xi]],
 	[/chatlyio\/([\d\.]+)/i],
 	[
 		J,
 		[G, "Slack"],
-		[K, Yi]
+		[K, Xi]
 	],
 	[/ultralite app_version\/([\w\.]+)/i],
 	[
 		J,
 		[G, "TikTok Lite"],
-		[K, Yi]
+		[K, Xi]
 	],
 	[/\) code\/([\d\.]+).+electron\//i],
 	[
 		J,
 		[G, "VS Code"],
-		[K, Yi]
+		[K, Xi]
 	],
 	[/jp\.co\.yahoo\.(?:android\.yjtop|ipn\.appli)\/([\d\.]+)/i],
 	[
 		J,
 		[G, "Yahoo! Japan"],
-		[K, Yi]
+		[K, Xi]
 	]
 ] }), Object.freeze({ browser: [
 	[
@@ -4955,16 +4963,16 @@ Object.freeze({ browser: [
 	[
 		G,
 		J,
-		[K, Xi]
+		[K, Zi]
 	],
 	[/(flrp)\/([\w\.-]+)/i],
 	[
 		[G, "Flip Player"],
 		J,
-		[K, Xi]
+		[K, Zi]
 	],
 	[/(fstream|media player classic|inlight radio|mplayer|nativehost|nero showtime|ocms-bot|queryseekspider|tapinradio|tunein radio|winamp|yourmuze)/i],
-	[G, [K, Xi]],
+	[G, [K, Zi]],
 	[/(htc_one_s|windows-media-player|wmplayer)\/([\w\.-]+)/i],
 	[
 		[
@@ -4973,16 +4981,16 @@ Object.freeze({ browser: [
 			" "
 		],
 		J,
-		[K, Xi]
+		[K, Zi]
 	],
 	[/(rad.io|radio.(?:de|at|fr)) ([\d\.]+)/i],
 	[
 		[G, "rad.io"],
 		J,
-		[K, Xi]
+		[K, Zi]
 	]
 ] });
-var na = Object.freeze({ browser: [
+var ra = Object.freeze({ browser: [
 	[
 		/^((?:apache|go|java)-http-?client|axios|bun|dart|deno|got|(?:guzzle|lua-resty-|ocaml-co|ok)http|hackney|http\.rb|java|jetty|libwww-perl|needle|node(?:\.js|-fetch|-superagent)|php-soap|postmanruntime|python-(?:httpx|urllib[23]?|requests)|rest-client|scrapy)\/([\w\.]+)/i,
 		/(adobeair|aiohttp|jsdom)\/([\w\.]+)/i,
@@ -4992,10 +5000,10 @@ var na = Object.freeze({ browser: [
 	[
 		G,
 		J,
-		[K, Zi]
+		[K, Qi]
 	],
 	[/(node-fetch|phpcrawl|undici)/i],
-	[G, [K, Zi]]
+	[G, [K, Qi]]
 ] });
 Object.freeze({ device: [
 	[/aftlbt962e2/i],
@@ -5009,14 +5017,14 @@ Object.freeze({ device: [
 	[/vcc.+netfront/i],
 	[[q, "Volvo"]]
 ] });
-var ra = Object.freeze({
+var ia = Object.freeze({
 	browser: [
-		...$i.browser,
-		...ta.browser,
 		...ea.browser,
-		...na.browser
+		...na.browser,
+		...ta.browser,
+		...ra.browser
 	],
-	os: [...ta.os]
+	os: [...na.os]
 });
 Object.freeze({
 	115: "115",
@@ -5183,7 +5191,7 @@ Object.freeze({
 	YANDEX: "Yandex",
 	ZALO: "Zalo"
 });
-var ia = Object.freeze({
+var aa = Object.freeze({
 	CRAWLER: "crawler",
 	CLI: "cli",
 	EMAIL: "email",
@@ -5421,7 +5429,7 @@ Object.freeze({
 });
 //#endregion
 //#region node_modules/ua-parser-js/src/bot-detection/bot-detection.mjs
-var { Crawler: Y, Fetcher: aa } = Object.freeze({
+var { Crawler: Y, Fetcher: oa } = Object.freeze({
 	BrowserName: {
 		CLI: {
 			CURL: "curl",
@@ -5797,29 +5805,29 @@ var { Crawler: Y, Fetcher: aa } = Object.freeze({
 		TESLA: "Tesla",
 		VOLVO: "Volvo"
 	} }
-}).BrowserName, oa = class {
+}).BrowserName, sa = class {
 	constructor(e, t, n) {
 		this.ext = e, this.prop = t, this.list = n.map((e) => e.toLowerCase());
 	}
 	includes(e) {
-		return this.list.includes((typeof e == "string" ? new Hi(e, this.ext).getBrowser() : e.browser)[this.prop]?.toLowerCase());
+		return this.list.includes((typeof e == "string" ? new Ui(e, this.ext).getBrowser() : e.browser)[this.prop]?.toLowerCase());
 	}
-}, sa = new oa(ra, "type", [
-	ia.CLI,
-	ia.CRAWLER,
-	ia.FETCHER,
-	ia.LIBRARY
+}, ca = new sa(ia, "type", [
+	aa.CLI,
+	aa.CRAWLER,
+	aa.FETCHER,
+	aa.LIBRARY
 ]);
-new oa(ta, "name", [
-	aa.AMAZON_NOVA_ACT,
-	aa.ANTHROPIC_CLAUDE_USER,
-	aa.COHERE_AI,
-	aa.DUCKDUCKGO_ASSISTBOT,
-	aa.GOOGLE_GEMINI_DEEP_RESEARCH,
-	aa.MISTRALAI_USER,
-	aa.OPENAI_CHATGPT_USER,
-	aa.PERPLEXITY_USER
-]), new oa(ea, "name", [
+new sa(na, "name", [
+	oa.AMAZON_NOVA_ACT,
+	oa.ANTHROPIC_CLAUDE_USER,
+	oa.COHERE_AI,
+	oa.DUCKDUCKGO_ASSISTBOT,
+	oa.GOOGLE_GEMINI_DEEP_RESEARCH,
+	oa.MISTRALAI_USER,
+	oa.OPENAI_CHATGPT_USER,
+	oa.PERPLEXITY_USER
+]), new sa(ta, "name", [
 	Y.AI2_BOT,
 	Y.AMAZON_BOT,
 	Y.ANTHROPIC_AI,
@@ -5873,59 +5881,59 @@ new oa(ta, "name", [
 	Y.YOU_BOT,
 	Y.ZHIPU_CHATGLM_SPIDER
 ]);
-var ca = (e) => sa.includes(e), la = /^@sanity\/client\b|\bsanity\/client\b|^curl\b|^axios\b|node-fetch|^got\/|python-requests|aiohttp|httpx|^Go-http-client|^okhttp\b|^Java\/|^libwww-perl|postmanruntime/i, ua = /\bMobile\b|iPhone|iPod|Android.+Mobile|Windows Phone/i, da = /Macintosh|Windows NT|Win64|X11; Linux|X11; Ubuntu|CrOS/i;
-function fa(e) {
+var la = (e) => ca.includes(e), ua = /^@sanity\/client\b|\bsanity\/client\b|^curl\b|^axios\b|node-fetch|^got\/|python-requests|aiohttp|httpx|^Go-http-client|^okhttp\b|^Java\/|^libwww-perl|postmanruntime/i, da = /\bMobile\b|iPhone|iPod|Android.+Mobile|Windows Phone/i, fa = /Macintosh|Windows NT|Win64|X11; Linux|X11; Ubuntu|CrOS/i;
+function pa(e) {
 	if (e) return e.replace(/^Mobile\s+/i, "");
 }
-function pa(e) {
+function ma(e) {
 	if (e) return e === "Mac OS" ? "macOS" : e;
 }
-function ma(e) {
+function ha(e) {
 	return e ? e === "macOS" ? "mac" : e === "Windows" ? "windows" : "other" : "other";
 }
-function ha(e) {
+function ga(e) {
 	return e === "mobile" || e === "tablet" || e === "wearable";
 }
-function ga(e) {
-	return la.test(e);
+function _a(e) {
+	return ua.test(e);
 }
-function _a(e, t) {
-	return ha(t) || ua.test(e) ? "mobile" : da.test(e) ? "desktop" : null;
+function va(e, t) {
+	return ga(t) || da.test(e) ? "mobile" : fa.test(e) ? "desktop" : null;
 }
-function va(e) {
+function ya(e) {
 	return e ? /@sanity\/client/i.test(e) ? "@sanity/client" : /^curl\b/i.test(e) ? "curl" : /postman/i.test(e) ? "Postman" : /^axios\b/i.test(e) || /node-fetch/i.test(e) || /^got\//i.test(e) ? "HTTP client" : /python-requests|aiohttp|httpx/i.test(e) ? "Python client" : /^Go-http-client/i.test(e) ? "Go client" : e.length > 48 ? `${e.slice(0, 45)}…` : e : "Unknown";
 }
-function ya(e, t, n) {
+function ba(e, t, n) {
 	let r = [e, t].filter(Boolean);
-	return r.length === 0 ? va(n) : r.join(" ");
+	return r.length === 0 ? ya(n) : r.join(" ");
 }
-function ba(e) {
+function xa(e) {
 	return {
 		deviceKind: null,
 		osFamily: null,
 		isTrackable: !1,
-		displayLabel: va(e),
-		raw: e
-	};
-}
-function xa(e) {
-	let t = e.trim();
-	if (!t || ga(t) || ca(t)) return ba(e);
-	let n = new Hi(t).getResult();
-	if (ca(n) || !n.browser.name) return ba(e);
-	let r = pa(n.os.name), i = fa(n.browser.name), a = _a(t, n.device.type);
-	return {
-		deviceKind: a,
-		osFamily: ma(r),
-		isTrackable: a !== null,
-		displayLabel: ya(r, i, t),
+		displayLabel: ya(e),
 		raw: e
 	};
 }
 function Sa(e) {
+	let t = e.trim();
+	if (!t || _a(t) || la(t)) return xa(e);
+	let n = new Ui(t).getResult();
+	if (la(n) || !n.browser.name) return xa(e);
+	let r = ma(n.os.name), i = pa(n.browser.name), a = va(t, n.device.type);
+	return {
+		deviceKind: a,
+		osFamily: ha(r),
+		isTrackable: a !== null,
+		displayLabel: ba(r, i, t),
+		raw: e
+	};
+}
+function Ca(e) {
 	let t = 0, n = 0, r = 0, i = 0, a = 0;
 	for (let o of e) {
-		let e = xa(o.label);
+		let e = Sa(o.label);
 		!e.isTrackable || !e.deviceKind || (t += o.requests, e.osFamily === "mac" && (n += o.requests), e.osFamily === "windows" && (r += o.requests), e.deviceKind === "mobile" && (i += o.requests), e.deviceKind === "desktop" && (a += o.requests));
 	}
 	let o = (e) => t > 0 ? e / t * 100 : 0;
@@ -5938,20 +5946,307 @@ function Sa(e) {
 	};
 }
 //#endregion
+//#region src/report/summarize.ts
+var wa = 1024 * 1024, Ta = 100 * wa, Ea = 1e3, Da = .25, Oa = 10 * wa, ka = 100, Aa = .75, ja = .75, Ma = .5, Na = 8;
+function Pa(e, t, n = `${t}s`) {
+	return e === 1 ? t : n;
+}
+function Fa(e) {
+	return `${Math.round(e)}%`;
+}
+function Ia(e, t, n) {
+	return `${O(e)} ${Pa(e, t, n)}`;
+}
+function La(e) {
+	return e.reduce((e, t) => (e.requests += t.requests, e.responseBytes += t.responseBytes, e), {
+		requests: 0,
+		responseBytes: 0
+	});
+}
+function Ra(e, t) {
+	return e.responseBytes >= Ta || e.requests >= Ea || t.responseBytes >= Oa && e.responseBytes / t.responseBytes >= Da || t.requests >= ka && e.requests / t.requests >= Da;
+}
+function za(e, t) {
+	return Ra(e, t) ? "critical" : "warning";
+}
+function Ba(e, t) {
+	return t.requests === e ? "" : ` across ${Ia(t.requests, "request")}`;
+}
+function Va(e) {
+	return e.responseBytes > 0 ? ` (${k(e.responseBytes)})` : "";
+}
+function Ha(e) {
+	return Zn(e).image.map((e) => ({
+		row: e,
+		parsed: nr(e.label)
+	}));
+}
+function Ua(e) {
+	return Zn(e).query.filter((e) => {
+		let t = qn(e.label), n = t ? Jn(e.label) : null;
+		return t !== null && Ln(t, n ?? void 0);
+	});
+}
+function Wa(e) {
+	return Zn(e).file.filter((e) => Wn(e.label));
+}
+function Ga(e) {
+	let t = e.filter((e) => e.count > 0);
+	if (t.length <= 1) return null;
+	let n = t.reduce((e, t) => e + t.count, 0);
+	if (n <= 0) return null;
+	let r = t[0];
+	for (let e of t.slice(1)) e.count > r.count && (r = e);
+	return {
+		label: r.label,
+		count: r.count,
+		total: n,
+		share: r.count / n
+	};
+}
+function Ka(e, t) {
+	let n = e.filter((e) => e[t] > 0);
+	if (n.length <= 1) return null;
+	let r = n.reduce((e, n) => e + n[t], 0);
+	if (r <= 0) return null;
+	let i = n[0];
+	for (let e of n.slice(1)) e[t] > i[t] && (i = e);
+	return {
+		label: i.label,
+		value: i[t],
+		total: r,
+		share: i[t] / r
+	};
+}
+function qa(e, t) {
+	e.push(t);
+}
+function Ja(e) {
+	return e.severity === "passed" || !e.suggestedFix ? null : {
+		priority: e.severity,
+		issue: e.title,
+		impact: e.summary,
+		suggestedFix: e.suggestedFix,
+		responseBytes: e.responseBytes
+	};
+}
+function Ya(e, t) {
+	return e > 0 ? "red" : t > 0 ? "yellow" : "green";
+}
+function Xa(e) {
+	let t = [], n = Ua(e.byUrl);
+	if (n.length > 0) {
+		let r = La(n);
+		qa(t, {
+			id: "groq-spread",
+			severity: za(r, e),
+			title: "GROQ spread-heavy queries",
+			summary: `${k(r.responseBytes)} served by ${Ia(n.length, "GROQ query URL")} using {...}${Ba(n.length, r)}`,
+			suggestedFix: "Project only needed fields instead of using the {...} spread operator",
+			requests: r.requests,
+			responseBytes: r.responseBytes
+		});
+	}
+	let r = Wa(e.byUrl);
+	if (r.length > 0) {
+		let n = La(r);
+		qa(t, {
+			id: "mp4-transfer",
+			severity: za(n, e),
+			title: "MP4 transfer concentration",
+			summary: `${k(n.responseBytes)} served as ${Ia(r.length, "MP4 URL")} instead of HLS${Ba(r.length, n)}`,
+			suggestedFix: "Serve video via HLS (or similar adaptive streaming) instead of progressive MP4",
+			requests: n.requests,
+			responseBytes: n.responseBytes
+		});
+	}
+	let i = Ha(e.byUrl);
+	if (i.length > 0) {
+		let n = i.filter(({ parsed: e }) => ir(e.width));
+		if (n.length > 0) {
+			let r = La(n.map(({ row: e }) => e));
+			qa(t, {
+				id: "image-width",
+				severity: za(r, e),
+				title: "Oversized image requests",
+				summary: `${Ia(n.length, "image URL")} requested above 2000px${Ba(n.length, r)}${Va(r)}`,
+				suggestedFix: "Cap CDN width requests at 2000px or below",
+				requests: r.requests,
+				responseBytes: r.responseBytes
+			});
+		}
+		let r = i.filter(({ parsed: e }) => or(e.format));
+		if (r.length > 0) {
+			let n = La(r.map(({ row: e }) => e));
+			qa(t, {
+				id: "image-format",
+				severity: za(n, e),
+				title: "Missing format=auto",
+				summary: `${Ia(r.length, "image URL")} missing format=auto${Ba(r.length, n)}${Va(n)}`,
+				suggestedFix: "Use auto=format (or fm/format=\"auto\") for CDN image URLs",
+				requests: n.requests,
+				responseBytes: n.responseBytes
+			});
+		}
+		let a = i.filter(({ parsed: e }) => ar(e.quality, e.isSvg));
+		if (a.length > 0) {
+			let n = La(a.map(({ row: e }) => e));
+			qa(t, {
+				id: "image-quality",
+				severity: za(n, e),
+				title: "High image quality settings",
+				summary: `${Ia(a.length, "image URL")} with quality above 87${Ba(a.length, n)}${Va(n)}`,
+				suggestedFix: "Keep image quality at 87 or below for raster assets",
+				requests: n.requests,
+				responseBytes: n.responseBytes
+			});
+		}
+		let o = La(i.map(({ row: e }) => e));
+		e.responseBytes > 0 && o.responseBytes / e.responseBytes >= Ma && qa(t, {
+			id: "image-bandwidth",
+			severity: za(o, e),
+			title: "Image bandwidth concentration",
+			summary: `Images account for ${Fa(o.responseBytes / e.responseBytes * 100)} of bandwidth (${k(o.responseBytes)})`,
+			suggestedFix: "Reduce oversized assets, enforce format=auto, and trim unnecessary image widths",
+			requests: o.requests,
+			responseBytes: o.responseBytes
+		});
+		let s = r.reduce((e, { row: t }) => e + t.requests, 0), c = i.reduce((e, { row: t }) => e + t.requests, 0), l = c - s;
+		if (c > 0) {
+			let e = l / c;
+			s === 0 ? qa(t, {
+				id: "image-format",
+				severity: "passed",
+				title: "Image format defaults",
+				summary: "No explicit non-auto image formats detected"
+			}) : e >= Aa && qa(t, {
+				id: "image-format",
+				severity: "passed",
+				title: "Image format mostly safe",
+				summary: `${Fa(e * 100)} of image requests avoid explicit non-auto formats`
+			});
+		}
+	}
+	let a = e.byStatus.filter(({ label: e }) => Number(e) >= 500), o = e.byStatus.filter(({ label: e }) => {
+		let t = Number(e);
+		return t >= 400 && t < 500;
+	}), s = a.reduce((e, t) => e + t.count, 0), c = o.reduce((e, t) => e + t.count, 0);
+	s > 0 ? qa(t, {
+		id: "status-5xx",
+		severity: "critical",
+		title: "5xx responses",
+		summary: `${Ia(s, "5xx response")} detected`,
+		suggestedFix: "Investigate failing API/CDN handlers returning 5xx",
+		requests: s
+	}) : qa(t, {
+		id: "status-5xx",
+		severity: "passed",
+		title: "5xx health",
+		summary: "No 5xx responses"
+	}), c > 0 ? qa(t, {
+		id: "status-4xx",
+		severity: "warning",
+		title: "4xx responses",
+		summary: `${Ia(c, "4xx response")} detected`,
+		suggestedFix: "Review missing assets and invalid client requests returning 4xx",
+		requests: c
+	}) : qa(t, {
+		id: "status-4xx",
+		severity: "passed",
+		title: "4xx health",
+		summary: "No 4xx responses"
+	});
+	let l = Ga(e.responseSizeHistogram);
+	l && (l.share >= Aa ? qa(t, {
+		id: "response-size-concentration",
+		severity: "warning",
+		title: "Response size concentration",
+		summary: `${l.label} accounts for ${Fa(l.share * 100)} of responses`,
+		suggestedFix: "Investigate why most responses fall into one size bucket",
+		requests: l.count
+	}) : qa(t, {
+		id: "response-size-concentration",
+		severity: "passed",
+		title: "Response size distribution",
+		summary: `${l.label} stays at ${Fa(l.share * 100)} of responses`
+	}));
+	let u = (e, n, r, i) => {
+		let a = Ka(r, "responseBytes"), o = a && a.share >= ja ? {
+			...a,
+			metricLabel: "bandwidth"
+		} : (() => {
+			let e = Ka(r, "requests");
+			return !e || e.share < ja ? null : {
+				...e,
+				metricLabel: "requests"
+			};
+		})();
+		if (!o) return;
+		let s = o.share >= .9 ? "critical" : "warning";
+		qa(t, {
+			id: e,
+			severity: s,
+			title: n,
+			summary: `${o.label} accounts for ${Fa(o.share * 100)} of ${i} ${o.metricLabel}`,
+			suggestedFix: `Review anomalous concentration on ${i} "${o.label}"`,
+			requests: o.metricLabel === "requests" ? o.value : void 0,
+			responseBytes: o.metricLabel === "bandwidth" ? o.value : void 0
+		});
+	};
+	u("hour-concentration", "Hourly traffic concentration", e.byHour, "hour"), u("domain-concentration", "Domain traffic concentration", e.byDomain, "domain"), u("endpoint-concentration", "Endpoint traffic concentration", e.byEndpoint, "endpoint");
+	let d = t.filter((e) => e.severity === "critical"), f = t.filter((e) => e.severity === "warning"), p = t.filter((e) => e.severity === "passed"), m = [...d, ...f].map(Ja).filter((e) => e !== null).slice(0, Na), h = m.reduce((e, t) => t.estimatedSavingsBytes === void 0 ? e : (e ?? 0) + t.estimatedSavingsBytes, void 0);
+	return {
+		overallHealth: Ya(d.length, f.length),
+		issueCounts: {
+			critical: d.length,
+			warning: f.length,
+			passed: p.length
+		},
+		findings: t,
+		topOpportunities: m,
+		estimatedSavingsBytes: h,
+		signals: p
+	};
+}
+function Za(e) {
+	let t = e.issueCounts.critical + e.issueCounts.warning;
+	return t === 0 ? "✅ No issues detected" : `🚨 ${O(t)} ${Pa(t, "issue")} detected`;
+}
+//#endregion
 //#region src/report/markdown.ts
-function Ca(e) {
+function Qa(e) {
 	return e.replaceAll("|", "\\|").replaceAll("\n", " ").replaceAll("\r", "");
 }
-function wa(e) {
+function $a(e) {
 	return e.toLowerCase().trim().replaceAll(/[^\w\s-]/g, "").replaceAll(/\s+/g, "-").replaceAll(/-+/g, "-").replace(/^-+|-+$/g, "") || "report";
 }
-var Ta = "consider HLS streaming instead of MP4";
-function Ea(e, t) {
+var eo = "consider HLS streaming instead of MP4";
+function to(e, t) {
+	return t.length === 0 ? "" : [
+		`### ${e}`,
+		"",
+		...t.slice(0, 5).map((e) => `- ${e.summary}`),
+		""
+	].join("\n");
+}
+function no(e) {
+	let t = Xa(e), n = t.findings.filter((e) => e.severity === "critical"), r = t.findings.filter((e) => e.severity === "warning"), i = t.signals;
+	return [
+		"## Executive Summary",
+		"",
+		Za(t),
+		"",
+		to("Critical", n),
+		to("Warnings", r),
+		to("Passed", i)
+	].filter(Boolean).join("\n");
+}
+function ro(e, t) {
 	if (e === null) return "—";
 	let n = String(e);
 	return t ? `${n} (${t})` : n;
 }
-function Da(e, t) {
+function io(e, t) {
 	if (t.length === 0) return "";
 	let n = [
 		`### ${e}`,
@@ -5959,10 +6254,10 @@ function Da(e, t) {
 		"| Label | Requests | Bandwidth | Avg / req |",
 		"| --- | ---: | ---: | ---: |"
 	];
-	for (let e of t) n.push(`| ${Ca(e.label)} | ${O(e.requests)} | ${k(e.responseBytes)} | ${k(vt(e))} |`);
+	for (let e of t) n.push(`| ${Qa(e.label)} | ${O(e.requests)} | ${k(e.responseBytes)} | ${k(vt(e))} |`);
 	return n.push(""), n.join("\n");
 }
-function Oa(e, t) {
+function ao(e, t) {
 	if (t.length === 0) return "";
 	let n = [
 		`#### ${e}`,
@@ -5970,10 +6265,10 @@ function Oa(e, t) {
 		"| Label | Requests | Bandwidth | Avg / req |",
 		"| --- | ---: | ---: | ---: |"
 	];
-	for (let e of t) n.push(`| ${Ca(e.label)} | ${O(e.requests)} | ${k(e.responseBytes)} | ${k(vt(e))} |`);
+	for (let e of t) n.push(`| ${Qa(e.label)} | ${O(e.requests)} | ${k(e.responseBytes)} | ${k(vt(e))} |`);
 	return n.push(""), n.join("\n");
 }
-function ka(e) {
+function oo(e) {
 	if (e.length === 0) return "";
 	let t = [
 		"#### Images",
@@ -5982,12 +6277,12 @@ function ka(e) {
 		"| --- | --- | ---: | ---: | --- | ---: | ---: | ---: |"
 	];
 	for (let n of e) {
-		let e = nr(n.label), r = Ea(e.width, rr(e.width) ? "width exceeds 2000px" : void 0), i = Ea(e.quality, ir(e.quality, e.isSvg) ? "quality exceeds 87" : void 0), a = Ea(e.format, ar(e.format) ? "format should be \"auto\"" : void 0);
-		t.push(`| ${Ca(e.id)} | ${Ca(n.label)} | ${r} | ${i} | ${a} | ${k(n.responseBytes)} | ${O(n.requests)} | ${k(vt(n))} |`);
+		let e = nr(n.label), r = ro(e.width, ir(e.width) ? "width exceeds 2000px" : void 0), i = ro(e.quality, ar(e.quality, e.isSvg) ? "quality exceeds 87" : void 0), a = ro(e.format, or(e.format) ? "format should be \"auto\"" : void 0);
+		t.push(`| ${Qa(e.id)} | ${Qa(n.label)} | ${r} | ${i} | ${a} | ${k(n.responseBytes)} | ${O(n.requests)} | ${k(vt(n))} |`);
 	}
 	return t.push(""), t.join("\n");
 }
-function Aa(e) {
+function so(e) {
 	if (e.length === 0) return "";
 	let t = [
 		"#### Queries",
@@ -5997,11 +6292,11 @@ function Aa(e) {
 	];
 	for (let n of e) {
 		let e = qn(n.label), r = e ? Jn(n.label) : null, i = e && Ln(e, r ?? void 0) ? `${n.label} (${jn})` : n.label;
-		t.push(`| ${Ca(i)} | ${O(n.requests)} | ${k(n.responseBytes)} | ${k(vt(n))} |`);
+		t.push(`| ${Qa(i)} | ${O(n.requests)} | ${k(n.responseBytes)} | ${k(vt(n))} |`);
 	}
 	return t.push(""), t.join("\n");
 }
-function ja(e) {
+function co(e) {
 	if (e.length === 0) return "";
 	let t = [
 		"#### Files",
@@ -6010,26 +6305,26 @@ function ja(e) {
 		"| --- | ---: | ---: | ---: |"
 	];
 	for (let n of e) {
-		let e = Wn(n.label) ? `${n.label} (${Ta})` : n.label;
-		t.push(`| ${Ca(e)} | ${O(n.requests)} | ${k(n.responseBytes)} | ${k(vt(n))} |`);
+		let e = Wn(n.label) ? `${n.label} (${eo})` : n.label;
+		t.push(`| ${Qa(e)} | ${O(n.requests)} | ${k(n.responseBytes)} | ${k(vt(n))} |`);
 	}
 	return t.push(""), t.join("\n");
 }
-function Ma(e) {
+function lo(e) {
 	let t = Zn(e), n = ["### Top URLs", ""];
-	return t.image.length > 0 && n.push(ka(t.image)), t.file.length > 0 && n.push(ja(t.file)), t.query.length > 0 && n.push(Aa(t.query)), t.other.length > 0 && n.push(Oa("Other", t.other)), n.filter(Boolean).join("\n");
+	return t.image.length > 0 && n.push(oo(t.image)), t.file.length > 0 && n.push(co(t.file)), t.query.length > 0 && n.push(so(t.query)), t.other.length > 0 && n.push(ao("Other", t.other)), n.filter(Boolean).join("\n");
 }
-function Na(e, t) {
+function uo(e, t) {
 	if (t.length === 0) return "";
-	let n = Sa(t), r = [`### ${e}`, ""];
+	let n = Ca(t), r = [`### ${e}`, ""];
 	n.trackableRequests > 0 && r.push(`Mac ${ht(n.macPct)} · Windows ${ht(n.windowsPct)} · Mobile ${ht(n.mobilePct)} · Desktop ${ht(n.desktopPct)}`, ""), r.push("| Device | Label | Requests | Bandwidth | Avg / req |", "| --- | --- | ---: | ---: | ---: |");
 	for (let e of t) {
-		let t = xa(e.label), n = t.deviceKind === "mobile" ? "Mobile" : t.deviceKind === "desktop" ? "Desktop" : "—";
-		r.push(`| ${n} | ${Ca(`${t.displayLabel} — ${t.raw}`)} | ${O(e.requests)} | ${k(e.responseBytes)} | ${k(vt(e))} |`);
+		let t = Sa(e.label), n = t.deviceKind === "mobile" ? "Mobile" : t.deviceKind === "desktop" ? "Desktop" : "—";
+		r.push(`| ${n} | ${Qa(`${t.displayLabel} — ${t.raw}`)} | ${O(e.requests)} | ${k(e.responseBytes)} | ${k(vt(e))} |`);
 	}
 	return r.push(""), r.join("\n");
 }
-function Pa(e, t) {
+function fo(e, t) {
 	if (t.length === 0) return "";
 	let n = [
 		`### ${e}`,
@@ -6037,10 +6332,10 @@ function Pa(e, t) {
 		"| Label | Count |",
 		"| --- | ---: |"
 	];
-	for (let e of t) n.push(`| ${Ca(e.label)} | ${O(e.count)} |`);
+	for (let e of t) n.push(`| ${Qa(e.label)} | ${O(e.count)} |`);
 	return n.push(""), n.join("\n");
 }
-function Fa(e) {
+function po(e) {
 	let t = e.firstTimestamp && e.lastTimestamp ? `${_t(e.firstTimestamp)} → ${_t(e.lastTimestamp)}` : "No timestamps found";
 	return [
 		"## Summary",
@@ -6054,11 +6349,11 @@ function Fa(e) {
 		""
 	].join("\n");
 }
-function Ia(e, t) {
+function mo(e, t) {
 	let n = [];
-	return t.domain && n.push(Da("Top domains", e.byDomain)), t.endpoint && n.push(Da("Top endpoints", e.byEndpoint)), t.date && n.push(Da("Daily bandwidth", e.byDate)), t.hour && n.push(Da("Hourly bandwidth", e.byHour)), t.status && n.push(Pa("Response codes", e.byStatus)), t.histogram && n.push(Pa("Response size buckets", e.responseSizeHistogram)), t.urls && n.push(Ma(e.byUrl)), t.referers && n.push(Da("Top referers", e.byReferer)), t.userAgents && n.push(Na("Top user agents", e.byUserAgent)), t.ips && n.push(Da("Top IPs", e.byIp)), n.filter(Boolean).join("\n");
+	return t.domain && n.push(io("Top domains", e.byDomain)), t.endpoint && n.push(io("Top endpoints", e.byEndpoint)), t.date && n.push(io("Daily bandwidth", e.byDate)), t.hour && n.push(io("Hourly bandwidth", e.byHour)), t.status && n.push(fo("Response codes", e.byStatus)), t.histogram && n.push(fo("Response size buckets", e.responseSizeHistogram)), t.urls && n.push(lo(e.byUrl)), t.referers && n.push(io("Top referers", e.byReferer)), t.userAgents && n.push(uo("Top user agents", e.byUserAgent)), t.ips && n.push(io("Top IPs", e.byIp)), n.filter(Boolean).join("\n");
 }
-function La(e, t) {
+function ho(e, t) {
 	let n = t === "billable" ? e.billable : e.all;
 	return [
 		`# ${e.title}`,
@@ -6068,16 +6363,18 @@ function La(e, t) {
 		`- View: ${n.label}`,
 		`- Max table rows: ${e.config.topN}`,
 		"",
-		Fa(n),
-		Ia(n, e.config.sections)
+		no(n),
+		"",
+		po(n),
+		mo(n, e.config.sections)
 	].join("\n");
 }
-var Ra = {
+var go = {
 	header: "_header_1755g_1",
 	title: "_title_1755g_10",
 	subtitle: "_subtitle_1755g_14",
 	meta: "_meta_1755g_20"
-}, za = 0;
+}, _o = 0;
 Array.isArray;
 function X(e, t, n, r, i, a) {
 	t ||= {};
@@ -6094,7 +6391,7 @@ function X(e, t, n, r, i, a) {
 		__e: null,
 		__c: null,
 		constructor: void 0,
-		__v: --za,
+		__v: --_o,
 		__i: -1,
 		__u: 0,
 		__source: i,
@@ -6105,26 +6402,26 @@ function X(e, t, n, r, i, a) {
 }
 //#endregion
 //#region src/report/components/Header.tsx
-function Ba({ data: e }) {
+function vo({ data: e }) {
 	return /* @__PURE__ */ X("header", {
-		class: Ra.header,
+		class: go.header,
 		children: [/* @__PURE__ */ X("div", { children: [/* @__PURE__ */ X("h1", {
-			class: `heading-1 ${Ra.title}`,
+			class: `heading-1 ${go.title}`,
 			children: e.title
 		}), /* @__PURE__ */ X("div", {
-			class: `body-1 ${Ra.subtitle}`,
+			class: `body-1 ${go.subtitle}`,
 			children: [
 				"Generated from ",
 				/* @__PURE__ */ X("code", { children: e.sourcePath }),
 				". The report is self-contained and includes the normalized summary JSON payload inline."
 			]
 		})] }), /* @__PURE__ */ X("div", {
-			class: `body-2 ${Ra.meta}`,
+			class: `body-2 ${go.meta}`,
 			children: [/* @__PURE__ */ X("div", { children: ["Generated on: ", _t(e.generatedAt)] }), /* @__PURE__ */ X("div", { children: ["Max table rows: ", e.config.topN] })]
 		})]
 	});
 }
-var Z = {
+var yo = {
 	button: "_button_1fxqy_1",
 	icon: "_icon_1fxqy_6",
 	label: "_label_1fxqy_14",
@@ -6134,34 +6431,34 @@ var Z = {
 	outlinePill: "_outlinePill_1fxqy_92",
 	outlinePillAccent: "_outlinePillAccent_1fxqy_115",
 	tab: "_tab_1fxqy_130"
-}, Va = {
-	default: Z.default,
-	"ghost-icon": Z.ghostIcon,
-	"ghost-icon-sm": Z.ghostIconSm,
-	"outline-pill": Z.outlinePill,
-	"outline-pill-accent": Z.outlinePillAccent,
-	tab: Z.tab
+}, bo = {
+	default: yo.default,
+	"ghost-icon": yo.ghostIcon,
+	"ghost-icon-sm": yo.ghostIconSm,
+	"outline-pill": yo.outlinePill,
+	"outline-pill-accent": yo.outlinePillAccent,
+	tab: yo.tab
 };
-function Ha({ variant: e = "default", icon: t, iconPosition: n = "start", children: r, class: i, type: a = "button", ...o }) {
+function xo({ variant: e = "default", icon: t, iconPosition: n = "start", children: r, class: i, type: a = "button", ...o }) {
 	return /* @__PURE__ */ X("button", {
 		type: a,
 		class: [
-			Z.button,
-			Va[e],
+			yo.button,
+			bo[e],
 			i
 		].filter(Boolean).join(" "),
 		...o,
 		children: [
 			t && n === "start" ? /* @__PURE__ */ X("span", {
-				class: Z.icon,
+				class: yo.icon,
 				children: t
 			}) : null,
 			r ? /* @__PURE__ */ X("span", {
-				class: Z.label,
+				class: yo.label,
 				children: r
 			}) : null,
 			t && n === "end" ? /* @__PURE__ */ X("span", {
-				class: Z.icon,
+				class: yo.icon,
 				children: t
 			}) : null
 		]
@@ -6169,7 +6466,7 @@ function Ha({ variant: e = "default", icon: t, iconPosition: n = "start", childr
 }
 //#endregion
 //#region src/report/components/icons.tsx
-function Ua() {
+function So() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6186,7 +6483,7 @@ function Ua() {
 		}), /* @__PURE__ */ X("path", { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" })]
 	});
 }
-function Wa() {
+function Co() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6205,7 +6502,7 @@ function Wa() {
 		]
 	});
 }
-function Ga() {
+function wo() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6229,7 +6526,7 @@ function Ga() {
 		]
 	});
 }
-function Ka() {
+function To() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6257,7 +6554,7 @@ function Ka() {
 		]
 	});
 }
-function qa() {
+function Eo() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6267,7 +6564,7 @@ function qa() {
 		children: [/* @__PURE__ */ X("path", { d: "m8 9 4-4 4 4" }), /* @__PURE__ */ X("path", { d: "m8 15 4 4 4-4" })]
 	});
 }
-function Ja() {
+function Do() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6283,57 +6580,61 @@ function Ja() {
 }
 //#endregion
 //#region src/report/components/MarkdownDownload.tsx
-function Ya() {
-	return /* @__PURE__ */ X(Ha, {
+function Oo() {
+	return /* @__PURE__ */ X(xo, {
 		id: "download-markdown",
-		icon: /* @__PURE__ */ X(Ja, {}),
+		icon: /* @__PURE__ */ X(Do, {}),
 		children: "Download markdown for LLM"
 	});
 }
-var Xa = {
+var ko = {
 	toggle: "_toggle_qim5j_1",
 	input: "_input_qim5j_13",
 	label: "_label_qim5j_21"
 };
 //#endregion
 //#region src/report/components/ViewToggle.tsx
-function Za() {
+function Ao() {
 	return /* @__PURE__ */ X("label", {
-		class: Xa.toggle,
+		class: ko.toggle,
 		children: [/* @__PURE__ */ X("input", {
 			type: "checkbox",
 			id: "show-studio-requests",
-			class: Xa.input
+			class: ko.input
 		}), /* @__PURE__ */ X("span", {
-			class: Xa.label,
+			class: ko.label,
 			children: "Show non-billable studio requests"
 		})]
 	});
 }
-var Qa = { row: "_row_1de3z_1" };
+var jo = { row: "_row_1de3z_1" };
 //#endregion
 //#region src/report/components/ReportControls.tsx
-function $a({ showToggle: e }) {
+function Mo({ showToggle: e }) {
 	return /* @__PURE__ */ X("div", {
-		class: Qa.row,
-		children: [e ? /* @__PURE__ */ X(Za, {}) : null, /* @__PURE__ */ X(Ya, {})]
+		class: jo.row,
+		children: [e ? /* @__PURE__ */ X(Ao, {}) : null, /* @__PURE__ */ X(Oo, {})]
 	});
 }
 //#endregion
 //#region src/report/sections.ts
-var eo = {
+var No = {
 	image: "urls/image",
 	file: "urls/file",
 	query: "urls/query",
 	other: "urls/other"
 };
-function to(e) {
+function Po(e) {
 	return Xn(Zn(e ?? [])).map((e) => ({
-		slug: eo[e.id],
+		slug: No[e.id],
 		label: e.label
 	}));
 }
-var no = [
+var Fo = [
+	{
+		slug: "findings",
+		label: "Findings"
+	},
 	{
 		slug: "summary",
 		label: "Summary"
@@ -6389,14 +6690,14 @@ var no = [
 		configKey: "ips"
 	}
 ];
-function ro(e, t) {
-	return no.filter((t) => !t.configKey || e[t.configKey]).map(({ slug: e, label: n }) => ({
+function Io(e, t) {
+	return Fo.filter((t) => !t.configKey || e[t.configKey]).map(({ slug: e, label: n }) => ({
 		slug: e,
 		label: n,
-		children: e === "urls" ? to(t) : void 0
+		children: e === "urls" ? Po(t) : void 0
 	}));
 }
-var io = {
+var Lo = {
 	toc: "_toc_15opi_1",
 	heading: "_heading_15opi_12",
 	list: "_list_15opi_17",
@@ -6406,25 +6707,25 @@ var io = {
 };
 //#endregion
 //#region src/report/components/TableOfContents.tsx
-function ao({ sections: e, urlRows: t }) {
-	let n = ro(e, t);
+function Ro({ sections: e, urlRows: t }) {
+	let n = Io(e, t);
 	return /* @__PURE__ */ X("nav", {
-		class: io.toc,
+		class: Lo.toc,
 		"aria-label": "Report sections",
 		children: [/* @__PURE__ */ X("div", {
-			class: `eyebrow-1 ${io.heading}`,
+			class: `eyebrow-1 ${Lo.heading}`,
 			children: "Contents"
 		}), /* @__PURE__ */ X("ul", {
-			class: io.list,
+			class: Lo.list,
 			children: n.map((e) => /* @__PURE__ */ X("li", { children: [/* @__PURE__ */ X("a", {
-				class: io.link,
+				class: Lo.link,
 				href: `#${e.slug}`,
 				"data-toc-link": !0,
 				children: e.label
 			}), e.children && e.children.length > 0 ? /* @__PURE__ */ X("ul", {
-				class: io.subList,
+				class: Lo.subList,
 				children: e.children.map((e) => /* @__PURE__ */ X("li", { children: /* @__PURE__ */ X("a", {
-					class: io.subLink,
+					class: Lo.subLink,
 					href: `#${e.slug}`,
 					"data-toc-link": !0,
 					children: e.label
@@ -6435,7 +6736,7 @@ function ao({ sections: e, urlRows: t }) {
 }
 //#endregion
 //#region src/report/styles/colors.ts
-var oo = [
+var zo = [
 	"blue",
 	"green",
 	"amber",
@@ -6444,12 +6745,12 @@ var oo = [
 	"teal",
 	"orange"
 ];
-function so(e) {
+function Bo(e) {
 	return `var(--color-${e})`;
 }
-function co(e) {
+function Vo(e) {
 	let t = {};
-	for (let [n, r] of oo.entries()) {
+	for (let [n, r] of zo.entries()) {
 		let i = e[n];
 		i && (t[`--color-${r}`] = i);
 	}
@@ -6457,18 +6758,18 @@ function co(e) {
 }
 //#endregion
 //#region src/report/vertical-bar-chart.ts
-var lo = 26.8, uo = 3.2;
-function fo(e) {
+var Ho = 26.8, Uo = 3.2;
+function Wo(e) {
 	let t = [];
 	for (let n = 0; n <= 4; n += 1) t.push(e / 4 * n);
 	return t;
 }
-function po(e, t = 1) {
+function Go(e, t = 1) {
 	if (e <= 0) return t;
 	let n = 10 ** Math.floor(Math.log10(e)), r = e / n, i;
 	return i = r <= 1 ? 1 : r <= 2 ? 2 : r <= 5 ? 5 : 10, Math.max(i * n, t);
 }
-var mo = {
+var Ko = {
 	empty: "_empty_14852_1",
 	chart: "_chart_14852_7",
 	yAxis: "_yAxis_14852_14",
@@ -6484,50 +6785,50 @@ var mo = {
 };
 //#endregion
 //#region src/report/components/VerticalBarChart.tsx
-function ho({ title: e, rows: t, accent: n, emptyMessage: r, axisMax: i, formatAxisTick: a }) {
-	let o = fo(i);
+function qo({ title: e, rows: t, accent: n, emptyMessage: r, axisMax: i, formatAxisTick: a }) {
+	let o = Wo(i);
 	return /* @__PURE__ */ X("section", {
 		class: "card",
 		children: [/* @__PURE__ */ X("h3", {
 			class: "heading-3",
 			children: e
 		}), t.length === 0 ? /* @__PURE__ */ X("p", {
-			class: mo.empty,
+			class: Ko.empty,
 			children: r
 		}) : /* @__PURE__ */ X("div", {
-			class: mo.chart,
+			class: Ko.chart,
 			children: [/* @__PURE__ */ X("div", {
-				class: mo.yAxis,
+				class: Ko.yAxis,
 				"aria-hidden": "true",
 				children: o.slice().reverse().map((e) => /* @__PURE__ */ X("span", {
-					class: mo.yTick,
+					class: Ko.yTick,
 					children: a(e)
 				}, e))
 			}), /* @__PURE__ */ X("div", {
-				class: mo.plotArea,
+				class: Ko.plotArea,
 				children: /* @__PURE__ */ X("div", {
-					class: mo.barRegion,
+					class: Ko.barRegion,
 					children: [o.map((e) => /* @__PURE__ */ X("div", {
-						class: mo.gridLine,
-						style: { bottom: `${uo + e / i * lo}rem` }
+						class: Ko.gridLine,
+						style: { bottom: `${Uo + e / i * Ho}rem` }
 					}, e)), /* @__PURE__ */ X("div", {
-						class: mo.bars,
+						class: Ko.bars,
 						children: t.map((e) => {
 							let t = i > 0 ? Math.min(e.value / i * 100, 100) : 0;
 							return /* @__PURE__ */ X("div", {
-								class: mo.barColumn,
+								class: Ko.barColumn,
 								"data-tip": e.tip,
 								children: [/* @__PURE__ */ X("div", {
-									class: mo.barTrack,
+									class: Ko.barTrack,
 									children: /* @__PURE__ */ X("div", {
-										class: mo.bar,
+										class: Ko.bar,
 										style: {
 											height: `${t.toFixed(2)}%`,
 											background: n
 										}
 									})
 								}), /* @__PURE__ */ X("span", {
-									class: mo.xLabel,
+									class: Ko.xLabel,
 									title: e.label,
 									children: e.label
 								})]
@@ -6541,24 +6842,24 @@ function ho({ title: e, rows: t, accent: n, emptyMessage: r, axisMax: i, formatA
 }
 //#endregion
 //#region src/report/components/BandwidthBarChart.tsx
-var go = 1024 ** 3;
-function _o(e) {
-	return e / go;
+var Jo = 1024 ** 3;
+function Yo(e) {
+	return e / Jo;
 }
-function vo(e) {
-	return e * go;
+function Xo(e) {
+	return e * Jo;
 }
-function yo(e) {
-	let t = _o(e);
+function Zo(e) {
+	let t = Yo(e);
 	return t >= 100 ? `${t.toFixed(0)} GB` : t >= 10 ? `${t.toFixed(1)} GB` : t >= 1 ? `${t.toFixed(2)} GB` : t >= .01 ? `${t.toFixed(3)} GB` : t > 0 ? `${t.toFixed(4)} GB` : "0 GB";
 }
-function bo({ title: e, rows: t, accent: n }) {
-	return /* @__PURE__ */ X(ho, {
+function Qo({ title: e, rows: t, accent: n }) {
+	return /* @__PURE__ */ X(qo, {
 		title: e,
 		accent: n,
 		emptyMessage: "No bandwidth data in this range.",
-		axisMax: po(t.reduce((e, t) => Math.max(e, t.responseBytes), 0), vo(.001)),
-		formatAxisTick: yo,
+		axisMax: Go(t.reduce((e, t) => Math.max(e, t.responseBytes), 0), Xo(.001)),
+		formatAxisTick: Zo,
 		rows: t.map((e) => ({
 			label: e.label,
 			value: e.responseBytes,
@@ -6566,7 +6867,7 @@ function bo({ title: e, rows: t, accent: n }) {
 		}))
 	});
 }
-var xo = {
+var $o = {
 	bars: "_bars_10ft9_1",
 	row: "_row_10ft9_7",
 	head: "_head_10ft9_12",
@@ -6578,7 +6879,7 @@ var xo = {
 };
 //#endregion
 //#region src/report/components/BarList.tsx
-function So({ title: e, rows: t, accent: n }) {
+function es({ title: e, rows: t, accent: n }) {
 	let r = t.reduce((e, t) => Math.max(e, t.responseBytes), 0);
 	return /* @__PURE__ */ X("section", {
 		class: "card",
@@ -6586,32 +6887,32 @@ function So({ title: e, rows: t, accent: n }) {
 			class: "heading-3",
 			children: e
 		}), /* @__PURE__ */ X("div", {
-			class: xo.bars,
+			class: $o.bars,
 			children: t.map((e) => {
 				let t = r > 0 ? e.responseBytes / r * 100 : 0;
 				return /* @__PURE__ */ X("div", {
-					class: xo.row,
+					class: $o.row,
 					children: [/* @__PURE__ */ X("div", {
-						class: xo.head,
+						class: $o.head,
 						children: [/* @__PURE__ */ X("span", {
-							class: xo.label,
+							class: $o.label,
 							title: e.label,
 							children: e.label
 						}), /* @__PURE__ */ X("span", {
-							class: xo.value,
+							class: $o.value,
 							children: [
 								k(e.responseBytes),
 								" ",
 								/* @__PURE__ */ X("span", {
-									class: xo.meta,
+									class: $o.meta,
 									children: ["• ", O(e.requests)]
 								})
 							]
 						})]
 					}), /* @__PURE__ */ X("div", {
-						class: xo.track,
+						class: $o.track,
 						children: /* @__PURE__ */ X("div", {
-							class: xo.fill,
+							class: $o.fill,
 							style: {
 								width: `${t.toFixed(2)}%`,
 								background: n
@@ -6625,16 +6926,16 @@ function So({ title: e, rows: t, accent: n }) {
 }
 //#endregion
 //#region src/report/components/CountBarChart.tsx
-function Co(e) {
+function ts(e) {
 	return O(Math.round(e));
 }
-function wo({ title: e, rows: t, accent: n }) {
-	return /* @__PURE__ */ X(ho, {
+function ns({ title: e, rows: t, accent: n }) {
+	return /* @__PURE__ */ X(qo, {
 		title: e,
 		accent: n,
 		emptyMessage: "No response code data in this range.",
-		axisMax: po(t.reduce((e, t) => Math.max(e, t.count), 0)),
-		formatAxisTick: Co,
+		axisMax: Go(t.reduce((e, t) => Math.max(e, t.count), 0)),
+		formatAxisTick: ts,
 		rows: t.map((e) => ({
 			label: e.label,
 			value: e.count,
@@ -6644,29 +6945,29 @@ function wo({ title: e, rows: t, accent: n }) {
 }
 //#endregion
 //#region src/report/components/CountBars.tsx
-function To({ title: e, rows: t, accent: n }) {
+function rs({ title: e, rows: t, accent: n }) {
 	let r = t.reduce((e, t) => Math.max(e, t.count), 0);
 	return /* @__PURE__ */ X("section", {
 		class: "card",
 		children: [/* @__PURE__ */ X("h3", { children: e }), /* @__PURE__ */ X("div", {
-			class: xo.bars,
+			class: $o.bars,
 			children: t.map((e) => {
 				let t = r > 0 ? e.count / r * 100 : 0;
 				return /* @__PURE__ */ X("div", {
-					class: xo.row,
+					class: $o.row,
 					children: [/* @__PURE__ */ X("div", {
-						class: xo.head,
+						class: $o.head,
 						children: [/* @__PURE__ */ X("span", {
-							class: xo.label,
+							class: $o.label,
 							children: e.label
 						}), /* @__PURE__ */ X("span", {
-							class: xo.value,
+							class: $o.value,
 							children: O(e.count)
 						})]
 					}), /* @__PURE__ */ X("div", {
-						class: xo.track,
+						class: $o.track,
 						children: /* @__PURE__ */ X("div", {
-							class: xo.fill,
+							class: $o.fill,
 							style: {
 								width: `${t.toFixed(2)}%`,
 								background: n
@@ -6680,45 +6981,45 @@ function To({ title: e, rows: t, accent: n }) {
 }
 //#endregion
 //#region src/report/sort-table-values.ts
-function Eo(e) {
+function is(e) {
 	return e == null || e === "" ? "" : String(e);
 }
-var Do = {
-	wrap: "_wrap_1v1ag_1",
-	table: "_table_1v1ag_9",
-	labelCell: "_labelCell_1v1ag_31",
-	labelCellInner: "_labelCellInner_1v1ag_35",
-	labelText: "_labelText_1v1ag_42",
-	sortHeader: "_sortHeader_1v1ag_50",
-	num: "_num_1v1ag_75",
-	sortHeaderLabel: "_sortHeaderLabel_1v1ag_80",
-	sortIcon: "_sortIcon_1v1ag_84"
+var as = {
+	wrap: "_wrap_bp249_1",
+	table: "_table_bp249_9",
+	labelCell: "_labelCell_bp249_32",
+	labelCellInner: "_labelCellInner_bp249_36",
+	labelText: "_labelText_bp249_43",
+	sortHeader: "_sortHeader_bp249_51",
+	num: "_num_bp249_76",
+	sortHeaderLabel: "_sortHeaderLabel_bp249_81",
+	sortIcon: "_sortIcon_bp249_85"
 };
 //#endregion
 //#region src/report/components/SortableTableHeader.tsx
-function Oo({ label: e, sortKey: t, sortType: n, className: r }) {
+function os({ label: e, sortKey: t, sortType: n, className: r }) {
 	return /* @__PURE__ */ X("th", {
 		class: r,
 		children: /* @__PURE__ */ X("button", {
 			type: "button",
-			class: Do.sortHeader,
+			class: as.sortHeader,
 			"data-sort-key": t,
 			"data-sort-type": n,
 			"data-sort-direction": "none",
 			"aria-sort": "none",
 			children: [/* @__PURE__ */ X("span", {
-				class: Do.sortHeaderLabel,
+				class: as.sortHeaderLabel,
 				children: e
 			}), /* @__PURE__ */ X("span", {
-				class: Do.sortIcon,
-				children: /* @__PURE__ */ X(qa, {})
+				class: as.sortIcon,
+				children: /* @__PURE__ */ X(Eo, {})
 			})]
 		})
 	});
 }
 //#endregion
 //#region src/report/components/DataTable.tsx
-function ko({ title: e, rows: t, hasCopyButton: n = !1, copyToastMessage: r = "Copied", labelAdornment: i, renderLabel: a, header: o }) {
+function ss({ title: e, rows: t, hasCopyButton: n = !1, copyToastMessage: r = "Copied", labelAdornment: i, renderLabel: a, header: o }) {
 	return /* @__PURE__ */ X("section", {
 		class: "card",
 		children: [
@@ -6728,29 +7029,29 @@ function ko({ title: e, rows: t, hasCopyButton: n = !1, copyToastMessage: r = "C
 			}),
 			o,
 			/* @__PURE__ */ X("div", {
-				class: Do.wrap,
+				class: as.wrap,
 				children: /* @__PURE__ */ X("table", {
-					class: `body-1 ${Do.table}`,
+					class: `body-1 ${as.table}`,
 					"data-sortable-table": !0,
 					children: [/* @__PURE__ */ X("thead", { children: /* @__PURE__ */ X("tr", { children: [
-						/* @__PURE__ */ X(Oo, {
+						/* @__PURE__ */ X(os, {
 							label: "Label",
 							sortKey: "label",
 							sortType: "string"
 						}),
-						/* @__PURE__ */ X(Oo, {
+						/* @__PURE__ */ X(os, {
 							label: "Bandwidth",
 							sortKey: "bandwidth",
 							sortType: "number",
 							className: "num"
 						}),
-						/* @__PURE__ */ X(Oo, {
+						/* @__PURE__ */ X(os, {
 							label: "Requests",
 							sortKey: "requests",
 							sortType: "number",
 							className: "num"
 						}),
-						/* @__PURE__ */ X(Oo, {
+						/* @__PURE__ */ X(os, {
 							label: "Avg / req",
 							sortKey: "avg",
 							sortType: "number",
@@ -6758,27 +7059,27 @@ function ko({ title: e, rows: t, hasCopyButton: n = !1, copyToastMessage: r = "C
 						})
 					] }) }), /* @__PURE__ */ X("tbody", { children: t.map((e, t) => /* @__PURE__ */ X("tr", {
 						"data-row-index": t,
-						"data-sort-label": Eo(e.label),
-						"data-sort-bandwidth": Eo(e.responseBytes),
-						"data-sort-requests": Eo(e.requests),
-						"data-sort-avg": Eo(vt(e)),
+						"data-sort-label": is(e.label),
+						"data-sort-bandwidth": is(e.responseBytes),
+						"data-sort-requests": is(e.requests),
+						"data-sort-avg": is(vt(e)),
 						children: [
 							/* @__PURE__ */ X("td", {
-								class: Do.labelCell,
+								class: as.labelCell,
 								title: a ? void 0 : e.label,
 								children: a ? a(e) : /* @__PURE__ */ X("div", {
-									class: Do.labelCellInner,
+									class: as.labelCellInner,
 									children: [
-										n ? /* @__PURE__ */ X(Ha, {
+										n ? /* @__PURE__ */ X(xo, {
 											variant: "ghost-icon-sm",
-											icon: /* @__PURE__ */ X(Ua, {}),
+											icon: /* @__PURE__ */ X(So, {}),
 											"data-copy-value": e.label,
 											"data-copy-toast": r,
 											"aria-label": `Copy "${e.label}"`,
 											title: "Copy to clipboard"
 										}) : null,
 										/* @__PURE__ */ X("span", {
-											class: Do.labelText,
+											class: as.labelText,
 											children: e.label
 										}),
 										i ? i(e) : null
@@ -6806,13 +7107,13 @@ function ko({ title: e, rows: t, hasCopyButton: n = !1, copyToastMessage: r = "C
 }
 //#endregion
 //#region src/report/utils/styleForShare.ts
-function Ao(e, t, n, r) {
+function cs(e, t, n, r) {
 	let i = e + t;
 	if (i <= 0) return `background: ${r};`;
 	let a = e / i * 100;
 	return `background: conic-gradient(${n} 0 ${a}%, ${r} ${a}% 100%);`;
 }
-var jo = {
+var ls = {
 	wrap: "_wrap_19u7b_1",
 	donut: "_donut_19u7b_8",
 	center: "_center_19u7b_27",
@@ -6821,7 +7122,7 @@ var jo = {
 };
 //#endregion
 //#region src/report/components/Donut.tsx
-function Mo({ title: e, primary: t, secondary: n, colors: r }) {
+function us({ title: e, primary: t, secondary: n, colors: r }) {
 	let i = t.value + n.value, a = i > 0 ? t.value / i * 100 : 0;
 	return /* @__PURE__ */ X("article", {
 		class: "card",
@@ -6829,22 +7130,22 @@ function Mo({ title: e, primary: t, secondary: n, colors: r }) {
 			class: "heading-3",
 			children: e
 		}), /* @__PURE__ */ X("div", {
-			class: jo.wrap,
+			class: ls.wrap,
 			children: [/* @__PURE__ */ X("div", {
-				class: jo.donut,
-				style: Ao(t.value, n.value, r.primary, r.secondary),
+				class: ls.donut,
+				style: cs(t.value, n.value, r.primary, r.secondary),
 				children: /* @__PURE__ */ X("div", {
-					class: `body-1 ${jo.center}`,
+					class: `body-1 ${ls.center}`,
 					children: [/* @__PURE__ */ X("strong", {
 						class: "heading-4",
 						children: k(i)
 					}), /* @__PURE__ */ X("span", { children: ht(a) })]
 				})
 			}), /* @__PURE__ */ X("div", {
-				class: `body-1 ${jo.legend}`,
+				class: `body-1 ${ls.legend}`,
 				children: [/* @__PURE__ */ X("div", { children: [
 					/* @__PURE__ */ X("span", {
-						class: jo.swatch,
+						class: ls.swatch,
 						style: { background: r.primary }
 					}),
 					t.label,
@@ -6852,7 +7153,7 @@ function Mo({ title: e, primary: t, secondary: n, colors: r }) {
 					/* @__PURE__ */ X("strong", { children: k(t.value) })
 				] }), /* @__PURE__ */ X("div", { children: [
 					/* @__PURE__ */ X("span", {
-						class: jo.swatch,
+						class: ls.swatch,
 						style: { background: r.secondary }
 					}),
 					n.label,
@@ -6863,7 +7164,7 @@ function Mo({ title: e, primary: t, secondary: n, colors: r }) {
 		})]
 	});
 }
-var No = {
+var ds = {
 	metric: "_metric_4re7a_1",
 	label: "_label_4re7a_12",
 	value: "_value_4re7a_16",
@@ -6871,94 +7172,219 @@ var No = {
 };
 //#endregion
 //#region src/report/components/Metric.tsx
-function Po({ label: e, value: t, note: n }) {
+function fs({ label: e, value: t, note: n }) {
 	return /* @__PURE__ */ X("article", {
-		class: No.metric,
+		class: ds.metric,
 		children: [
 			/* @__PURE__ */ X("div", {
-				class: `eyebrow-1 ${No.label}`,
+				class: `eyebrow-1 ${ds.label}`,
 				children: e
 			}),
 			/* @__PURE__ */ X("div", {
-				class: `display-1 ${No.value}`,
+				class: `display-1 ${ds.value}`,
 				children: t
 			}),
 			n ? /* @__PURE__ */ X("div", {
-				class: `body-2 ${No.note}`,
+				class: `body-2 ${ds.note}`,
 				children: n
 			}) : null
 		]
 	});
 }
+var Z = {
+	root: "_root_jzzsz_1",
+	hero: "_hero_jzzsz_8",
+	health: "_health_jzzsz_20",
+	healthDot: "_healthDot_jzzsz_32",
+	healthGreen: "_healthGreen_jzzsz_41",
+	healthYellow: "_healthYellow_jzzsz_50",
+	healthRed: "_healthRed_jzzsz_59",
+	healthEyebrow: "_healthEyebrow_jzzsz_68",
+	healthLabel: "_healthLabel_jzzsz_72",
+	healthNote: "_healthNote_jzzsz_76",
+	glance: "_glance_jzzsz_81",
+	glanceTitle: "_glanceTitle_jzzsz_87",
+	metrics: "_metrics_jzzsz_92",
+	opportunities: "_opportunities_jzzsz_103",
+	empty: "_empty_jzzsz_108",
+	tableWrap: "_tableWrap_jzzsz_117",
+	table: "_table_jzzsz_117",
+	priority: "_priority_jzzsz_147",
+	priorityCritical: "_priorityCritical_jzzsz_157",
+	priorityWarning: "_priorityWarning_jzzsz_162"
+}, ps = {
+	green: "Healthy",
+	yellow: "Needs attention",
+	red: "Critical issues"
+}, ms = {
+	green: Z.healthGreen,
+	yellow: Z.healthYellow,
+	red: Z.healthRed
+}, hs = {
+	critical: Z.priorityCritical,
+	warning: Z.priorityWarning
+};
+function gs(e) {
+	return e === "critical" ? "Critical" : "Warning";
+}
+function _s({ summary: e }) {
+	let t = e.issueCounts.critical + e.issueCounts.warning;
+	return /* @__PURE__ */ X("section", {
+		class: Z.root,
+		"data-section": "findings",
+		children: [/* @__PURE__ */ X("div", {
+			class: Z.hero,
+			children: [/* @__PURE__ */ X("div", {
+				class: `${Z.health} ${ms[e.overallHealth]}`,
+				"data-health": e.overallHealth,
+				children: [/* @__PURE__ */ X("span", {
+					class: Z.healthDot,
+					"aria-hidden": "true"
+				}), /* @__PURE__ */ X("div", { children: [
+					/* @__PURE__ */ X("div", {
+						class: `eyebrow-1 ${Z.healthEyebrow}`,
+						children: "Overall health"
+					}),
+					/* @__PURE__ */ X("div", {
+						class: `display-1 ${Z.healthLabel}`,
+						children: ps[e.overallHealth]
+					}),
+					/* @__PURE__ */ X("div", {
+						class: `body-2 ${Z.healthNote}`,
+						children: t === 0 ? "No critical or warning findings" : `${O(t)} ${t === 1 ? "issue" : "issues"} detected`
+					})
+				] })]
+			}), /* @__PURE__ */ X("div", {
+				class: Z.glance,
+				children: [/* @__PURE__ */ X("div", {
+					class: `eyebrow-1 ${Z.glanceTitle}`,
+					children: "At a glance"
+				}), /* @__PURE__ */ X("div", {
+					class: Z.metrics,
+					children: [
+						/* @__PURE__ */ X(fs, {
+							label: "Critical",
+							value: O(e.issueCounts.critical),
+							note: "High-impact findings"
+						}),
+						/* @__PURE__ */ X(fs, {
+							label: "Warnings",
+							value: O(e.issueCounts.warning),
+							note: "Worth reviewing"
+						}),
+						/* @__PURE__ */ X(fs, {
+							label: "Passed",
+							value: O(e.issueCounts.passed),
+							note: "Healthy signals"
+						}),
+						e.estimatedSavingsBytes === void 0 ? null : /* @__PURE__ */ X(fs, {
+							label: "Est. savings",
+							value: k(e.estimatedSavingsBytes),
+							note: "From explicit byte opportunities"
+						})
+					]
+				})]
+			})]
+		}), /* @__PURE__ */ X("div", {
+			class: Z.opportunities,
+			children: [/* @__PURE__ */ X("div", {
+				class: `eyebrow-1 ${Z.glanceTitle}`,
+				children: "Top opportunities"
+			}), e.topOpportunities.length === 0 ? /* @__PURE__ */ X("p", {
+				class: `body-1 ${Z.empty}`,
+				children: "No optimization opportunities detected for this view."
+			}) : /* @__PURE__ */ X("div", {
+				class: Z.tableWrap,
+				children: /* @__PURE__ */ X("table", {
+					class: `body-1 ${Z.table}`,
+					children: [/* @__PURE__ */ X("thead", { children: /* @__PURE__ */ X("tr", { children: [
+						/* @__PURE__ */ X("th", { children: "Priority" }),
+						/* @__PURE__ */ X("th", { children: "Issue" }),
+						/* @__PURE__ */ X("th", { children: "Impact" }),
+						/* @__PURE__ */ X("th", { children: "Suggested fix" })
+					] }) }), /* @__PURE__ */ X("tbody", { children: e.topOpportunities.map((e) => /* @__PURE__ */ X("tr", { children: [
+						/* @__PURE__ */ X("td", { children: /* @__PURE__ */ X("span", {
+							class: `${Z.priority} ${hs[e.priority]}`,
+							children: gs(e.priority)
+						}) }),
+						/* @__PURE__ */ X("td", { children: e.issue }),
+						/* @__PURE__ */ X("td", { children: e.impact }),
+						/* @__PURE__ */ X("td", { children: e.suggestedFix })
+					] }, `${e.priority}-${e.issue}`)) })]
+				})
+			})]
+		})]
+	});
+}
 //#endregion
 //#region src/report/is-development-url.ts
-function Fo(e, t) {
+function vs(e, t) {
 	let n = e.toLowerCase();
 	return (n === "localhost" || n === "127.0.0.1") && t !== "";
 }
-function Io(e) {
+function ys(e) {
 	return /^192\.168\.\d{1,3}\.\d{1,3}$/.test(e);
 }
-function Lo(e) {
+function bs(e) {
 	return /192\.168\.\d{1,3}\.\d{1,3}/.test(e) ? !0 : /(?:^|\/\/)(?:localhost|127\.0\.0\.1):\d+/.test(e);
 }
-function Ro(e) {
+function xs(e) {
 	if (!e || e === "(empty)") return !1;
 	try {
 		let t = new URL(e);
-		return Io(t.hostname) || Fo(t.hostname, t.port);
+		return ys(t.hostname) || vs(t.hostname, t.port);
 	} catch {
-		return Lo(e);
+		return bs(e);
 	}
 }
-var zo = { chip: "_chip_1idw4_1" };
+var Ss = { chip: "_chip_1idw4_1" };
 //#endregion
 //#region src/report/components/RefererDataTable.tsx
-function Bo(e) {
+function Cs(e) {
 	return e.startsWith("https://");
 }
-function Vo({ row: e }) {
+function ws({ row: e }) {
 	return /* @__PURE__ */ X("div", {
-		class: Do.labelCellInner,
+		class: as.labelCellInner,
 		children: [
-			/* @__PURE__ */ X(Ha, {
+			/* @__PURE__ */ X(xo, {
 				variant: "ghost-icon-sm",
-				icon: /* @__PURE__ */ X(Ua, {}),
+				icon: /* @__PURE__ */ X(So, {}),
 				"data-copy-value": e.label,
 				"aria-label": `Copy "${e.label}"`,
 				title: "Copy to clipboard"
 			}),
-			Bo(e.label) ? /* @__PURE__ */ X("a", {
+			Cs(e.label) ? /* @__PURE__ */ X("a", {
 				href: e.label,
 				target: "_blank",
 				rel: "noopener noreferrer",
-				class: `${Z.button} ${Z.ghostIconSm}`,
+				class: `${yo.button} ${yo.ghostIconSm}`,
 				"aria-label": `Open "${e.label}" in new tab`,
 				title: "Open in new tab",
 				children: /* @__PURE__ */ X("span", {
-					class: Z.icon,
-					children: /* @__PURE__ */ X(Wa, {})
+					class: yo.icon,
+					children: /* @__PURE__ */ X(Co, {})
 				})
 			}) : null,
 			/* @__PURE__ */ X("span", {
-				class: Do.labelText,
+				class: as.labelText,
 				children: e.label
 			}),
-			Ro(e.label) ? /* @__PURE__ */ X("span", {
-				class: zo.chip,
+			xs(e.label) ? /* @__PURE__ */ X("span", {
+				class: Ss.chip,
 				children: "Development"
 			}) : null
 		]
 	});
 }
-function Ho({ title: e, rows: t }) {
-	return /* @__PURE__ */ X(ko, {
+function Ts({ title: e, rows: t }) {
+	return /* @__PURE__ */ X(ss, {
 		title: e,
 		rows: t,
-		renderLabel: (e) => /* @__PURE__ */ X(Vo, { row: e })
+		renderLabel: (e) => /* @__PURE__ */ X(ws, { row: e })
 	});
 }
-var Uo = {
+var Es = {
 	summary: "_summary_19bh0_1",
 	stat: "_stat_19bh0_8",
 	labelStack: "_labelStack_19bh0_25",
@@ -6970,10 +7396,10 @@ var Uo = {
 };
 //#endregion
 //#region src/report/components/UserAgentDataTable.tsx
-function Wo(e) {
+function Ds(e) {
 	return /^@sanity/i.test(e.trim());
 }
-function Go() {
+function Os() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -6993,7 +7419,7 @@ function Go() {
 		]
 	});
 }
-function Ko() {
+function ks() {
 	return /* @__PURE__ */ X("svg", {
 		viewBox: "0 0 24 24",
 		fill: "none",
@@ -7009,75 +7435,75 @@ function Ko() {
 		})
 	});
 }
-function qo({ raw: e }) {
-	let t = xa(e);
+function As({ raw: e }) {
+	let t = Sa(e);
 	return /* @__PURE__ */ X("div", {
-		class: Uo.labelStack,
+		class: Es.labelStack,
 		children: [/* @__PURE__ */ X("div", {
-			class: Uo.labelHead,
+			class: Es.labelHead,
 			children: [
 				t.deviceKind ? /* @__PURE__ */ X("span", {
-					class: Uo.deviceIcon,
+					class: Es.deviceIcon,
 					title: t.deviceKind === "mobile" ? "Mobile" : "Desktop",
 					"aria-label": t.deviceKind === "mobile" ? "Mobile" : "Desktop",
-					children: t.deviceKind === "mobile" ? /* @__PURE__ */ X(Ko, {}) : /* @__PURE__ */ X(Go, {})
+					children: t.deviceKind === "mobile" ? /* @__PURE__ */ X(ks, {}) : /* @__PURE__ */ X(Os, {})
 				}) : null,
 				/* @__PURE__ */ X("span", {
-					class: Uo.parsedLabel,
+					class: Es.parsedLabel,
 					children: t.deviceKind ? t.displayLabel : t.raw || t.displayLabel
 				}),
-				Wo(e) ? /* @__PURE__ */ X("span", {
-					class: Uo.chip,
+				Ds(e) ? /* @__PURE__ */ X("span", {
+					class: Es.chip,
 					children: "Sanity client"
 				}) : null
 			]
 		}), t.deviceKind ? /* @__PURE__ */ X("div", {
-			class: Uo.rawLabel,
+			class: Es.rawLabel,
 			title: t.raw,
 			children: t.raw
 		}) : null]
 	});
 }
-function Jo({ rows: e }) {
-	let t = Sa(e);
+function js({ rows: e }) {
+	let t = Ca(e);
 	return t.trackableRequests === 0 ? null : /* @__PURE__ */ X("div", {
-		class: Uo.summary,
+		class: Es.summary,
 		children: [
 			/* @__PURE__ */ X("span", {
-				class: Uo.stat,
+				class: Es.stat,
 				children: [/* @__PURE__ */ X("strong", { children: "Mac" }), ht(t.macPct)]
 			}),
 			/* @__PURE__ */ X("span", {
-				class: Uo.stat,
+				class: Es.stat,
 				children: [/* @__PURE__ */ X("strong", { children: "Windows" }), ht(t.windowsPct)]
 			}),
 			/* @__PURE__ */ X("span", {
-				class: Uo.stat,
+				class: Es.stat,
 				children: [/* @__PURE__ */ X("strong", { children: "Mobile" }), ht(t.mobilePct)]
 			}),
 			/* @__PURE__ */ X("span", {
-				class: Uo.stat,
+				class: Es.stat,
 				children: [/* @__PURE__ */ X("strong", { children: "Desktop" }), ht(t.desktopPct)]
 			})
 		]
 	});
 }
-function Yo({ title: e, rows: t }) {
-	return /* @__PURE__ */ X(ko, {
+function Ms({ title: e, rows: t }) {
+	return /* @__PURE__ */ X(ss, {
 		title: e,
 		rows: t,
-		header: /* @__PURE__ */ X(Jo, { rows: t }),
-		renderLabel: (e) => /* @__PURE__ */ X(qo, { raw: e.label })
+		header: /* @__PURE__ */ X(js, { rows: t }),
+		renderLabel: (e) => /* @__PURE__ */ X(As, { raw: e.label })
 	});
 }
-var Xo = {
+var Ns = {
 	section: "_section_6yc47_1",
 	tabList: "_tabList_6yc47_5",
 	panel: "_panel_6yc47_12"
 };
 //#endregion
 //#region src/report/format-groq.ts
-function Zo(e) {
+function Ps(e) {
 	let t = e.replace(/\r\n?/g, "\n").replace(/\t/g, "  ").split("\n").map((e) => e.trimEnd());
 	for (; t.length > 0 && t[0] === "";) t.shift();
 	for (; t.length > 0 && t[t.length - 1] === "";) t.pop();
@@ -7088,7 +7514,7 @@ function Zo(e) {
 }
 //#endregion
 //#region node_modules/@sanity/prism-groq/groq.js
-var Qo = /* @__PURE__ */ c((/* @__PURE__ */ o(((e, t) => {
+var Fs = /* @__PURE__ */ c((/* @__PURE__ */ o(((e, t) => {
 	var n = function(e) {
 		var t = /(?:^|\s)lang(?:uage)?-([\w-]+)(?=\s|$)/i, n = 0, r = {}, i = {
 			manual: e.Prism && e.Prism.manual,
@@ -7733,7 +8159,7 @@ var Qo = /* @__PURE__ */ c((/* @__PURE__ */ o(((e, t) => {
 			f ||= (console.warn("Prism.fileHighlight is deprecated. Use `Prism.plugins.fileHighlight.highlight` instead."), !0), n.plugins.fileHighlight.highlight.apply(this, arguments);
 		};
 	})();
-})))(), 1), $o = {
+})))(), 1), Is = {
 	comment: {
 		pattern: /\/\/.*/,
 		greedy: !0
@@ -7794,16 +8220,16 @@ var Qo = /* @__PURE__ */ c((/* @__PURE__ */ o(((e, t) => {
 	},
 	identifier: /\b[a-zA-Z_]\w*\b/
 };
-typeof Prism < "u" && typeof Prism.languages == "object" && Prism.languages !== null && !Array.isArray(Prism.languages) && (Prism.languages.groq = $o), Object.assign((e) => {
-	e.languages.groq = $o;
+typeof Prism < "u" && typeof Prism.languages == "object" && Prism.languages !== null && !Array.isArray(Prism.languages) && (Prism.languages.groq = Is), Object.assign((e) => {
+	e.languages.groq = Is;
 }, {
 	displayName: "groq",
 	aliases: []
 });
 //#endregion
 //#region src/report/highlight-groq.ts
-function es(e) {
-	return Qo.default.highlight(e, Qo.default.languages.groq, "groq");
+function Ls(e) {
+	return Fs.default.highlight(e, Fs.default.languages.groq, "groq");
 }
 var Q = {
 	dialog: "_dialog_mjk69_1",
@@ -7820,42 +8246,42 @@ var Q = {
 	error: "_error_mjk69_86",
 	warning: "_warning_mjk69_92",
 	note: "_note_mjk69_104"
-}, ts = {
+}, Rs = {
 	stats: "_stats_8ca1h_1",
 	row: "_row_8ca1h_7",
 	group: "_group_8ca1h_25",
 	groupLabel: "_groupLabel_8ca1h_33",
 	empty: "_empty_8ca1h_40"
-}, ns = [
+}, zs = [
 	"dereferences",
 	"projections",
 	"subqueries",
 	"spreads",
 	"arrayTraversals"
 ];
-function rs(e) {
+function Bs(e) {
 	return e.replace(/([A-Z])/g, " $1").replace(/^./, (e) => e.toUpperCase());
 }
-function is({ stats: e }) {
-	let t = ns.filter((t) => e[t] > 0).sort((t, n) => e[n] - e[t]), n = Object.entries(e.functionCalls).filter(([, e]) => e > 0).sort(([e], [t]) => e.localeCompare(t));
+function Vs({ stats: e }) {
+	let t = zs.filter((t) => e[t] > 0).sort((t, n) => e[n] - e[t]), n = Object.entries(e.functionCalls).filter(([, e]) => e > 0).sort(([e], [t]) => e.localeCompare(t));
 	return t.length === 0 && n.length === 0 ? /* @__PURE__ */ X("p", {
-		class: ts.empty,
+		class: Rs.empty,
 		children: "No structural features detected."
 	}) : /* @__PURE__ */ X("dl", {
-		class: ts.stats,
+		class: Rs.stats,
 		children: [t.map((t) => /* @__PURE__ */ X("div", {
-			class: ts.row,
-			children: [/* @__PURE__ */ X("dt", { children: rs(t) }), /* @__PURE__ */ X("dd", {
+			class: Rs.row,
+			children: [/* @__PURE__ */ X("dt", { children: Bs(t) }), /* @__PURE__ */ X("dd", {
 				class: "num",
 				children: e[t]
 			})]
 		}, t)), n.length > 0 ? /* @__PURE__ */ X("div", {
-			class: ts.group,
+			class: Rs.group,
 			children: [/* @__PURE__ */ X("div", {
-				class: ts.groupLabel,
+				class: Rs.groupLabel,
 				children: "functionCalls"
 			}), n.map(([e, t]) => /* @__PURE__ */ X("div", {
-				class: ts.row,
+				class: Rs.row,
 				children: [/* @__PURE__ */ X("dt", { children: e }), /* @__PURE__ */ X("dd", {
 					class: "num",
 					children: t
@@ -7866,8 +8292,8 @@ function is({ stats: e }) {
 }
 //#endregion
 //#region src/report/components/GroqQueryFlyout.tsx
-function as({ id: e, query: t, params: n = null, requests: r, responseBytes: i }) {
-	let a = Zo(t), o = es(a), s = In(a, n ?? void 0), c = Ln(a, n ?? void 0), l = r > 0 ? i / r : 0, u = n && Object.keys(n).length > 0 ? JSON.stringify(n, null, 2) : null;
+function Hs({ id: e, query: t, params: n = null, requests: r, responseBytes: i }) {
+	let a = Ps(t), o = Ls(a), s = In(a, n ?? void 0), c = Ln(a, n ?? void 0), l = r > 0 ? i / r : 0, u = n && Object.keys(n).length > 0 ? JSON.stringify(n, null, 2) : null;
 	return /* @__PURE__ */ X("dialog", {
 		id: e,
 		class: Q.dialog,
@@ -7882,16 +8308,16 @@ function as({ id: e, query: t, params: n = null, requests: r, responseBytes: i }
 							class: `heading-3 ${Q.title}`,
 							children: "GROQ query"
 						}),
-						/* @__PURE__ */ X(Ha, {
+						/* @__PURE__ */ X(xo, {
 							variant: "outline-pill",
-							icon: /* @__PURE__ */ X(Ua, {}),
+							icon: /* @__PURE__ */ X(So, {}),
 							iconPosition: "end",
 							"data-copy-value": a,
 							"data-copy-toast": "Copied query",
 							"aria-label": "Copy query",
 							children: "Copy query"
 						}),
-						/* @__PURE__ */ X(Ha, {
+						/* @__PURE__ */ X(xo, {
 							variant: "ghost-icon",
 							icon: "×",
 							"data-groq-flyout-close": !0,
@@ -7976,7 +8402,7 @@ function as({ id: e, query: t, params: n = null, requests: r, responseBytes: i }
 					children: [/* @__PURE__ */ X("div", {
 						class: `eyebrow-1 ${Q.sectionLabel}`,
 						children: "Structure"
-					}), s ? /* @__PURE__ */ X(is, { stats: s }) : /* @__PURE__ */ X("p", {
+					}), s ? /* @__PURE__ */ X(Vs, { stats: s }) : /* @__PURE__ */ X("p", {
 						class: Q.error,
 						children: "Could not analyze query structure."
 					})]
@@ -7999,30 +8425,30 @@ function as({ id: e, query: t, params: n = null, requests: r, responseBytes: i }
 		})
 	});
 }
-var os = {
-	wrap: "_wrap_1g6p9_1",
-	tooltip: "_tooltip_1g6p9_7",
-	placementTop: "_placementTop_1g6p9_33",
-	placementBottom: "_placementBottom_1g6p9_38"
+var Us = {
+	wrap: "_wrap_1l7gg_1",
+	tooltip: "_tooltip_1l7gg_12",
+	placementTop: "_placementTop_1l7gg_38",
+	placementBottom: "_placementBottom_1l7gg_43"
 };
 //#endregion
 //#region src/report/components/Tooltip.tsx
-function ss({ content: e, children: t, placement: n = "top", class: r }) {
-	let i = n === "bottom" ? os.placementBottom : os.placementTop;
+function Ws({ content: e, children: t, placement: n = "top", class: r }) {
+	let i = n === "bottom" ? Us.placementBottom : Us.placementTop;
 	return /* @__PURE__ */ X("span", {
 		class: [
-			os.wrap,
+			Us.wrap,
 			i,
 			r
 		].filter(Boolean).join(" "),
 		children: [t, /* @__PURE__ */ X("span", {
-			class: os.tooltip,
+			class: Us.tooltip,
 			role: "tooltip",
 			children: e
 		})]
 	});
 }
-var cs = {
+var Gs = {
 	empty: "_empty_150uw_1",
 	metricCell: "_metricCell_150uw_8",
 	errorBadge: "_errorBadge_150uw_14",
@@ -8031,58 +8457,58 @@ var cs = {
 };
 //#endregion
 //#region src/report/components/UrlDataTable.tsx
-function ls(e) {
+function Ks(e) {
 	return e === null ? "—" : String(e);
 }
-function us({ rows: e, showFlyout: t = !1, variant: n = "default", idPrefix: r }) {
+function qs({ rows: e, showFlyout: t = !1, variant: n = "default", idPrefix: r }) {
 	if (e.length === 0) return /* @__PURE__ */ X("p", {
-		class: cs.empty,
+		class: Gs.empty,
 		children: "No URLs in this category."
 	});
 	let i = n === "image", a = n === "file", o = i || a;
 	return /* @__PURE__ */ X("div", {
-		class: Do.wrap,
+		class: as.wrap,
 		children: /* @__PURE__ */ X("table", {
-			class: `body-1 ${Do.table}`,
+			class: `body-1 ${as.table}`,
 			"data-sortable-table": !0,
 			children: [/* @__PURE__ */ X("thead", { children: /* @__PURE__ */ X("tr", { children: [
-				/* @__PURE__ */ X(Oo, {
+				/* @__PURE__ */ X(os, {
 					label: "Label",
 					sortKey: "label",
 					sortType: "string"
 				}),
 				i ? /* @__PURE__ */ X(oe, { children: [
-					/* @__PURE__ */ X(Oo, {
+					/* @__PURE__ */ X(os, {
 						label: "Width",
 						sortKey: "width",
 						sortType: "number",
 						className: "num"
 					}),
-					/* @__PURE__ */ X(Oo, {
+					/* @__PURE__ */ X(os, {
 						label: "Quality",
 						sortKey: "quality",
 						sortType: "number",
 						className: "num"
 					}),
-					/* @__PURE__ */ X(Oo, {
+					/* @__PURE__ */ X(os, {
 						label: "Format",
 						sortKey: "format",
 						sortType: "string"
 					})
 				] }) : null,
-				/* @__PURE__ */ X(Oo, {
+				/* @__PURE__ */ X(os, {
 					label: "Bandwidth",
 					sortKey: "bandwidth",
 					sortType: "number",
 					className: "num"
 				}),
-				/* @__PURE__ */ X(Oo, {
+				/* @__PURE__ */ X(os, {
 					label: "Requests",
 					sortKey: "requests",
 					sortType: "number",
 					className: "num"
 				}),
-				/* @__PURE__ */ X(Oo, {
+				/* @__PURE__ */ X(os, {
 					label: "Avg / req",
 					sortKey: "avg",
 					sortType: "number",
@@ -8092,68 +8518,68 @@ function us({ rows: e, showFlyout: t = !1, variant: n = "default", idPrefix: r }
 				let s = t ? qn(e.label) : null, c = s === null ? null : Jn(e.label), l = s === null ? !1 : Ln(s, c ?? void 0), u = s ? `${r}-flyout-${n}` : void 0, d = i ? nr(e.label) : null;
 				return /* @__PURE__ */ X("tr", {
 					"data-row-index": n,
-					"data-sort-label": Eo(i ? d?.id ?? e.label : e.label),
-					"data-sort-bandwidth": Eo(e.responseBytes),
-					"data-sort-requests": Eo(e.requests),
-					"data-sort-avg": Eo(vt(e)),
+					"data-sort-label": is(i ? d?.id ?? e.label : e.label),
+					"data-sort-bandwidth": is(e.responseBytes),
+					"data-sort-requests": is(e.requests),
+					"data-sort-avg": is(vt(e)),
 					...i ? {
-						"data-sort-width": Eo(d?.width ?? null),
-						"data-sort-quality": Eo(d?.quality ?? null),
-						"data-sort-format": Eo(d?.format ?? null)
+						"data-sort-width": is(d?.width ?? null),
+						"data-sort-quality": is(d?.quality ?? null),
+						"data-sort-format": is(d?.format ?? null)
 					} : {},
 					children: [
 						/* @__PURE__ */ X("td", {
-							class: Do.labelCell,
+							class: as.labelCell,
 							title: i ? e.label : void 0,
 							children: [/* @__PURE__ */ X("div", {
-								class: Do.labelCellInner,
+								class: as.labelCellInner,
 								children: [
-									/* @__PURE__ */ X(Ha, {
+									/* @__PURE__ */ X(xo, {
 										variant: "ghost-icon-sm",
-										icon: /* @__PURE__ */ X(Ua, {}),
+										icon: /* @__PURE__ */ X(So, {}),
 										"data-copy-value": e.label,
 										"data-copy-toast": "Copied URL",
 										"aria-label": `Copy "${e.label}"`,
 										title: "Copy to clipboard"
 									}),
 									o ? /* @__PURE__ */ X("a", {
-										href: e.label,
+										href: rr(e.label),
 										target: "_blank",
 										rel: "noopener noreferrer",
-										class: `${Z.button} ${Z.ghostIconSm}`,
+										class: `${yo.button} ${yo.ghostIconSm}`,
 										"aria-label": `Open "${i ? d?.id ?? e.label : e.label}" in new tab`,
 										title: "Open in new tab",
 										children: /* @__PURE__ */ X("span", {
-											class: Z.icon,
-											children: /* @__PURE__ */ X(Wa, {})
+											class: yo.icon,
+											children: /* @__PURE__ */ X(Co, {})
 										})
 									}) : null,
 									/* @__PURE__ */ X("span", {
-										class: Do.labelText,
+										class: as.labelText,
 										children: i ? d?.id : e.label
 									}),
-									a && Wn(e.label) ? /* @__PURE__ */ X(ss, {
+									a && Wn(e.label) ? /* @__PURE__ */ X(Ws, {
 										content: "Consider using HLS streaming services like Mux instead of serving large single MP4 files to reduce bandwidth and improve playback.",
 										children: /* @__PURE__ */ X("span", {
-											class: cs.warningIcon,
-											children: /* @__PURE__ */ X(Ga, {})
+											class: Gs.warningIcon,
+											children: /* @__PURE__ */ X(wo, {})
 										})
 									}) : null,
-									l ? /* @__PURE__ */ X(ss, {
+									l ? /* @__PURE__ */ X(Ws, {
 										content: `This query ${jn}.`,
 										children: /* @__PURE__ */ X("span", {
-											class: cs.warningIcon,
-											children: /* @__PURE__ */ X(Ga, {})
+											class: Gs.warningIcon,
+											children: /* @__PURE__ */ X(wo, {})
 										})
 									}) : null,
-									u ? /* @__PURE__ */ X(Ha, {
+									u ? /* @__PURE__ */ X(xo, {
 										variant: "outline-pill-accent",
 										"data-groq-flyout-target": u,
 										"aria-haspopup": "dialog",
 										children: "View query"
 									}) : null
 								]
-							}), u && s ? /* @__PURE__ */ X(as, {
+							}), u && s ? /* @__PURE__ */ X(Hs, {
 								id: u,
 								query: s,
 								params: c,
@@ -8165,11 +8591,11 @@ function us({ rows: e, showFlyout: t = !1, variant: n = "default", idPrefix: r }
 							/* @__PURE__ */ X("td", {
 								class: "num",
 								children: /* @__PURE__ */ X("div", {
-									class: cs.metricCell,
-									children: [/* @__PURE__ */ X("span", { children: ls(d.width) }), rr(d.width) ? /* @__PURE__ */ X(ss, {
+									class: Gs.metricCell,
+									children: [/* @__PURE__ */ X("span", { children: Ks(d.width) }), ir(d.width) ? /* @__PURE__ */ X(Ws, {
 										content: "Width exceeds 2000px",
 										children: /* @__PURE__ */ X("span", {
-											class: cs.errorBadge,
+											class: Gs.errorBadge,
 											children: "Too large"
 										})
 									}) : null]
@@ -8178,23 +8604,23 @@ function us({ rows: e, showFlyout: t = !1, variant: n = "default", idPrefix: r }
 							/* @__PURE__ */ X("td", {
 								class: "num",
 								children: /* @__PURE__ */ X("div", {
-									class: cs.metricCell,
-									children: [/* @__PURE__ */ X("span", { children: ls(d.quality) }), ir(d.quality, d.isSvg) ? /* @__PURE__ */ X(ss, {
+									class: Gs.metricCell,
+									children: [/* @__PURE__ */ X("span", { children: Ks(d.quality) }), ar(d.quality, d.isSvg) ? /* @__PURE__ */ X(Ws, {
 										content: "Quality exceeds 87",
 										children: /* @__PURE__ */ X("span", {
-											class: cs.errorIcon,
-											children: /* @__PURE__ */ X(Ka, {})
+											class: Gs.errorIcon,
+											children: /* @__PURE__ */ X(To, {})
 										})
 									}) : null]
 								})
 							}),
 							/* @__PURE__ */ X("td", { children: /* @__PURE__ */ X("div", {
-								class: cs.metricCell,
-								children: [/* @__PURE__ */ X("span", { children: ls(d.format) }), ar(d.format) ? /* @__PURE__ */ X(ss, {
+								class: Gs.metricCell,
+								children: [/* @__PURE__ */ X("span", { children: Ks(d.format) }), or(d.format) ? /* @__PURE__ */ X(Ws, {
 									content: "Format should be \"auto\"",
 									children: /* @__PURE__ */ X("span", {
-										class: cs.errorIcon,
-										children: /* @__PURE__ */ X(Ka, {})
+										class: Gs.errorIcon,
+										children: /* @__PURE__ */ X(To, {})
 									})
 								}) : null]
 							}) })
@@ -8219,10 +8645,10 @@ function us({ rows: e, showFlyout: t = !1, variant: n = "default", idPrefix: r }
 }
 //#endregion
 //#region src/report/components/UrlTabsSection.tsx
-function ds({ rows: e, idPrefix: t }) {
+function Js({ rows: e, idPrefix: t }) {
 	let n = Zn(e), r = Qn(n), i = Xn(n);
 	return /* @__PURE__ */ X("section", {
-		class: `card ${Xo.section}`,
+		class: `card ${Ns.section}`,
 		"data-section": "urls",
 		"data-url-tabs": !0,
 		"data-default-url-tab": r,
@@ -8232,10 +8658,10 @@ function ds({ rows: e, idPrefix: t }) {
 				children: "Top URLs"
 			}),
 			/* @__PURE__ */ X("div", {
-				class: Xo.tabList,
+				class: Ns.tabList,
 				role: "tablist",
 				"aria-label": "URL categories",
-				children: i.map((e) => /* @__PURE__ */ X(Ha, {
+				children: i.map((e) => /* @__PURE__ */ X(xo, {
 					variant: "tab",
 					role: "tab",
 					"data-url-tab": e.id,
@@ -8251,11 +8677,11 @@ function ds({ rows: e, idPrefix: t }) {
 			}),
 			i.map((e) => /* @__PURE__ */ X("div", {
 				id: `${t}-panel-${e.id}`,
-				class: Xo.panel,
+				class: Ns.panel,
 				role: "tabpanel",
 				"data-url-panel": e.id,
 				hidden: e.id !== r || void 0,
-				children: /* @__PURE__ */ X(us, {
+				children: /* @__PURE__ */ X(qs, {
 					rows: n[e.id],
 					showFlyout: e.id === "query",
 					variant: e.id === "image" ? "image" : e.id === "file" ? "file" : "default",
@@ -8274,212 +8700,216 @@ var $ = {
 };
 //#endregion
 //#region src/report/components/ViewSection.tsx
-function fs({ view: e, sections: t, viewKey: n, hidden: r = !1 }) {
-	let i = e.firstTimestamp && e.lastTimestamp ? `${_t(e.firstTimestamp)} → ${_t(e.lastTimestamp)}` : "No timestamps found";
+function Ys({ view: e, sections: t, viewKey: n, hidden: r = !1 }) {
+	let i = e.firstTimestamp && e.lastTimestamp ? `${_t(e.firstTimestamp)} → ${_t(e.lastTimestamp)}` : "No timestamps found", a = Xa(e);
 	return /* @__PURE__ */ X("div", {
 		"data-report-view": n,
 		hidden: r || void 0,
-		children: [/* @__PURE__ */ X("section", {
-			class: $.sectionBlock,
-			"data-section": "summary",
-			children: /* @__PURE__ */ X("div", {
-				class: $.viewGrid,
-				children: [
-					/* @__PURE__ */ X(Po, {
-						label: "Requests",
-						value: O(e.requests),
-						note: i
-					}),
-					/* @__PURE__ */ X(Po, {
-						label: "Bandwidth",
-						value: k(e.responseBytes),
-						note: "Response size total"
-					}),
-					/* @__PURE__ */ X(Po, {
-						label: "Request bytes",
-						value: k(e.requestBytes),
-						note: "Inbound payload total"
-					}),
-					/* @__PURE__ */ X(Po, {
-						label: "Studio",
-						value: k(e.studio.responseBytes),
-						note: `${O(e.studio.requests)} requests`
-					}),
-					/* @__PURE__ */ X(Po, {
-						label: "Billable",
-						value: k(e.nonStudio.responseBytes),
-						note: `${O(e.nonStudio.requests)} requests`
-					}),
-					/* @__PURE__ */ X(Mo, {
-						title: "Studio split",
-						primary: {
+		children: [
+			/* @__PURE__ */ X(_s, { summary: a }),
+			/* @__PURE__ */ X("section", {
+				class: $.sectionBlock,
+				"data-section": "summary",
+				children: /* @__PURE__ */ X("div", {
+					class: $.viewGrid,
+					children: [
+						/* @__PURE__ */ X(fs, {
+							label: "Requests",
+							value: O(e.requests),
+							note: i
+						}),
+						/* @__PURE__ */ X(fs, {
+							label: "Bandwidth",
+							value: k(e.responseBytes),
+							note: "Response size total"
+						}),
+						/* @__PURE__ */ X(fs, {
+							label: "Request bytes",
+							value: k(e.requestBytes),
+							note: "Inbound payload total"
+						}),
+						/* @__PURE__ */ X(fs, {
 							label: "Studio",
-							value: e.studio.responseBytes
-						},
-						secondary: {
+							value: k(e.studio.responseBytes),
+							note: `${O(e.studio.requests)} requests`
+						}),
+						/* @__PURE__ */ X(fs, {
 							label: "Billable",
-							value: e.nonStudio.responseBytes
-						},
-						colors: {
-							primary: so("blue"),
-							secondary: so("green")
-						}
-					})
-				]
+							value: k(e.nonStudio.responseBytes),
+							note: `${O(e.nonStudio.requests)} requests`
+						}),
+						/* @__PURE__ */ X(us, {
+							title: "Studio split",
+							primary: {
+								label: "Studio",
+								value: e.studio.responseBytes
+							},
+							secondary: {
+								label: "Billable",
+								value: e.nonStudio.responseBytes
+							},
+							colors: {
+								primary: Bo("blue"),
+								secondary: Bo("green")
+							}
+						})
+					]
+				})
+			}),
+			/* @__PURE__ */ X("div", {
+				class: $.grid2,
+				children: [/* @__PURE__ */ X("div", {
+					class: $.stack,
+					children: [
+						/* @__PURE__ */ X("div", {
+							class: `eyebrow-1 ${$.sectionTitle}`,
+							children: "Charts"
+						}),
+						/* @__PURE__ */ X("div", {
+							class: $.grid2,
+							children: [t.domain ? /* @__PURE__ */ X("section", {
+								class: $.sectionBlock,
+								"data-section": "domain",
+								children: /* @__PURE__ */ X(es, {
+									title: "Top domains",
+									rows: e.byDomain,
+									accent: Bo("blue")
+								})
+							}) : null, t.endpoint ? /* @__PURE__ */ X("section", {
+								class: $.sectionBlock,
+								"data-section": "endpoint",
+								children: /* @__PURE__ */ X(es, {
+									title: "Top endpoints",
+									rows: e.byEndpoint,
+									accent: Bo("green")
+								})
+							}) : null]
+						}),
+						/* @__PURE__ */ X("div", {
+							class: $.grid2,
+							children: [t.date ? /* @__PURE__ */ X("section", {
+								class: $.sectionBlock,
+								"data-section": "date",
+								children: /* @__PURE__ */ X(Qo, {
+									title: "Daily bandwidth",
+									rows: e.byDate,
+									accent: Bo("amber")
+								})
+							}) : null, t.hour ? /* @__PURE__ */ X("section", {
+								class: $.sectionBlock,
+								"data-section": "hour",
+								children: /* @__PURE__ */ X(Qo, {
+									title: "Hourly bandwidth",
+									rows: e.byHour,
+									accent: Bo("red")
+								})
+							}) : null]
+						}),
+						/* @__PURE__ */ X("div", {
+							class: $.grid2,
+							children: [t.status ? /* @__PURE__ */ X("section", {
+								class: $.sectionBlock,
+								"data-section": "status",
+								children: /* @__PURE__ */ X(ns, {
+									title: "Response codes",
+									rows: e.byStatus,
+									accent: Bo("purple")
+								})
+							}) : null, t.histogram ? /* @__PURE__ */ X("section", {
+								class: $.sectionBlock,
+								"data-section": "histogram",
+								children: /* @__PURE__ */ X(rs, {
+									title: "Response size buckets",
+									rows: e.responseSizeHistogram,
+									accent: Bo("teal")
+								})
+							}) : null]
+						})
+					]
+				}), /* @__PURE__ */ X("div", {
+					class: $.stack,
+					children: [
+						/* @__PURE__ */ X("div", {
+							class: `eyebrow-1 ${$.sectionTitle}`,
+							children: "Top lists"
+						}),
+						t.urls ? /* @__PURE__ */ X("div", {
+							class: $.sectionBlock,
+							children: /* @__PURE__ */ X(Js, {
+								rows: e.byUrl,
+								idPrefix: `urls-${n}`
+							})
+						}) : null,
+						t.referers ? /* @__PURE__ */ X("section", {
+							class: $.sectionBlock,
+							"data-section": "referers",
+							children: /* @__PURE__ */ X(Ts, {
+								title: "Top referers",
+								rows: e.byReferer
+							})
+						}) : null,
+						t.userAgents ? /* @__PURE__ */ X("section", {
+							class: $.sectionBlock,
+							"data-section": "userAgents",
+							children: /* @__PURE__ */ X(Ms, {
+								title: "Top user agents",
+								rows: e.byUserAgent
+							})
+						}) : null,
+						t.ips ? /* @__PURE__ */ X("section", {
+							class: $.sectionBlock,
+							"data-section": "ips",
+							children: /* @__PURE__ */ X(ss, {
+								hasCopyButton: !0,
+								copyToastMessage: "Copied IP",
+								title: "Top IPs",
+								rows: e.byIp
+							})
+						}) : null
+					]
+				})]
 			})
-		}), /* @__PURE__ */ X("div", {
-			class: $.grid2,
-			children: [/* @__PURE__ */ X("div", {
-				class: $.stack,
-				children: [
-					/* @__PURE__ */ X("div", {
-						class: `eyebrow-1 ${$.sectionTitle}`,
-						children: "Charts"
-					}),
-					/* @__PURE__ */ X("div", {
-						class: $.grid2,
-						children: [t.domain ? /* @__PURE__ */ X("section", {
-							class: $.sectionBlock,
-							"data-section": "domain",
-							children: /* @__PURE__ */ X(So, {
-								title: "Top domains",
-								rows: e.byDomain,
-								accent: so("blue")
-							})
-						}) : null, t.endpoint ? /* @__PURE__ */ X("section", {
-							class: $.sectionBlock,
-							"data-section": "endpoint",
-							children: /* @__PURE__ */ X(So, {
-								title: "Top endpoints",
-								rows: e.byEndpoint,
-								accent: so("green")
-							})
-						}) : null]
-					}),
-					/* @__PURE__ */ X("div", {
-						class: $.grid2,
-						children: [t.date ? /* @__PURE__ */ X("section", {
-							class: $.sectionBlock,
-							"data-section": "date",
-							children: /* @__PURE__ */ X(bo, {
-								title: "Daily bandwidth",
-								rows: e.byDate,
-								accent: so("amber")
-							})
-						}) : null, t.hour ? /* @__PURE__ */ X("section", {
-							class: $.sectionBlock,
-							"data-section": "hour",
-							children: /* @__PURE__ */ X(bo, {
-								title: "Hourly bandwidth",
-								rows: e.byHour,
-								accent: so("red")
-							})
-						}) : null]
-					}),
-					/* @__PURE__ */ X("div", {
-						class: $.grid2,
-						children: [t.status ? /* @__PURE__ */ X("section", {
-							class: $.sectionBlock,
-							"data-section": "status",
-							children: /* @__PURE__ */ X(wo, {
-								title: "Response codes",
-								rows: e.byStatus,
-								accent: so("purple")
-							})
-						}) : null, t.histogram ? /* @__PURE__ */ X("section", {
-							class: $.sectionBlock,
-							"data-section": "histogram",
-							children: /* @__PURE__ */ X(To, {
-								title: "Response size buckets",
-								rows: e.responseSizeHistogram,
-								accent: so("teal")
-							})
-						}) : null]
-					})
-				]
-			}), /* @__PURE__ */ X("div", {
-				class: $.stack,
-				children: [
-					/* @__PURE__ */ X("div", {
-						class: `eyebrow-1 ${$.sectionTitle}`,
-						children: "Top lists"
-					}),
-					t.urls ? /* @__PURE__ */ X("div", {
-						class: $.sectionBlock,
-						children: /* @__PURE__ */ X(ds, {
-							rows: e.byUrl,
-							idPrefix: `urls-${n}`
-						})
-					}) : null,
-					t.referers ? /* @__PURE__ */ X("section", {
-						class: $.sectionBlock,
-						"data-section": "referers",
-						children: /* @__PURE__ */ X(Ho, {
-							title: "Top referers",
-							rows: e.byReferer
-						})
-					}) : null,
-					t.userAgents ? /* @__PURE__ */ X("section", {
-						class: $.sectionBlock,
-						"data-section": "userAgents",
-						children: /* @__PURE__ */ X(Yo, {
-							title: "Top user agents",
-							rows: e.byUserAgent
-						})
-					}) : null,
-					t.ips ? /* @__PURE__ */ X("section", {
-						class: $.sectionBlock,
-						"data-section": "ips",
-						children: /* @__PURE__ */ X(ko, {
-							hasCopyButton: !0,
-							copyToastMessage: "Copied IP",
-							title: "Top IPs",
-							rows: e.byIp
-						})
-					}) : null
-				]
-			})]
-		})]
+		]
 	});
 }
-var ps = {
-	page: "_page_ji3w4_1",
-	layout: "_layout_ji3w4_7",
-	content: "_content_ji3w4_14",
-	footer: "_footer_ji3w4_18"
+var Xs = {
+	page: "_page_14a77_1",
+	layout: "_layout_14a77_7",
+	content: "_content_14a77_14",
+	footer: "_footer_14a77_18"
 };
 //#endregion
 //#region src/report/ReportApp.tsx
-function ms({ data: e }) {
-	let t = co(e.config.palette), n = e.config.sections.billableComparison, r = n ? e.billable.byUrl : e.all.byUrl;
+function Zs({ data: e }) {
+	let t = Vo(e.config.palette), n = e.config.sections.billableComparison, r = n ? e.billable.byUrl : e.all.byUrl;
 	return /* @__PURE__ */ X("main", {
-		class: ps.page,
+		class: Xs.page,
 		style: t,
-		children: [/* @__PURE__ */ X(Ba, { data: e }), /* @__PURE__ */ X("div", {
-			class: ps.layout,
-			children: [/* @__PURE__ */ X(ao, {
+		children: [/* @__PURE__ */ X(vo, { data: e }), /* @__PURE__ */ X("div", {
+			class: Xs.layout,
+			children: [/* @__PURE__ */ X(Ro, {
 				sections: e.config.sections,
 				urlRows: r
 			}), /* @__PURE__ */ X("div", {
-				class: ps.content,
+				class: Xs.content,
 				children: [
-					/* @__PURE__ */ X($a, { showToggle: n }),
-					n ? /* @__PURE__ */ X(oe, { children: [/* @__PURE__ */ X(fs, {
+					/* @__PURE__ */ X(Mo, { showToggle: n }),
+					n ? /* @__PURE__ */ X(oe, { children: [/* @__PURE__ */ X(Ys, {
 						view: e.billable,
 						sections: e.config.sections,
 						viewKey: "billable"
-					}), /* @__PURE__ */ X(fs, {
+					}), /* @__PURE__ */ X(Ys, {
 						view: e.all,
 						sections: e.config.sections,
 						viewKey: "all",
 						hidden: !0
-					})] }) : /* @__PURE__ */ X(fs, {
+					})] }) : /* @__PURE__ */ X(Ys, {
 						view: e.all,
 						sections: e.config.sections,
 						viewKey: "all"
 					}),
 					/* @__PURE__ */ X("div", {
-						class: `body-2 ${ps.footer}`,
+						class: `body-2 ${Xs.footer}`,
 						children: [
 							"Raw report payload is embedded in",
 							" ",
@@ -8494,9 +8924,9 @@ function ms({ data: e }) {
 }
 //#endregion
 //#region src/report/scripts/copy-buttons.ts
-var hs = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar btn=e.target.closest(\"[data-copy-value]\");\nif(!btn)return;\ne.preventDefault();\nvar value=btn.getAttribute(\"data-copy-value\");\nif(!value)return;\nvar message=btn.getAttribute(\"data-copy-toast\")||\"Copied\";\nnavigator.clipboard.writeText(value).then(function(){\nwindow.__showReportToast(message);\n}).catch(function(){});\n});\n})();", gs = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar target=e.target.closest(\"[data-groq-flyout-target]\");\nif(target){\ne.preventDefault();\nvar id=target.getAttribute(\"data-groq-flyout-target\");\nif(!id)return;\nvar dialog=document.getElementById(id);\nif(dialog&&typeof dialog.showModal===\"function\")dialog.showModal();\nreturn;\n}\nif(e.target.closest(\"[data-groq-flyout-close]\")){\nvar closeDialog=e.target.closest(\"dialog[data-groq-flyout]\");\nif(closeDialog)closeDialog.close();\n}\n});\ndocument.addEventListener(\"click\",function(e){\nvar dialog=e.target;\nif(dialog&&dialog.tagName===\"DIALOG\"&&dialog.hasAttribute(\"data-groq-flyout\")&&e.target===dialog){\ndialog.close();\n}\n});\n})();", _s = "(function(){\nvar button=document.getElementById(\"download-markdown\");\nvar payloadEl=document.getElementById(\"report-markdown\");\nif(!button||!payloadEl)return;\n\nbutton.addEventListener(\"click\",function(){\nvar payload;\ntry{payload=JSON.parse(payloadEl.textContent||\"\");}catch(e){return;}\nif(!payload||!payload.filenameBase)return;\n\nvar checkbox=document.getElementById(\"show-studio-requests\");\nvar view=checkbox&&checkbox.checked?\"all\":\"billable\";\nif(!checkbox)view=\"all\";\n\nvar markdown=view===\"all\"?payload.all:payload.billable;\nif(!markdown)return;\n\nvar suffix=view===\"all\"?\"_all\":\"_billable-only\";\nvar filename=payload.filenameBase+suffix+\".md\";\nvar blob=new Blob([markdown],{type:\"text/markdown;charset=utf-8\"});\nvar url=URL.createObjectURL(blob);\nvar link=document.createElement(\"a\");\nlink.href=url;\nlink.download=filename;\nlink.click();\nURL.revokeObjectURL(url);\nwindow.__showReportToast(\"Downloaded\");\n});\n})();", vs = "(function(){\nfunction parseSortValue(raw,type){\nif(raw===\"\")return null;\nif(type===\"number\"){\nvar n=Number(raw);\nreturn Number.isFinite(n)?n:null;\n}\nreturn raw;\n}\nfunction compareValues(a,b,type,direction){\nvar mult=direction===\"asc\"?1:-1;\nif(a===null&&b===null)return 0;\nif(a===null)return 1;\nif(b===null)return -1;\nif(type===\"string\")return String(a).localeCompare(String(b))*mult;\nreturn(Number(a)-Number(b))*mult;\n}\nfunction setHeaderState(btn,direction){\nvar aria=direction===\"asc\"?\"ascending\":direction===\"desc\"?\"descending\":\"none\";\nbtn.setAttribute(\"data-sort-direction\",direction);\nbtn.setAttribute(\"aria-sort\",aria);\n}\nfunction sortTable(table,direction,key,type){\nvar tbody=table.querySelector(\"tbody\");\nif(!tbody)return;\nvar rows=Array.from(tbody.querySelectorAll(\"tr\"));\nif(direction===\"none\"){\nrows.sort(function(a,b){\nreturn Number(a.getAttribute(\"data-row-index\"))-Number(b.getAttribute(\"data-row-index\"));\n});\n}else{\nvar attr=\"data-sort-\"+key;\nrows.sort(function(a,b){\nvar av=parseSortValue(a.getAttribute(attr)||\"\",type);\nvar bv=parseSortValue(b.getAttribute(attr)||\"\",type);\nreturn compareValues(av,bv,type,direction);\n});\n}\nrows.forEach(function(row){tbody.appendChild(row);});\n}\ndocument.addEventListener(\"click\",function(e){\nvar btn=e.target.closest(\"[data-sort-key]\");\nif(!btn)return;\nvar table=btn.closest(\"[data-sortable-table]\");\nif(!table)return;\ne.preventDefault();\nvar key=btn.getAttribute(\"data-sort-key\");\nvar type=btn.getAttribute(\"data-sort-type\")||\"string\";\nif(!key)return;\nvar current=btn.getAttribute(\"data-sort-direction\")||\"none\";\nvar next=current===\"none\"?\"asc\":current===\"asc\"?\"desc\":\"none\";\ntable.querySelectorAll(\"[data-sort-key]\").forEach(function(other){\nif(other!==btn)setHeaderState(other,\"none\");\n});\nsetHeaderState(btn,next);\nsortTable(table,next,key,type);\n});\n})();", ys = "(function(){\nvar toast=null,hideTimer=null;\nvar supportsPopover=typeof HTMLElement.prototype.showPopover===\"function\";\nwindow.__showReportToast=function(message){\nif(!toast){\ntoast=document.createElement(\"div\");\ntoast.className=\"copy-toast\";\ntoast.setAttribute(\"role\",\"status\");\ntoast.setAttribute(\"aria-live\",\"polite\");\nif(supportsPopover)toast.setAttribute(\"popover\",\"manual\");\ndocument.body.appendChild(toast);\n}\ntoast.textContent=message||\"Done\";\nif(supportsPopover){\nif(toast.matches(\":popover-open\"))toast.hidePopover();\ntoast.showPopover();\n}\ntoast.classList.add(\"copy-toast--visible\");\nclearTimeout(hideTimer);\nhideTimer=setTimeout(function(){\ntoast.classList.remove(\"copy-toast--visible\");\nif(supportsPopover&&toast.matches(\":popover-open\"))toast.hidePopover();\n},1500);\n};\n})();", bs = "(function(){\nfunction parseHash(hash){\nvar raw=(hash||\"\").replace(/^#/,\"\");\nif(!raw)return{section:\"\",urlTab:null};\nif(raw.indexOf(\"urls/\")===0)return{section:\"urls\",urlTab:raw.slice(5),full:raw};\nif(raw===\"urls\")return{section:\"urls\",urlTab:null,full:\"urls\"};\nreturn{section:raw,urlTab:null,full:raw};\n}\n\nfunction scrollToSection(section,fullHash){\nvar target=document.querySelector('[data-report-view]:not([hidden]) [data-section=\"'+section+'\"]');\nif(!target)return;\ntarget.scrollIntoView({behavior:\"smooth\",block:\"start\"});\nif(history.replaceState){\nhistory.replaceState(null,\"\",window.location.pathname+window.location.search+\"#\"+fullHash);\n}else{\nwindow.location.hash=fullHash;\n}\n}\n\nfunction navigate(hash){\nvar parsed=parseHash(hash);\nif(!parsed.section)return;\nscrollToSection(parsed.section,parsed.full);\nif(parsed.section===\"urls\"&&typeof window.__activateUrlTab===\"function\"){\nwindow.__activateUrlTab(parsed.urlTab);\n}\n}\n\ndocument.addEventListener(\"click\",function(e){\nvar link=e.target.closest(\"[data-toc-link]\");\nif(!link)return;\nvar slug=(link.getAttribute(\"href\")||\"\").replace(/^#/,\"\");\nif(!slug)return;\ne.preventDefault();\nnavigate(\"#\"+slug);\n});\n\nvar initialHash=window.location.hash;\nif(initialHash){\nrequestAnimationFrame(function(){navigate(initialHash);});\n}\n})();", xs = "(function(){\nfunction visibleUrlTabsSection(){\nreturn document.querySelector('[data-report-view]:not([hidden]) [data-url-tabs]');\n}\n\nfunction activateUrlTab(tab){\nvar section=visibleUrlTabsSection();\nif(!section)return;\nvar resolved=tab||section.getAttribute(\"data-default-url-tab\")||\"image\";\nif(!section.querySelector('[data-url-tab=\"'+resolved+'\"]')){\nresolved=section.getAttribute(\"data-default-url-tab\")||\"image\";\n}\nvar tabs=section.querySelectorAll(\"[data-url-tab]\");\nvar panels=section.querySelectorAll(\"[data-url-panel]\");\ntabs.forEach(function(btn){\nvar isActive=btn.getAttribute(\"data-url-tab\")===resolved;\nbtn.setAttribute(\"aria-selected\",isActive?\"true\":\"false\");\n});\npanels.forEach(function(panel){\npanel.hidden=panel.getAttribute(\"data-url-panel\")!==resolved;\n});\nsection.setAttribute(\"data-active-url-tab\",resolved);\n}\n\nwindow.__activateUrlTab=activateUrlTab;\n\ndocument.addEventListener(\"click\",function(e){\nvar tabButton=e.target.closest(\"[data-url-tab]\");\nif(!tabButton)return;\nvar section=tabButton.closest(\"[data-url-tabs]\");\nif(!section)return;\nvar tab=tabButton.getAttribute(\"data-url-tab\");\nif(!tab)return;\ne.preventDefault();\nactivateUrlTab(tab);\nvar suffix=tab===\"image\"?\"\":(\"/\"+tab);\nif(history.replaceState){\nhistory.replaceState(null,\"\",window.location.pathname+window.location.search+\"#urls\"+suffix);\n}\n});\n})();", Ss = "(function(){\nvar STORAGE_KEY=\"sanity-log-report-show-studio\";\nvar checkbox=document.getElementById(\"show-studio-requests\");\nvar billableView=document.querySelector('[data-report-view=\"billable\"]');\nvar allView=document.querySelector('[data-report-view=\"all\"]');\nif(!checkbox||!billableView||!allView)return;\n\nfunction setView(showAll){\nbillableView.hidden=showAll;\nallView.hidden=!showAll;\ntry{sessionStorage.setItem(STORAGE_KEY,showAll?\"1\":\"0\");}catch(e){}\n}\n\nvar saved=null;\ntry{saved=sessionStorage.getItem(STORAGE_KEY);}catch(e){}\nif(saved===\"1\"){\ncheckbox.checked=true;\nsetView(true);\n}\n\ncheckbox.addEventListener(\"change\",function(){\nsetView(checkbox.checked);\n});\n})();", Cs = [
-	":root{--text-size-xs:1.152rem;--text-size-sm:1.44rem;--text-size-md:1.52rem;--tracking-tight:.02em;--tracking-wide:.0275em}.heading-1{letter-spacing:var(--tracking-tight);font-size:clamp(3.2rem,4vw,5.2rem);line-height:.95}.heading-2{font-size:1.92rem;font-weight:700}.heading-3{font-size:1.6rem;font-weight:600}.heading-4{font-size:2.08rem;font-weight:700}.display-1{font-size:clamp(2.32rem,2vw,3.52rem);font-weight:800}.eyebrow-1{font-size:var(--text-size-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:700}.body-1{font-size:var(--text-size-md)}.body-2{font-size:var(--text-size-sm)}.tracking-tight{letter-spacing:var(--tracking-tight)}.tracking-wide{letter-spacing:var(--tracking-wide)}html{font-size:62.5%}:root{--lightningcss-light: ;--lightningcss-dark:initial;color-scheme:dark;--bg:#09090b;--panel:#18181be6;--panel-border:#3f3f46e6;--text:#f4f4f5;--muted:#a1a1aa;--radius-lg:2rem;--radius-md:1.2rem;--radius-sm:.7rem;--radius-pill:99.9rem;--border-subtle:#ffffff14;--border-faint:#ffffff1f;--track-bg:#ffffff14;--font-sans:ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}*{box-sizing:border-box}body{min-height:100vh;font-family:var(--font-sans);font-size:var(--text-size-md);color:var(--text);background:#101011;margin:0}h3{margin:0}.num{color:var(--muted);font-variant-numeric:tabular-nums}code,pre{font-family:var(--font-mono)}.card{border:.1rem solid var(--border-subtle);border-radius:var(--radius-md);background:var(--panel);-webkit-backdrop-filter:blur(.8rem);backdrop-filter:blur(.8rem);padding:1.6rem}.copy-toast{z-index:9999;border-radius:var(--radius-pill);border:.1rem solid var(--border-faint);color:var(--text);font-size:var(--text-size-sm);opacity:0;pointer-events:none;background:#18181b;margin:0;padding:.8rem 1.6rem;font-weight:500;transition:opacity .2s,transform .2s;position:fixed;bottom:2.4rem;left:50%;transform:translate(-50%)translateY(1rem);box-shadow:0 .4rem 1.6rem #00000059}.copy-toast--visible{opacity:1;transform:translate(-50%)translateY(0)}",
-	"._page_ji3w4_1{max-width:160rem;margin:0 auto;padding:3.2rem 2rem 5.6rem}._layout_ji3w4_7{grid-template-columns:22rem minmax(0,1fr);align-items:start;gap:2.4rem;display:grid}._content_ji3w4_14{min-width:0}._footer_ji3w4_18{color:var(--muted);margin-top:2.4rem}@media (width<=90rem){._layout_ji3w4_7{grid-template-columns:1fr}}",
+var Qs = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar btn=e.target.closest(\"[data-copy-value]\");\nif(!btn)return;\ne.preventDefault();\nvar value=btn.getAttribute(\"data-copy-value\");\nif(!value)return;\nvar message=btn.getAttribute(\"data-copy-toast\")||\"Copied\";\nnavigator.clipboard.writeText(value).then(function(){\nwindow.__showReportToast(message);\n}).catch(function(){});\n});\n})();", $s = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar target=e.target.closest(\"[data-groq-flyout-target]\");\nif(target){\ne.preventDefault();\nvar id=target.getAttribute(\"data-groq-flyout-target\");\nif(!id)return;\nvar dialog=document.getElementById(id);\nif(dialog&&typeof dialog.showModal===\"function\")dialog.showModal();\nreturn;\n}\nif(e.target.closest(\"[data-groq-flyout-close]\")){\nvar closeDialog=e.target.closest(\"dialog[data-groq-flyout]\");\nif(closeDialog)closeDialog.close();\n}\n});\ndocument.addEventListener(\"click\",function(e){\nvar dialog=e.target;\nif(dialog&&dialog.tagName===\"DIALOG\"&&dialog.hasAttribute(\"data-groq-flyout\")&&e.target===dialog){\ndialog.close();\n}\n});\n})();", ec = "(function(){\nvar button=document.getElementById(\"download-markdown\");\nvar payloadEl=document.getElementById(\"report-markdown\");\nif(!button||!payloadEl)return;\n\nbutton.addEventListener(\"click\",function(){\nvar payload;\ntry{payload=JSON.parse(payloadEl.textContent||\"\");}catch(e){return;}\nif(!payload||!payload.filenameBase)return;\n\nvar checkbox=document.getElementById(\"show-studio-requests\");\nvar view=checkbox&&checkbox.checked?\"all\":\"billable\";\nif(!checkbox)view=\"all\";\n\nvar markdown=view===\"all\"?payload.all:payload.billable;\nif(!markdown)return;\n\nvar suffix=view===\"all\"?\"_all\":\"_billable-only\";\nvar filename=payload.filenameBase+suffix+\".md\";\nvar blob=new Blob([markdown],{type:\"text/markdown;charset=utf-8\"});\nvar url=URL.createObjectURL(blob);\nvar link=document.createElement(\"a\");\nlink.href=url;\nlink.download=filename;\nlink.click();\nURL.revokeObjectURL(url);\nwindow.__showReportToast(\"Downloaded\");\n});\n})();", tc = "(function(){\nfunction parseSortValue(raw,type){\nif(raw===\"\")return null;\nif(type===\"number\"){\nvar n=Number(raw);\nreturn Number.isFinite(n)?n:null;\n}\nreturn raw;\n}\nfunction compareValues(a,b,type,direction){\nvar mult=direction===\"asc\"?1:-1;\nif(a===null&&b===null)return 0;\nif(a===null)return 1;\nif(b===null)return -1;\nif(type===\"string\")return String(a).localeCompare(String(b))*mult;\nreturn(Number(a)-Number(b))*mult;\n}\nfunction setHeaderState(btn,direction){\nvar aria=direction===\"asc\"?\"ascending\":direction===\"desc\"?\"descending\":\"none\";\nbtn.setAttribute(\"data-sort-direction\",direction);\nbtn.setAttribute(\"aria-sort\",aria);\n}\nfunction sortTable(table,direction,key,type){\nvar tbody=table.querySelector(\"tbody\");\nif(!tbody)return;\nvar rows=Array.from(tbody.querySelectorAll(\"tr\"));\nif(direction===\"none\"){\nrows.sort(function(a,b){\nreturn Number(a.getAttribute(\"data-row-index\"))-Number(b.getAttribute(\"data-row-index\"));\n});\n}else{\nvar attr=\"data-sort-\"+key;\nrows.sort(function(a,b){\nvar av=parseSortValue(a.getAttribute(attr)||\"\",type);\nvar bv=parseSortValue(b.getAttribute(attr)||\"\",type);\nreturn compareValues(av,bv,type,direction);\n});\n}\nrows.forEach(function(row){tbody.appendChild(row);});\n}\ndocument.addEventListener(\"click\",function(e){\nvar btn=e.target.closest(\"[data-sort-key]\");\nif(!btn)return;\nvar table=btn.closest(\"[data-sortable-table]\");\nif(!table)return;\ne.preventDefault();\nvar key=btn.getAttribute(\"data-sort-key\");\nvar type=btn.getAttribute(\"data-sort-type\")||\"string\";\nif(!key)return;\nvar current=btn.getAttribute(\"data-sort-direction\")||\"none\";\nvar next=current===\"none\"?\"asc\":current===\"asc\"?\"desc\":\"none\";\ntable.querySelectorAll(\"[data-sort-key]\").forEach(function(other){\nif(other!==btn)setHeaderState(other,\"none\");\n});\nsetHeaderState(btn,next);\nsortTable(table,next,key,type);\n});\n})();", nc = "(function(){\nvar toast=null,hideTimer=null;\nvar supportsPopover=typeof HTMLElement.prototype.showPopover===\"function\";\nwindow.__showReportToast=function(message){\nif(!toast){\ntoast=document.createElement(\"div\");\ntoast.className=\"copy-toast\";\ntoast.setAttribute(\"role\",\"status\");\ntoast.setAttribute(\"aria-live\",\"polite\");\nif(supportsPopover)toast.setAttribute(\"popover\",\"manual\");\ndocument.body.appendChild(toast);\n}\ntoast.textContent=message||\"Done\";\nif(supportsPopover){\nif(toast.matches(\":popover-open\"))toast.hidePopover();\ntoast.showPopover();\n}\ntoast.classList.add(\"copy-toast--visible\");\nclearTimeout(hideTimer);\nhideTimer=setTimeout(function(){\ntoast.classList.remove(\"copy-toast--visible\");\nif(supportsPopover&&toast.matches(\":popover-open\"))toast.hidePopover();\n},1500);\n};\n})();", rc = "(function(){\nfunction parseHash(hash){\nvar raw=(hash||\"\").replace(/^#/,\"\");\nif(!raw)return{section:\"\",urlTab:null};\nif(raw.indexOf(\"urls/\")===0)return{section:\"urls\",urlTab:raw.slice(5),full:raw};\nif(raw===\"urls\")return{section:\"urls\",urlTab:null,full:\"urls\"};\nreturn{section:raw,urlTab:null,full:raw};\n}\n\nfunction scrollToSection(section,fullHash){\nvar target=document.querySelector('[data-report-view]:not([hidden]) [data-section=\"'+section+'\"]');\nif(!target)return;\ntarget.scrollIntoView({behavior:\"smooth\",block:\"start\"});\nif(history.replaceState){\nhistory.replaceState(null,\"\",window.location.pathname+window.location.search+\"#\"+fullHash);\n}else{\nwindow.location.hash=fullHash;\n}\n}\n\nfunction navigate(hash){\nvar parsed=parseHash(hash);\nif(!parsed.section)return;\nscrollToSection(parsed.section,parsed.full);\nif(parsed.section===\"urls\"&&typeof window.__activateUrlTab===\"function\"){\nwindow.__activateUrlTab(parsed.urlTab);\n}\n}\n\ndocument.addEventListener(\"click\",function(e){\nvar link=e.target.closest(\"[data-toc-link]\");\nif(!link)return;\nvar slug=(link.getAttribute(\"href\")||\"\").replace(/^#/,\"\");\nif(!slug)return;\ne.preventDefault();\nnavigate(\"#\"+slug);\n});\n\nvar initialHash=window.location.hash;\nif(initialHash){\nrequestAnimationFrame(function(){navigate(initialHash);});\n}\n})();", ic = "(function(){\nfunction visibleUrlTabsSection(){\nreturn document.querySelector('[data-report-view]:not([hidden]) [data-url-tabs]');\n}\n\nfunction activateUrlTab(tab){\nvar section=visibleUrlTabsSection();\nif(!section)return;\nvar resolved=tab||section.getAttribute(\"data-default-url-tab\")||\"image\";\nif(!section.querySelector('[data-url-tab=\"'+resolved+'\"]')){\nresolved=section.getAttribute(\"data-default-url-tab\")||\"image\";\n}\nvar tabs=section.querySelectorAll(\"[data-url-tab]\");\nvar panels=section.querySelectorAll(\"[data-url-panel]\");\ntabs.forEach(function(btn){\nvar isActive=btn.getAttribute(\"data-url-tab\")===resolved;\nbtn.setAttribute(\"aria-selected\",isActive?\"true\":\"false\");\n});\npanels.forEach(function(panel){\npanel.hidden=panel.getAttribute(\"data-url-panel\")!==resolved;\n});\nsection.setAttribute(\"data-active-url-tab\",resolved);\n}\n\nwindow.__activateUrlTab=activateUrlTab;\n\ndocument.addEventListener(\"click\",function(e){\nvar tabButton=e.target.closest(\"[data-url-tab]\");\nif(!tabButton)return;\nvar section=tabButton.closest(\"[data-url-tabs]\");\nif(!section)return;\nvar tab=tabButton.getAttribute(\"data-url-tab\");\nif(!tab)return;\ne.preventDefault();\nactivateUrlTab(tab);\nvar suffix=tab===\"image\"?\"\":(\"/\"+tab);\nif(history.replaceState){\nhistory.replaceState(null,\"\",window.location.pathname+window.location.search+\"#urls\"+suffix);\n}\n});\n})();", ac = "(function(){\nvar STORAGE_KEY=\"sanity-log-report-show-studio\";\nvar checkbox=document.getElementById(\"show-studio-requests\");\nvar billableView=document.querySelector('[data-report-view=\"billable\"]');\nvar allView=document.querySelector('[data-report-view=\"all\"]');\nif(!checkbox||!billableView||!allView)return;\n\nfunction setView(showAll){\nbillableView.hidden=showAll;\nallView.hidden=!showAll;\ntry{sessionStorage.setItem(STORAGE_KEY,showAll?\"1\":\"0\");}catch(e){}\n}\n\nvar saved=null;\ntry{saved=sessionStorage.getItem(STORAGE_KEY);}catch(e){}\nif(saved===\"1\"){\ncheckbox.checked=true;\nsetView(true);\n}\n\ncheckbox.addEventListener(\"change\",function(){\nsetView(checkbox.checked);\n});\n})();", oc = [
+	":root{--text-size-xs:1.152rem;--text-size-sm:1.44rem;--text-size-md:1.52rem;--tracking-tight:.02em;--tracking-wide:.0275em}.heading-1{letter-spacing:var(--tracking-tight);font-size:clamp(3.2rem,4vw,5.2rem);line-height:.95}.heading-2{font-size:1.92rem;font-weight:700}.heading-3{margin-bottom:2.75rem;font-size:1.6rem;font-weight:600}.heading-4{font-size:2.08rem;font-weight:700}.display-1{font-size:clamp(2.32rem,2vw,3.52rem);font-weight:800}.eyebrow-1{font-size:var(--text-size-xs);letter-spacing:var(--tracking-wide);text-transform:uppercase;font-weight:700}.body-1{font-size:var(--text-size-md)}.body-2{font-size:var(--text-size-sm)}.tracking-tight{letter-spacing:var(--tracking-tight)}.tracking-wide{letter-spacing:var(--tracking-wide)}html{font-size:62.5%}:root{--lightningcss-light: ;--lightningcss-dark:initial;color-scheme:dark;--bg:#09090b;--panel:#18181be6;--panel-border:#3f3f46e6;--text:#f4f4f5;--muted:#a1a1aa;--radius-lg:2rem;--radius-md:1.2rem;--radius-sm:.7rem;--radius-pill:99.9rem;--border-subtle:#ffffff14;--border-faint:#ffffff1f;--track-bg:#ffffff14;--font-sans:ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif;--font-mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}*{box-sizing:border-box}body{min-height:100vh;font-family:var(--font-sans);font-size:var(--text-size-md);color:var(--text);background:#101011;margin:0}h3{margin:0}.num{color:var(--muted);font-variant-numeric:tabular-nums}code,pre{font-family:var(--font-mono)}.card{border:.1rem solid var(--border-subtle);border-radius:var(--radius-md);background:var(--panel);-webkit-backdrop-filter:blur(.8rem);backdrop-filter:blur(.8rem);padding:1.6rem}.copy-toast{z-index:9999;border-radius:var(--radius-pill);border:.1rem solid var(--border-faint);color:var(--text);font-size:var(--text-size-sm);opacity:0;pointer-events:none;background:#18181b;margin:0;padding:.8rem 1.6rem;font-weight:500;transition:opacity .2s,transform .2s;position:fixed;bottom:2.4rem;left:50%;transform:translate(-50%)translateY(1rem);box-shadow:0 .4rem 1.6rem #00000059}.copy-toast--visible{opacity:1;transform:translate(-50%)translateY(0)}",
+	"._page_14a77_1{max-width:160rem;margin:0 auto;padding:3.2rem 2rem 5.6rem}._layout_14a77_7{grid-template-columns:22rem minmax(0,1fr);align-items:start;gap:2.4rem;display:grid}._content_14a77_14{min-width:0}._footer_14a77_18{color:var(--muted);margin-top:2.4rem}@media (width<=1200px){._layout_14a77_7{grid-template-columns:1fr}}",
 	"._header_1755g_1{flex-wrap:wrap;justify-content:space-between;align-items:end;gap:1.6rem;margin-bottom:2.4rem;display:flex}._title_1755g_10{margin:0}._subtitle_1755g_14{color:var(--muted);max-width:72ch;margin-top:1rem}._meta_1755g_20{text-align:right;color:var(--muted);justify-items:end;gap:.8rem;display:grid}@media (width<=110rem){._meta_1755g_20{text-align:left;justify-items:start}._header_1755g_1{align-items:start}}",
 	"._toc_15opi_1{border:.1rem solid var(--border-subtle);border-radius:var(--radius-md);background:var(--panel);-webkit-backdrop-filter:blur(.8rem);backdrop-filter:blur(.8rem);align-self:start;padding:1.6rem;position:sticky;top:2rem}._heading_15opi_12{color:var(--muted);margin-bottom:1.2rem}._list_15opi_17{gap:.4rem;margin:0;padding:0;list-style:none;display:grid}._link_15opi_25{border-radius:var(--radius-sm);color:var(--text);font-size:var(--text-size-sm);padding:.6rem .8rem;text-decoration:none;transition:background .15s;display:block}._link_15opi_25:hover{background:#ffffff0f}._subList_15opi_39{gap:.2rem;margin:.2rem 0 .4rem;padding:0 0 0 1.2rem;list-style:none;display:grid}._subLink_15opi_47{border-radius:var(--radius-sm);color:var(--muted);font-size:var(--text-size-xs);padding:.4rem .8rem;text-decoration:none;transition:background .15s;display:block}._subLink_15opi_47:hover{color:var(--text);background:#ffffff0f}@media (width<=90rem){._toc_15opi_1{position:static}}",
 	"._row_1de3z_1{flex-wrap:wrap;align-items:center;gap:1.2rem;margin-bottom:2.4rem;display:flex}._row_1de3z_1>:first-child{flex:24rem}",
@@ -8507,11 +8937,11 @@ var hs = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar bt
 	"._wrap_19u7b_1{justify-items:center;gap:1.6rem;margin-top:1.2rem;display:grid}._donut_19u7b_8{aspect-ratio:1;border-radius:50%;place-items:center;width:100%;padding:2.2rem;display:grid;position:relative}._donut_19u7b_8:after{content:\"\";border:.1rem solid var(--border-subtle);background:#0a0a0cf2;border-radius:50%;position:absolute;inset:2.4rem}._center_19u7b_27{z-index:1;text-align:center;justify-items:center;gap:.4rem;display:grid;position:relative}._legend_19u7b_36{width:100%;color:var(--muted);gap:1rem;display:grid}._legend_19u7b_36 strong{color:var(--text)}._swatch_19u7b_47{border-radius:var(--radius-pill);vertical-align:-.1rem;width:1.1rem;height:1.1rem;margin-right:.8rem;display:inline-block}",
 	"._bars_10ft9_1{gap:1rem;margin-top:1.2rem;display:grid}._row_10ft9_7{gap:.6rem;display:grid}._head_10ft9_12{justify-content:space-between;align-items:baseline;gap:1.6rem;display:flex}._label_10ft9_19{text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text);overflow:hidden}._value_10ft9_27,._meta_10ft9_32{color:var(--muted);font-variant-numeric:tabular-nums}._track_10ft9_37{border-radius:var(--radius-pill);background:var(--track-bg);width:100%;height:1rem;overflow:hidden}._fill_10ft9_45{border-radius:inherit;height:100%}",
 	"._empty_14852_1{color:var(--muted);font-size:var(--text-size-sm);margin:1.2rem 0 0}._chart_14852_7{gap:.8rem;min-height:0;margin-top:1.2rem;display:flex}._yAxis_14852_14{flex-direction:column;flex-shrink:0;justify-content:space-between;width:5.6rem;height:26.8rem;margin-bottom:3.2rem;display:flex}._yTick_14852_24{color:var(--muted);font-size:var(--text-size-xs);font-variant-numeric:tabular-nums;text-align:right;line-height:1}._plotArea_14852_32{flex:1;min-width:0}._barRegion_14852_37{height:30rem;max-height:30rem;position:relative}._gridLine_14852_43{pointer-events:none;border-top:.1rem solid #ffffff0f;height:0;position:absolute;left:0;right:0}._bars_14852_52{z-index:1;box-sizing:border-box;align-items:stretch;gap:.4rem;height:100%;padding-bottom:3.2rem;display:flex;position:relative;overflow-x:auto}._barColumn_14852_64{flex-direction:column;flex:1 1 0;align-items:stretch;min-width:1.6rem;min-height:0;display:flex;position:relative}._barTrack_14852_74{flex:1;align-items:flex-end;min-height:0;display:flex}._bar_14852_37{border-radius:var(--radius-sm) var(--radius-sm) 0 0;width:100%;min-height:.2rem;transition:opacity .15s}._barColumn_14852_64:hover ._bar_14852_37,._barColumn_14852_64:focus-within ._bar_14852_37{opacity:.85}._barColumn_14852_64:after{content:attr(data-tip);z-index:2;border-radius:var(--radius-sm);border:.1rem solid var(--border-faint);color:var(--text);font-size:var(--text-size-xs);font-variant-numeric:tabular-nums;white-space:nowrap;opacity:0;pointer-events:none;background:#18181b;padding:.4rem .8rem;line-height:1.4;transition:opacity .15s,transform .15s;position:absolute;bottom:calc(100% - 2.6rem);left:50%;transform:translate(-50%)translateY(.4rem);box-shadow:0 .4rem 1.2rem #00000059}._barColumn_14852_64:hover:after,._barColumn_14852_64:focus-within:after{opacity:1;transform:translate(-50%)translateY(0)}._xLabel_14852_123{max-width:100%;height:2.4rem;color:var(--muted);font-size:var(--text-size-xs);text-align:center;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0;margin-top:.8rem;line-height:1.2;overflow:hidden}",
-	"._wrap_1v1ag_1{border-radius:var(--radius-sm);border:.1rem solid var(--border-subtle);max-height:42rem;margin-top:1.2rem;overflow:auto}._table_1v1ag_9{border-collapse:collapse;width:100%}._table_1v1ag_9 th,._table_1v1ag_9 td{text-align:left;vertical-align:top;border-bottom:.1rem solid #ffffff12;padding:1rem 1.2rem}._table_1v1ag_9 th{color:var(--muted);-webkit-backdrop-filter:blur(1.2rem);backdrop-filter:blur(1.2rem);background:#0c0c10f5;font-weight:600;position:sticky;top:0}._labelCell_1v1ag_31{max-width:52rem}._labelCellInner_1v1ag_35{align-items:center;gap:.6rem;min-width:0;display:flex}._labelText_1v1ag_42{text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;overflow:hidden}._sortHeader_1v1ag_50{color:inherit;font:inherit;font-weight:inherit;cursor:pointer;text-align:inherit;border-radius:var(--radius-sm);background:0 0;border:none;align-items:center;gap:.4rem;margin:0;padding:0;display:inline-flex}._sortHeader_1v1ag_50:hover{color:var(--text)}._sortHeader_1v1ag_50:focus-visible{outline:.2rem solid var(--accent);outline-offset:.2rem}._num_1v1ag_75 ._sortHeader_1v1ag_50{justify-content:flex-end;width:100%}._sortHeaderLabel_1v1ag_80{line-height:1.2}._sortIcon_1v1ag_84{opacity:.45;flex-shrink:0;display:inline-flex}._sortIcon_1v1ag_84 svg{width:1.4rem;height:1.4rem}._sortHeader_1v1ag_50[data-sort-direction=asc],._sortHeader_1v1ag_50[data-sort-direction=desc]{color:var(--text)}._sortHeader_1v1ag_50[data-sort-direction=asc] ._sortIcon_1v1ag_84,._sortHeader_1v1ag_50[data-sort-direction=desc] ._sortIcon_1v1ag_84{opacity:1}._sortHeader_1v1ag_50[data-sort-direction=asc] ._sortIcon_1v1ag_84 svg path:first-child,._sortHeader_1v1ag_50[data-sort-direction=desc] ._sortIcon_1v1ag_84 svg path:last-child{stroke:var(--text)}._sortHeader_1v1ag_50[data-sort-direction=asc] ._sortIcon_1v1ag_84 svg path:last-child,._sortHeader_1v1ag_50[data-sort-direction=desc] ._sortIcon_1v1ag_84 svg path:first-child{opacity:.35}",
+	"._wrap_bp249_1{border-radius:var(--radius-sm);border:.1rem solid var(--border-subtle);max-height:42rem;margin-top:1.2rem;overflow:auto}._table_bp249_9{border-collapse:collapse;width:100%}._table_bp249_9 th,._table_bp249_9 td{text-align:left;vertical-align:top;border-bottom:.1rem solid #ffffff12;padding:1rem 1.2rem}._table_bp249_9 th{z-index:2;color:var(--muted);-webkit-backdrop-filter:blur(1.2rem);backdrop-filter:blur(1.2rem);background:#0c0c10f5;font-weight:600;position:sticky;top:0}._labelCell_bp249_32{max-width:52rem}._labelCellInner_bp249_36{align-items:center;gap:.6rem;min-width:0;display:flex}._labelText_bp249_43{text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;overflow:hidden}._sortHeader_bp249_51{color:inherit;font:inherit;font-weight:inherit;cursor:pointer;text-align:inherit;border-radius:var(--radius-sm);background:0 0;border:none;align-items:center;gap:.4rem;margin:0;padding:0;display:inline-flex}._sortHeader_bp249_51:hover{color:var(--text)}._sortHeader_bp249_51:focus-visible{outline:.2rem solid var(--accent);outline-offset:.2rem}._num_bp249_76 ._sortHeader_bp249_51{justify-content:flex-end;width:100%}._sortHeaderLabel_bp249_81{line-height:1.2}._sortIcon_bp249_85{opacity:.45;flex-shrink:0;display:inline-flex}._sortIcon_bp249_85 svg{width:1.4rem;height:1.4rem}._sortHeader_bp249_51[data-sort-direction=asc],._sortHeader_bp249_51[data-sort-direction=desc]{color:var(--text)}._sortHeader_bp249_51[data-sort-direction=asc] ._sortIcon_bp249_85,._sortHeader_bp249_51[data-sort-direction=desc] ._sortIcon_bp249_85{opacity:1}._sortHeader_bp249_51[data-sort-direction=asc] ._sortIcon_bp249_85 svg path:first-child,._sortHeader_bp249_51[data-sort-direction=desc] ._sortIcon_bp249_85 svg path:last-child{stroke:var(--text)}._sortHeader_bp249_51[data-sort-direction=asc] ._sortIcon_bp249_85 svg path:last-child,._sortHeader_bp249_51[data-sort-direction=desc] ._sortIcon_bp249_85 svg path:first-child{opacity:.35}",
 	"._chip_1idw4_1{border:.1rem solid var(--border-faint);border-radius:var(--radius-pill);color:var(--color-amber,#f59e0b);font-size:var(--text-size-xs);background:#f59e0b1f;flex-shrink:0;padding:.3rem .8rem;font-weight:600}",
 	"._summary_19bh0_1{flex-wrap:wrap;gap:.8rem;margin-top:1.2rem;display:flex}._stat_19bh0_8{border:.1rem solid var(--border-faint);border-radius:var(--radius-pill);color:var(--muted);font-size:var(--text-size-xs);align-items:baseline;gap:.4rem;padding:.4rem .9rem;display:inline-flex}._stat_19bh0_8 strong{color:var(--text);font-size:var(--text-size-sm);font-weight:600}._labelStack_19bh0_25{flex-direction:column;gap:.3rem;min-width:0;display:flex}._labelHead_19bh0_32{align-items:center;gap:.6rem;min-width:0;display:flex}._deviceIcon_19bh0_39{width:1.6rem;height:1.6rem;color:var(--muted);flex-shrink:0;justify-content:center;align-items:center;display:inline-flex}._deviceIcon_19bh0_39 svg{width:1.4rem;height:1.4rem}._parsedLabel_19bh0_54{text-overflow:ellipsis;white-space:nowrap;min-width:0;overflow:hidden}._rawLabel_19bh0_61{color:var(--muted);font-size:var(--text-size-xs);text-overflow:ellipsis;white-space:nowrap;padding-left:2.2rem;line-height:1.35;overflow:hidden}._chip_19bh0_71{border:.1rem solid var(--border-faint);border-radius:var(--radius-pill);color:var(--color-blue,#3b82f6);font-size:var(--text-size-xs);background:#3b82f61f;flex-shrink:0;padding:.3rem .8rem;font-weight:600}",
 	"._section_6yc47_1{margin-top:0}._tabList_6yc47_5{flex-wrap:wrap;gap:.6rem;margin-top:1.2rem;display:flex}._panel_6yc47_12{margin-top:1.2rem}._panel_6yc47_12[hidden]{display:none}",
-	"._wrap_1g6p9_1{vertical-align:middle;display:inline-flex;position:relative}._tooltip_1g6p9_7{z-index:20;border:.1rem solid var(--border-faint);border-radius:var(--radius-sm);width:max-content;max-width:24rem;color:var(--text);font-size:var(--text-size-xs);text-align:center;white-space:normal;pointer-events:none;opacity:0;visibility:hidden;background:#18181b;padding:.5rem .8rem;font-weight:500;line-height:1.4;transition:opacity .15s,transform .15s,visibility .15s;position:absolute;left:50%;box-shadow:0 .4rem 1.2rem #0006}._placementTop_1g6p9_33 ._tooltip_1g6p9_7{bottom:calc(100% + .5rem);transform:translate(-50%)translateY(.3rem)}._placementBottom_1g6p9_38 ._tooltip_1g6p9_7{top:calc(100% + .5rem);transform:translate(-50%)translateY(-.3rem)}._placementTop_1g6p9_33 ._tooltip_1g6p9_7:after{content:\"\";border:.4rem solid #0000;border-top-color:#18181b;position:absolute;top:100%;left:50%;transform:translate(-50%)}._placementBottom_1g6p9_38 ._tooltip_1g6p9_7:after{content:\"\";border:.4rem solid #0000;border-bottom-color:#18181b;position:absolute;bottom:100%;left:50%;transform:translate(-50%)}._wrap_1g6p9_1:hover ._tooltip_1g6p9_7{opacity:1;visibility:visible;transform:translate(-50%)translateY(0)}",
+	"._wrap_1l7gg_1{vertical-align:middle;display:inline-flex;position:relative}._wrap_1l7gg_1:hover{z-index:3}._tooltip_1l7gg_12{z-index:20;border:.1rem solid var(--border-faint);border-radius:var(--radius-sm);width:max-content;max-width:24rem;color:var(--text);font-size:var(--text-size-xs);text-align:center;white-space:normal;pointer-events:none;opacity:0;visibility:hidden;background:#18181b;padding:.5rem .8rem;font-weight:500;line-height:1.4;transition:opacity .15s,transform .15s,visibility .15s;position:absolute;left:50%;box-shadow:0 .4rem 1.2rem #0006}._placementTop_1l7gg_38 ._tooltip_1l7gg_12{bottom:calc(100% + .5rem);transform:translate(-50%)translateY(.3rem)}._placementBottom_1l7gg_43 ._tooltip_1l7gg_12{top:calc(100% + .5rem);transform:translate(-50%)translateY(-.3rem)}._placementTop_1l7gg_38 ._tooltip_1l7gg_12:after{content:\"\";border:.4rem solid #0000;border-top-color:#18181b;position:absolute;top:100%;left:50%;transform:translate(-50%)}._placementBottom_1l7gg_43 ._tooltip_1l7gg_12:after{content:\"\";border:.4rem solid #0000;border-bottom-color:#18181b;position:absolute;bottom:100%;left:50%;transform:translate(-50%)}._wrap_1l7gg_1:hover ._tooltip_1l7gg_12{opacity:1;visibility:visible;transform:translate(-50%)translateY(0)}",
 	"._empty_150uw_1{color:var(--muted);font-size:var(--text-size-sm);margin:0;padding:1.2rem 0}._metricCell_150uw_8{align-items:center;gap:.6rem;display:inline-flex}._errorBadge_150uw_14{border:.1rem solid var(--border-faint);border-radius:var(--radius-pill);color:var(--color-red,#ef4444);font-size:var(--text-size-xs);white-space:nowrap;background:#ef44441f;flex-shrink:0;padding:.2rem .6rem;font-weight:600}._errorIcon_150uw_26{color:var(--color-red,#ef4444);flex-shrink:0;display:inline-flex}._errorIcon_150uw_26 svg{width:1.4rem;height:1.4rem}._warningIcon_150uw_37{color:var(--color-amber,#f59e0b);flex-shrink:0;display:inline-flex}._warningIcon_150uw_37 svg{width:1.4rem;height:1.4rem}",
 	"._dialog_mjk69_1{border:.1rem solid var(--border-faint);border-radius:var(--radius-md);background:var(--panel);width:100%;max-width:min(72rem,100vw - 3.2rem);color:var(--text);padding:0;box-shadow:0 1.6rem 4.8rem #00000073}._dialog_mjk69_1::backdrop{-webkit-backdrop-filter:blur(.2rem);backdrop-filter:blur(.2rem);background:#0000008c}._panel_mjk69_17{padding:1.2rem 1.6rem 1.6rem}._header_mjk69_21{align-items:center;gap:.8rem;margin-bottom:1.2rem;display:flex}._title_mjk69_28{flex:1;font-size:1.4rem}._section_mjk69_33+._section_mjk69_33{border-top:.1rem solid var(--border-subtle);margin-top:1.6rem;padding-top:1.6rem}._stats_mjk69_39{grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:0;display:grid}._stat_mjk69_39{border:.1rem solid var(--border-subtle);border-radius:var(--radius-sm);background:#0003;margin:0;padding:1rem 1.2rem}._statLabel_mjk69_54{font-size:var(--text-size-xs);color:var(--muted);margin:0}._statValue_mjk69_60{font-size:var(--text-size-sm);font-variant-numeric:tabular-nums;margin:.4rem 0 0}._sectionLabel_mjk69_66{color:var(--muted);margin-bottom:.8rem}._pre_mjk69_71{border-radius:var(--radius-sm);border:.1rem solid var(--border-subtle);max-height:24rem;font-family:var(--font-mono);font-size:var(--text-size-sm);white-space:pre-wrap;word-break:break-word;background:#00000059;margin:0;padding:1.2rem;line-height:1.5;overflow:auto}._error_mjk69_86{font-size:var(--text-size-sm);color:var(--muted);margin:0}._warning_mjk69_92{border:.1rem solid var(--color-amber,#f59e0b);border-radius:var(--radius-sm);background:var(--color-amber-light);color:var(--color-amber);font-size:var(--text-size-sm);margin-top:2.2rem;margin-bottom:1.4rem;padding:.8rem 1rem;line-height:1.5}._note_mjk69_104{font-size:var(--text-size-sm);color:var(--muted);margin-top:2.2rem}",
 	"._stats_8ca1h_1{gap:.6rem;margin:0;display:grid}._row_8ca1h_7{font-size:var(--text-size-sm);grid-template-columns:1fr auto;align-items:baseline;gap:1.2rem;display:grid}._row_8ca1h_7 dt{color:var(--muted);margin:0}._row_8ca1h_7 dd{color:var(--text);margin:0}._group_8ca1h_25{border-top:.1rem solid var(--border-subtle);gap:.6rem;margin-top:.4rem;padding-top:.8rem;display:grid}._groupLabel_8ca1h_33{font-size:var(--text-size-xs);color:var(--text);letter-spacing:.04em;font-weight:600}._empty_8ca1h_40{font-size:var(--text-size-sm);color:var(--muted);margin:0}",
@@ -8519,11 +8949,11 @@ var hs = "(function(){\ndocument.addEventListener(\"click\",function(e){\nvar bt
 ].join("\n");
 //#endregion
 //#region src/report/report-renderer.tsx
-function ws(e) {
-	let t = ft(/* @__PURE__ */ X(ms, { data: e })), n = mt(e), r = mt({
-		filenameBase: wa(e.title),
-		billable: La(e, "billable"),
-		all: La(e, "all")
+function sc(e) {
+	let t = ft(/* @__PURE__ */ X(Zs, { data: e })), n = mt(e), r = mt({
+		filenameBase: $a(e.title),
+		billable: ho(e, "billable"),
+		all: ho(e, "all")
 	});
 	return `<!DOCTYPE html>
 <html lang="en">
@@ -8531,22 +8961,22 @@ function ws(e) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${e.title}</title>
-  <style>${Cs}</style>
+  <style>${oc}</style>
 </head>
 <body>
 ${t}
   <script type="application/json" id="report-data">${n}<\/script>
   <script type="application/json" id="report-markdown">${r}<\/script>
-  <script>${ys}<\/script>
-  <script>${hs}<\/script>
-  <script>${Ss}<\/script>
-  <script>${_s}<\/script>
-  <script>${xs}<\/script>
-  <script>${vs}<\/script>
-  <script>${gs}<\/script>
-  <script>${bs}<\/script>
+  <script>${nc}<\/script>
+  <script>${Qs}<\/script>
+  <script>${ac}<\/script>
+  <script>${ec}<\/script>
+  <script>${ic}<\/script>
+  <script>${tc}<\/script>
+  <script>${$s}<\/script>
+  <script>${rc}<\/script>
 </body>
 </html>`;
 }
 //#endregion
-export { ws as renderReportHtml };
+export { sc as renderReportHtml };

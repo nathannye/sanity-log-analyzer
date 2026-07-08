@@ -47,6 +47,19 @@ export function parseImageUrl(url) {
         };
     }
 }
+/** Strip Sanity CDN `dl` so the asset opens inline instead of downloading. */
+export function toInlineAssetUrl(url) {
+    try {
+        const parsed = new URL(url);
+        if (!parsed.searchParams.has("dl"))
+            return url;
+        parsed.searchParams.delete("dl");
+        return parsed.toString();
+    }
+    catch {
+        return url;
+    }
+}
 export function hasImageWidthError(width) {
     return width !== null && width > 2000;
 }

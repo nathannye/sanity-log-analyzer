@@ -32,6 +32,7 @@ const TOC_SECTIONS: Array<{
 	label: string;
 	configKey?: keyof ReportSections;
 }> = [
+	{ slug: "findings", label: "Findings" },
 	{ slug: "summary", label: "Summary" },
 	{ slug: "domain", label: "Top domains", configKey: "domain" },
 	{ slug: "endpoint", label: "Top endpoints", configKey: "endpoint" },
