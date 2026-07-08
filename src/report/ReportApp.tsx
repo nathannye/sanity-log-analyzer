@@ -10,7 +10,7 @@ interface ReportAppProps {
 }
 
 export function ReportApp({ data }: ReportAppProps) {
-	const colorStyle = paletteColorVars(data.config.palette);
+	const colorStyle = paletteColorVars();
 	const showBillableComparison = data.config.sections.billableComparison;
 	const tocUrlRows = showBillableComparison
 		? data.billable.byUrl

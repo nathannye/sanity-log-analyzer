@@ -7,15 +7,6 @@ export const SAMPLE_REPORT = {
         title: "Sanity Request Log Report",
         topN: 50,
         histogramBuckets: [0, 1024, Infinity],
-        palette: [
-            "#0ea5e9",
-            "#22c55e",
-            "#f59e0b",
-            "#ef4444",
-            "#a855f7",
-            "#14b8a6",
-            "#f97316",
-        ],
         sections: {
             domain: true,
             endpoint: true,

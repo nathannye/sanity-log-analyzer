@@ -21,7 +21,7 @@ sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.jso
 
 - Streams large NDJSON files without loading everything into memory
 - Writes a self-contained HTML file (inline CSS, no server required)
-- `--config` — optional JSON file to customize title, sections, colors, top-N, histogram buckets
+- `--config` — optional JSON file to customize title, sections, top-N, histogram buckets
 - `--open` — open the report in your default browser after writing
 
 ## Config
@@ -30,7 +30,6 @@ Optional JSON file passed via `--config`. Merges with defaults.
 
 - `title` — report heading
 - `topN` — max rows per breakdown table (default: 50)
-- `palette` — chart colors
 - `histogramBuckets` — response-size bucket boundaries (bytes)
 - `sections` — toggle individual report sections on/off (`domain`, `endpoint`, `date`, `hour`, `status`, `histogram`, `urls`, `referers`, `userAgents`, `ips`, `billableComparison`)
 
@@ -84,3 +83,4 @@ The HTML report also includes a **Download markdown for LLM** button that export
 ## Roadmap
 - [ ] Redesign of components and layout
 - [ ] Support Sanity (request tagging)[https://www.sanity.io/docs/platform-management/reference-api-request-tags]
+- [ ] Rewrite json and gz parser in Rust or Go
