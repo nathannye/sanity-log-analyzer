@@ -4,12 +4,17 @@ Parse Sanity request logs (NDJSON) into an offline HTML report.
 
 ## Requirements
 
-- Node.js >= 24
+- Node.js >= 22
 
 ## Install
 
-- `npm install sanity-log-analyzer` (when published)
-- Or clone and `npm install && npm run build`
+```bash
+npm install sanity-log-analyzer
+bun install sanity-log-analyzer
+yarn add sanity-log-analyzer
+pnpm add sanity-log-analyzer
+
+```
 
 ## CLI
 
@@ -66,7 +71,7 @@ const allMd = generateMarkdown(report, { view: "all" });
 await writeMarkdownReport(report, "report_billable-only.md", { view: "billable" });
 ```
 
-The HTML report also includes a **Download markdown for LLM** button that exports whichever view is currently shown.
+The HTML report includes a **Download markdown for LLM** button that exports whichever view is currently shown.
 
 ## Development
 
@@ -84,3 +89,4 @@ The HTML report also includes a **Download markdown for LLM** button that export
 - [ ] Redesign of components and layout
 - [ ] Support Sanity (request tagging)[https://www.sanity.io/docs/platform-management/reference-api-request-tags]
 - [ ] Rewrite json and gz parser in Rust or Go
+- [ ] Export as PDF

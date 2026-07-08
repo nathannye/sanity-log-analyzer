@@ -49,6 +49,7 @@ export interface ReportConfig {
   title: string;
   topN: number;
   histogramBuckets: number[];
+  palette: string[];
   sections: ReportSections;
 }
 
@@ -56,6 +57,7 @@ export interface PartialReportConfig {
   title?: string;
   topN?: number;
   histogramBuckets?: number[];
+  palette?: string[];
   sections?: Partial<ReportSections>;
 }
 
