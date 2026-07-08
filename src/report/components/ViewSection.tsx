@@ -1,7 +1,7 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportSections, ReportView } from "../../types.js";
-import { buildReportSummary } from "../summarize.js";
 import { colorVar } from "../styles/colors.js";
+import { buildReportSummary } from "../summarize.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { BarList } from "./BarList.js";
 import { CountBarChart } from "./CountBarChart.js";
@@ -11,8 +11,8 @@ import { Donut } from "./Donut.js";
 import { FindingsSummary } from "./FindingsSummary.js";
 import { Metric } from "./Metric.js";
 import { RefererDataTable } from "./RefererDataTable.js";
-import { UserAgentDataTable } from "./UserAgentDataTable.js";
 import { UrlTabsSection } from "./UrlTabsSection.js";
+import { UserAgentDataTable } from "./UserAgentDataTable.js";
 
 interface ViewSectionProps {
 	view: ReportView;
@@ -74,8 +74,8 @@ export function ViewSection({
 					/>
 				</div>
 			</section>
-			<div class="mb-24 grid grid-cols-1 gap-16 lg:grid-cols-2">
-				<div class="grid gap-16">
+			<div class="mb-24 flex flex-col gap-16">
+				<div class="flex flex-col gap-16">
 					<div class="eyebrow-1 section-title">Charts</div>
 					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.domain ? (
