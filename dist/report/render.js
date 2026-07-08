@@ -8723,7 +8723,7 @@ function Ms({ view: e, sections: t, viewKey: n, hidden: r = !1 }) {
 						})
 					]
 				}), /* @__PURE__ */ $("div", {
-					class: "grid gap-16",
+					class: "flex flex-col gap-16",
 					children: [
 						/* @__PURE__ */ $("div", {
 							class: "eyebrow-1 section-title",

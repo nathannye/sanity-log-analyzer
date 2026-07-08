@@ -138,7 +138,7 @@ export function ViewSection({
 						) : null}
 					</div>
 				</div>
-				<div class="grid gap-16">
+				<div class="flex flex-col gap-16">
 					<div class="eyebrow-1 section-title">Top lists</div>
 					{sections.urls ? (
 						<div class="scroll-mt-20">
