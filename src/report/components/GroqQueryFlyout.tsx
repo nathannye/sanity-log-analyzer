@@ -3,9 +3,9 @@ import { analyzeGroqQuery } from "../analyze-groq.js";
 import { formatGroqForDisplay } from "../format-groq.js";
 import { highlightGroq } from "../highlight-groq.js";
 import { Button } from "./Button.js";
+import styles from "./GroqQueryFlyout.module.css";
 import { GroqQueryStatsView } from "./GroqQueryStats.js";
 import { CopyIcon } from "./icons.js";
-import styles from "./GroqQueryFlyout.module.css";
 
 interface GroqQueryFlyoutProps {
 	id: string;
@@ -95,6 +95,18 @@ export function GroqQueryFlyout({
 						<p class={styles.error}>Could not analyze query structure.</p>
 					)}
 				</div>
+				<p class={styles.note}>
+					Want to learn more about making efficient queries? Check out Sanity's
+					guide on{" "}
+					<a
+						href="https://www.sanity.io/docs/developer-guides/high-performance-groq"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						how to optimize groq queries.
+					</a>
+					.
+				</p>
 			</div>
 		</dialog>
 	);

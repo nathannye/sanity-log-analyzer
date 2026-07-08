@@ -10,7 +10,7 @@ test("renderReportMarkdown includes title, summary, and table sections", () => {
     const markdown = renderReportMarkdown(SAMPLE_REPORT, "billable");
     assert.ok(markdown.includes("# Sanity Log Report"));
     assert.ok(markdown.includes("## Summary"));
-    assert.ok(markdown.includes("Requests: 4"));
+    assert.ok(markdown.includes("Requests: 8"));
     assert.ok(markdown.includes("### Top domains"));
     assert.ok(markdown.includes("### Top endpoints"));
     assert.ok(markdown.includes("### Top URLs"));
@@ -19,8 +19,8 @@ test("renderReportMarkdown includes title, summary, and table sections", () => {
 test("renderReportMarkdown billable vs all views differ", () => {
     const billable = renderReportMarkdown(SAMPLE_REPORT, "billable");
     const all = renderReportMarkdown(SAMPLE_REPORT, "all");
-    assert.ok(billable.includes("Requests: 4"));
-    assert.ok(all.includes("Requests: 5"));
+    assert.ok(billable.includes("Requests: 8"));
+    assert.ok(all.includes("Requests: 9"));
     assert.notEqual(billable, all);
 });
 test("renderReportMarkdown omits disabled sections", () => {
@@ -37,6 +37,21 @@ test("renderReportMarkdown omits disabled sections", () => {
     assert.ok(!markdown.includes("### Top IPs"));
     assert.ok(markdown.includes("### Top domains"));
 });
+test("renderReportMarkdown includes grouped URL sections with issue annotations", () => {
+    const markdown = renderReportMarkdown(SAMPLE_REPORT, "billable");
+    assert.ok(markdown.includes("#### Images"));
+    assert.ok(markdown.includes("#### Files"));
+    assert.ok(markdown.includes("#### Other"));
+    assert.ok(!markdown.includes("#### Queries"));
+    assert.ok(markdown.includes("width exceeds 2000px"));
+    assert.ok(markdown.includes("quality exceeds 87"));
+    assert.ok(markdown.includes('format should be "auto"'));
+    assert.ok(markdown.includes("consider HLS streaming instead of MP4"));
+});
+test("renderReportMarkdown includes Queries when query URLs are present", () => {
+    const markdown = renderReportMarkdown(SAMPLE_REPORT, "all");
+    assert.ok(markdown.includes("#### Queries"));
+});
 test("escapeMarkdownCell escapes pipes and newlines", () => {
     assert.equal(escapeMarkdownCell("a|b"), "a\\|b");
     assert.equal(escapeMarkdownCell("line\nbreak"), "line break");
@@ -52,12 +67,12 @@ test("markdownReportFilename uses view suffixes", () => {
 test("generateMarkdown defaults to billable view", () => {
     const markdown = generateMarkdown(SAMPLE_REPORT);
     assert.ok(markdown.includes("Billable requests"));
-    assert.ok(markdown.includes("Requests: 4"));
+    assert.ok(markdown.includes("Requests: 8"));
 });
 test("generateMarkdown supports all view", () => {
     const markdown = generateMarkdown(SAMPLE_REPORT, { view: "all" });
     assert.ok(markdown.includes("All requests"));
-    assert.ok(markdown.includes("Requests: 5"));
+    assert.ok(markdown.includes("Requests: 9"));
 });
 test("writeMarkdownReport writes expected content", async () => {
     const dir = await mkdtemp(join(tmpdir(), "sanity-log-md-"));

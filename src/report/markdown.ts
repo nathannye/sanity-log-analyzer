@@ -5,6 +5,14 @@ import {
 	formatReadableDate,
 } from "../format.js";
 import { avgBytesPerRequest } from "../ranked-row.js";
+import { isMp4Url } from "./classify-url.js";
+import { groupUrlsByKind } from "./group-urls-by-kind.js";
+import {
+	hasImageFormatError,
+	hasImageQualityError,
+	hasImageWidthError,
+	parseImageUrl,
+} from "./parse-image-url.js";
 import {
 	aggregateUserAgentStats,
 	parseUserAgent,
@@ -48,6 +56,17 @@ export function markdownReportFilename(
 	return `${base}${suffix}.md`;
 }
 
+const MP4_WARNING = "consider HLS streaming instead of MP4";
+
+function formatImageMetric(
+	value: string | number | null,
+	issue?: string,
+): string {
+	if (value === null) return "—";
+	const base = String(value);
+	return issue ? `${base} (${issue})` : base;
+}
+
 function rankedTable(title: string, rows: RankedRow[]): string {
 	if (rows.length === 0) return "";
 
@@ -66,6 +85,107 @@ function rankedTable(title: string, rows: RankedRow[]): string {
 
 	lines.push("");
 	return lines.join("\n");
+}
+
+function urlRankedTable(title: string, rows: RankedRow[]): string {
+	if (rows.length === 0) return "";
+
+	const lines = [
+		`#### ${title}`,
+		"",
+		"| Label | Requests | Bandwidth | Avg / req |",
+		"| --- | ---: | ---: | ---: |",
+	];
+
+	for (const row of rows) {
+		lines.push(
+			`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
+		);
+	}
+
+	lines.push("");
+	return lines.join("\n");
+}
+
+function imageUrlTable(rows: RankedRow[]): string {
+	if (rows.length === 0) return "";
+
+	const lines = [
+		"#### Images",
+		"",
+		"| ID | URL | Width | Quality | Format | Bandwidth | Requests | Avg / req |",
+		"| --- | --- | ---: | ---: | --- | ---: | ---: | ---: |",
+	];
+
+	for (const row of rows) {
+		const parsed = parseImageUrl(row.label);
+		const width = formatImageMetric(
+			parsed.width,
+			hasImageWidthError(parsed.width) ? "width exceeds 2000px" : undefined,
+		);
+		const quality = formatImageMetric(
+			parsed.quality,
+			hasImageQualityError(parsed.quality, parsed.isSvg)
+				? "quality exceeds 87"
+				: undefined,
+		);
+		const format = formatImageMetric(
+			parsed.format,
+			hasImageFormatError(parsed.format)
+				? 'format should be "auto"'
+				: undefined,
+		);
+
+		lines.push(
+			`| ${escapeMarkdownCell(parsed.id)} | ${escapeMarkdownCell(row.label)} | ${width} | ${quality} | ${format} | ${formatBytes(row.responseBytes)} | ${formatNumber(row.requests)} | ${formatBytes(avgBytesPerRequest(row))} |`,
+		);
+	}
+
+	lines.push("");
+	return lines.join("\n");
+}
+
+function fileUrlTable(rows: RankedRow[]): string {
+	if (rows.length === 0) return "";
+
+	const lines = [
+		"#### Files",
+		"",
+		"| Label | Requests | Bandwidth | Avg / req |",
+		"| --- | ---: | ---: | ---: |",
+	];
+
+	for (const row of rows) {
+		const label = isMp4Url(row.label)
+			? `${row.label} (${MP4_WARNING})`
+			: row.label;
+		lines.push(
+			`| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
+		);
+	}
+
+	lines.push("");
+	return lines.join("\n");
+}
+
+function urlSectionsMarkdown(rows: RankedRow[]): string {
+	const groups = groupUrlsByKind(rows);
+	const parts: string[] = ["### Top URLs", ""];
+
+	if (groups.image.length > 0) {
+		parts.push(imageUrlTable(groups.image));
+	}
+	if (groups.file.length > 0) {
+		parts.push(fileUrlTable(groups.file));
+	}
+	if (groups.query.length > 0) {
+		parts.push(urlRankedTable("Queries", groups.query));
+	}
+	if (groups.other.length > 0) {
+		parts.push(urlRankedTable("Other", groups.other));
+	}
+
+	return parts.filter(Boolean).join("\n");
 }
 
 function userAgentTable(title: string, rows: RankedRow[]): string {
@@ -151,7 +271,7 @@ function renderSections(view: ReportView, sections: ReportSections): string {
 	if (sections.histogram) {
 		parts.push(countTable("Response size buckets", view.responseSizeHistogram));
 	}
-	if (sections.urls) parts.push(rankedTable("Top URLs", view.byUrl));
+	if (sections.urls) parts.push(urlSectionsMarkdown(view.byUrl));
 	if (sections.referers) parts.push(rankedTable("Top referers", view.byReferer));
 	if (sections.userAgents) {
 		parts.push(userAgentTable("Top user agents", view.byUserAgent));

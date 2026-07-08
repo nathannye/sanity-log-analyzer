@@ -49,6 +49,12 @@ function getExtension(pathname) {
 function isQueryPath(pathname) {
     return pathname.includes("/data/query") || pathname.endsWith("/query");
 }
+export function isMp4Url(url) {
+    const pathname = getPathname(url);
+    if (!pathname)
+        return false;
+    return getExtension(pathname) === ".mp4";
+}
 export function classifyUrl(url) {
     const pathname = getPathname(url);
     if (!pathname)

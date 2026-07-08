@@ -1,6 +1,7 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
+import { isMp4Url } from "../classify-url.js";
 import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
 import {
 	hasImageFormatError,
@@ -13,7 +14,7 @@ import { Button } from "./Button.js";
 import buttonStyles from "./Button.module.css";
 import tableStyles from "./DataTable.module.css";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
-import { CopyIcon, ErrorIcon, ExternalLinkIcon } from "./icons.js";
+import { CopyIcon, ErrorIcon, ExternalLinkIcon, WarningIcon } from "./icons.js";
 import { SortableTableHeader } from "./SortableTableHeader.js";
 import { Tooltip } from "./Tooltip.js";
 import styles from "./UrlDataTable.module.css";
@@ -21,7 +22,7 @@ import styles from "./UrlDataTable.module.css";
 interface UrlDataTableProps {
 	rows: RankedRow[];
 	showFlyout?: boolean;
-	variant?: "default" | "image";
+	variant?: "default" | "image" | "file";
 	idPrefix: string;
 }
 
@@ -41,6 +42,8 @@ export function UrlDataTable({
 	}
 
 	const isImageTable = variant === "image";
+	const isFileTable = variant === "file";
+	const showExternalLink = isImageTable || isFileTable;
 
 	return (
 		<div class={tableStyles.wrap}>
@@ -146,13 +149,13 @@ export function UrlDataTable({
 											aria-label={`Copy "${row.label}"`}
 											title="Copy to clipboard"
 										/>
-										{isImageTable ? (
+										{showExternalLink ? (
 											<a
 												href={row.label}
 												target="_blank"
 												rel="noopener noreferrer"
 												class={`${buttonStyles.button} ${buttonStyles.ghostIconSm}`}
-												aria-label={`Open "${imageDetails?.id ?? row.label}" in new tab`}
+												aria-label={`Open "${isImageTable ? (imageDetails?.id ?? row.label) : row.label}" in new tab`}
 												title="Open in new tab"
 											>
 												<span class={buttonStyles.icon}>
@@ -163,6 +166,13 @@ export function UrlDataTable({
 										<span class={tableStyles.labelText}>
 											{isImageTable ? imageDetails?.id : row.label}
 										</span>
+										{isFileTable && isMp4Url(row.label) ? (
+											<Tooltip content="Consider using HLS streaming services like Mux instead of serving large single MP4 files to reduce bandwidth and improve playback.">
+												<span class={styles.warningIcon}>
+													<WarningIcon />
+												</span>
+											</Tooltip>
+										) : null}
 										{flyoutId ? (
 											<Button
 												variant="outline-pill-accent"

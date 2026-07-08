@@ -65,7 +65,13 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 					<UrlDataTable
 						rows={groups[tab.id]}
 						showFlyout={tab.id === "query"}
-						variant={tab.id === "image" ? "image" : "default"}
+						variant={
+							tab.id === "image"
+								? "image"
+								: tab.id === "file"
+									? "file"
+									: "default"
+						}
 						idPrefix={`${idPrefix}-${tab.id}`}
 					/>
 				</div>

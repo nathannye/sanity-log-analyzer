@@ -3,10 +3,15 @@
 }
 
 .viewGrid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	display: flex;
+	flex-wrap: wrap;
 	gap: 1.6rem;
 	margin-bottom: 2.4rem;
+}
+
+.viewGrid > * {
+	flex: 1 1 130px;
+	min-width: 130px;
 }
 
 .grid2 {

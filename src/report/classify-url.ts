@@ -55,6 +55,12 @@ function isQueryPath(pathname: string): boolean {
 	return pathname.includes("/data/query") || pathname.endsWith("/query");
 }
 
+export function isMp4Url(url: string): boolean {
+	const pathname = getPathname(url);
+	if (!pathname) return false;
+	return getExtension(pathname) === ".mp4";
+}
+
 export function classifyUrl(url: string): UrlKind | null {
 	const pathname = getPathname(url);
 	if (!pathname) return null;

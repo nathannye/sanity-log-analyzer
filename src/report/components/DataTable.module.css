@@ -92,6 +92,11 @@
   height: 1.4rem;
 }
 
+.sortHeader[data-sort-direction="asc"],
+.sortHeader[data-sort-direction="desc"] {
+  color: var(--text);
+}
+
 .sortHeader[data-sort-direction="asc"] .sortIcon,
 .sortHeader[data-sort-direction="desc"] .sortIcon {
   opacity: 1;

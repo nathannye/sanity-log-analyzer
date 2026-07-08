@@ -33,3 +33,14 @@
 	width: 1.4rem;
 	height: 1.4rem;
 }
+
+.warningIcon {
+	display: inline-flex;
+	flex-shrink: 0;
+	color: var(--color-amber, #f59e0b);
+}
+
+.warningIcon svg {
+	width: 1.4rem;
+	height: 1.4rem;
+}
