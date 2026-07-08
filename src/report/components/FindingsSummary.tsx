@@ -1,6 +1,6 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import type { ReportSummary } from "../summarize.js";
-import { Metric } from "./Metric.js";
+import tableStyles from "./DataTable.module.css";
 import styles from "./FindingsSummary.module.css";
 
 interface FindingsSummaryProps {
@@ -14,15 +14,10 @@ const HEALTH_LABEL: Record<ReportSummary["overallHealth"], string> = {
 };
 
 const HEALTH_CLASS: Record<ReportSummary["overallHealth"], string> = {
-	green: styles.healthGreen,
-	yellow: styles.healthYellow,
-	red: styles.healthRed,
+	green: styles.toneGreen,
+	yellow: styles.toneYellow,
+	red: styles.toneRed,
 };
-
-const PRIORITY_CLASS = {
-	critical: styles.priorityCritical,
-	warning: styles.priorityWarning,
-} as const;
 
 function priorityLabel(priority: "critical" | "warning"): string {
 	return priority === "critical" ? "Critical" : "Warning";
@@ -34,65 +29,82 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 
 	return (
 		<section class={styles.root} data-section="findings">
-			<div class={styles.hero}>
-				<div
-					class={`${styles.health} ${HEALTH_CLASS[summary.overallHealth]}`}
+			<div class={styles.cards}>
+				<article
+					class={`${styles.card} ${HEALTH_CLASS[summary.overallHealth]}`}
 					data-health={summary.overallHealth}
 				>
-					<span class={styles.healthDot} aria-hidden="true" />
-					<div>
-						<div class={`eyebrow-1 ${styles.healthEyebrow}`}>
-							Overall health
-						</div>
-						<div class={`display-1 ${styles.healthLabel}`}>
+					<span class={styles.dot} aria-hidden="true" />
+					<div class={styles.cardBody}>
+						<div class={`eyebrow-1 ${styles.cardLabel}`}>Overall health</div>
+						<div class={`display-1 ${styles.cardValue}`}>
 							{HEALTH_LABEL[summary.overallHealth]}
 						</div>
-						<div class={`body-2 ${styles.healthNote}`}>
+						<div class={`body-2 ${styles.cardNote}`}>
 							{issueTotal === 0
 								? "No critical or warning findings"
 								: `${formatNumber(issueTotal)} ${issueTotal === 1 ? "issue" : "issues"} detected`}
 						</div>
 					</div>
-				</div>
+				</article>
 
-				<div class={styles.glance}>
-					<div class={`eyebrow-1 ${styles.glanceTitle}`}>At a glance</div>
-					<div class={styles.metrics}>
-						<Metric
-							label="Critical"
-							value={formatNumber(summary.issueCounts.critical)}
-							note="High-impact findings"
-						/>
-						<Metric
-							label="Warnings"
-							value={formatNumber(summary.issueCounts.warning)}
-							note="Worth reviewing"
-						/>
-						<Metric
-							label="Passed"
-							value={formatNumber(summary.issueCounts.passed)}
-							note="Healthy signals"
-						/>
-						{summary.estimatedSavingsBytes !== undefined ? (
-							<Metric
-								label="Est. savings"
-								value={formatBytes(summary.estimatedSavingsBytes)}
-								note="From explicit byte opportunities"
-							/>
-						) : null}
+				<article class={`${styles.card} ${styles.toneRed}`}>
+					<span class={styles.dot} aria-hidden="true" />
+					<div class={styles.cardBody}>
+						<div class={`eyebrow-1 ${styles.cardLabel}`}>Critical</div>
+						<div class={`display-1 ${styles.cardValue}`}>
+							{formatNumber(summary.issueCounts.critical)}
+						</div>
+						<div class={`body-2 ${styles.cardNote}`}>High-impact findings</div>
 					</div>
-				</div>
+				</article>
+
+				<article class={`${styles.card} ${styles.toneYellow}`}>
+					<span class={styles.dot} aria-hidden="true" />
+					<div class={styles.cardBody}>
+						<div class={`eyebrow-1 ${styles.cardLabel}`}>Warnings</div>
+						<div class={`display-1 ${styles.cardValue}`}>
+							{formatNumber(summary.issueCounts.warning)}
+						</div>
+						<div class={`body-2 ${styles.cardNote}`}>Worth reviewing</div>
+					</div>
+				</article>
+
+				<article class={`${styles.card} ${styles.toneGreen}`}>
+					<span class={styles.dot} aria-hidden="true" />
+					<div class={styles.cardBody}>
+						<div class={`eyebrow-1 ${styles.cardLabel}`}>Passed</div>
+						<div class={`display-1 ${styles.cardValue}`}>
+							{formatNumber(summary.issueCounts.passed)}
+						</div>
+						<div class={`body-2 ${styles.cardNote}`}>Healthy signals</div>
+					</div>
+				</article>
+
+				{summary.estimatedSavingsBytes !== undefined ? (
+					<article class={styles.card}>
+						<div class={styles.cardBody}>
+							<div class={`eyebrow-1 ${styles.cardLabel}`}>Est. savings</div>
+							<div class={`display-1 ${styles.cardValue}`}>
+								{formatBytes(summary.estimatedSavingsBytes)}
+							</div>
+							<div class={`body-2 ${styles.cardNote}`}>
+								From explicit byte opportunities
+							</div>
+						</div>
+					</article>
+				) : null}
 			</div>
 
 			<div class={styles.opportunities}>
-				<div class={`eyebrow-1 ${styles.glanceTitle}`}>Top opportunities</div>
+				<div class={`eyebrow-1 ${styles.sectionTitle}`}>Top opportunities</div>
 				{summary.topOpportunities.length === 0 ? (
 					<p class={`body-1 ${styles.empty}`}>
 						No optimization opportunities detected for this view.
 					</p>
 				) : (
-					<div class={styles.tableWrap}>
-						<table class={`body-1 ${styles.table}`}>
+					<div class={tableStyles.wrap}>
+						<table class={`body-1 ${tableStyles.table}`}>
 							<thead>
 								<tr>
 									<th>Priority</th>
@@ -106,8 +118,13 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 									<tr key={`${item.priority}-${item.issue}`}>
 										<td>
 											<span
-												class={`${styles.priority} ${PRIORITY_CLASS[item.priority]}`}
+												class={`${styles.priority} ${
+													item.priority === "critical"
+														? styles.priorityCritical
+														: styles.priorityWarning
+												}`}
 											>
+												<span class={styles.priorityDot} aria-hidden="true" />
 												{priorityLabel(item.priority)}
 											</span>
 										</td>

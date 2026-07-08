@@ -28,7 +28,7 @@ test("renderReportHtml includes health badge and top opportunities from shared s
 	const html = renderReportHtml(SAMPLE_REPORT);
 	assert.ok(html.includes('data-section="findings"'));
 	assert.ok(html.includes('data-health="yellow"'));
-	assert.ok(html.includes("At a glance"));
+	assert.ok(html.includes("Overall health"));
 	assert.ok(html.includes("Top opportunities"));
 	assert.ok(html.includes("MP4 transfer concentration"));
 	assert.ok(html.includes("Oversized image requests"));
