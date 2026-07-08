@@ -1,5 +1,6 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import type { RankedRow } from "../../types.js";
+import { bytesToGiB, gibToBytes } from "../../units.js";
 import { niceAxisMax } from "../vertical-bar-chart.js";
 import { VerticalBarChart } from "./VerticalBarChart.js";
 
@@ -9,18 +10,8 @@ interface BandwidthBarChartProps {
 	accent: string;
 }
 
-const GIB = 1024 ** 3;
-
-function bytesToGib(bytes: number): number {
-	return bytes / GIB;
-}
-
-function gibToBytes(gib: number): number {
-	return gib * GIB;
-}
-
 function formatAxisGib(bytes: number): string {
-	const gib = bytesToGib(bytes);
+	const gib = bytesToGiB(bytes);
 	if (gib >= 100) return `${gib.toFixed(0)} GB`;
 	if (gib >= 10) return `${gib.toFixed(1)} GB`;
 	if (gib >= 1) return `${gib.toFixed(2)} GB`;

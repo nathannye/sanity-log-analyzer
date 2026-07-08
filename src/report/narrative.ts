@@ -1,7 +1,11 @@
 import { formatDistributionShare, formatNumber } from "../format.js";
 import type { ReportViewInput, TopContributors } from "../types.js";
+import { dominantSegment } from "./distribution.js";
+import {
+	NARRATIVE_CONCENTRATION_SHARE,
+	REASSURING_5XX_RATE,
+} from "./thresholds.js";
 import type {
-	DistributionSegment,
 	FindingId,
 	ReportProblem,
 	ReportSummary,
@@ -28,9 +32,6 @@ interface InsightTemplate {
 	score: (ctx: NarrativeContext) => number;
 }
 
-const CONCENTRATION_SHARE = 0.5;
-const REASSURING_5XX_RATE = 0.001;
-
 const PRIMARY_OPPORTUNITY_LABEL: Partial<Record<FindingId, string>> = {
 	"image-width": "oversized image delivery",
 	"image-format": "image CDN settings",
@@ -40,15 +41,6 @@ const PRIMARY_OPPORTUNITY_LABEL: Partial<Record<FindingId, string>> = {
 	"status-5xx": "server reliability",
 	"status-4xx": "client request errors",
 };
-
-function dominantSegment(
-	segments: DistributionSegment[],
-): DistributionSegment | null {
-	if (segments.length === 0) return null;
-	return segments.reduce((largest, segment) =>
-		segment.bytes > largest.bytes ? segment : largest,
-	);
-}
 
 function primaryProblem(
 	problems: ReportProblem[],
@@ -85,7 +77,7 @@ const INSIGHT_TEMPLATES: InsightTemplate[] = [
 		kind: "fact",
 		when: (ctx) => {
 			const dominant = dominantSegment(ctx.summary.distribution.segments);
-			return dominant !== null && dominant.share >= CONCENTRATION_SHARE;
+			return dominant !== null && dominant.share >= NARRATIVE_CONCENTRATION_SHARE;
 		},
 		render: (ctx) => {
 			const dominant = dominantSegment(ctx.summary.distribution.segments);
@@ -107,7 +99,7 @@ const INSIGHT_TEMPLATES: InsightTemplate[] = [
 				contributorShare(
 					query.responseBytes,
 					ctx.view.byUrlKind.query.responseBytes,
-				) >= CONCENTRATION_SHARE
+				) >= NARRATIVE_CONCENTRATION_SHARE
 			);
 		},
 		render: () => "Only one query is responsible for most query bandwidth.",
@@ -131,7 +123,7 @@ const INSIGHT_TEMPLATES: InsightTemplate[] = [
 				contributorShare(
 					image.responseBytes,
 					ctx.view.byUrlKind.image.responseBytes,
-				) >= CONCENTRATION_SHARE
+				) >= NARRATIVE_CONCENTRATION_SHARE
 			);
 		},
 		render: () => "A single image accounts for most image bandwidth.",

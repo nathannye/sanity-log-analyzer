@@ -1,12 +1,14 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import type { RankedRow } from "../../types.js";
-import { splitRankedByShare } from "../split-ranked-by-share.js";
+import { ENDPOINT_SHARE_THRESHOLD, splitRankedByShare } from "../split-ranked-by-share.js";
 import { Donut } from "./Donut.js";
 
 interface EndpointBreakdownProps {
 	title: string;
 	rows: RankedRow[];
 }
+
+const ENDPOINT_THRESHOLD_PERCENT = Math.round(ENDPOINT_SHARE_THRESHOLD * 100);
 
 function MinorEndpointsAccordion({
 	minor,
@@ -73,11 +75,11 @@ export function EndpointBreakdown({ title, rows }: EndpointBreakdownProps) {
 								value: responseBytes,
 								color,
 							}))}
-							centerNote={`${major.length} endpoint${major.length === 1 ? "" : "s"} > 5%`}
+							centerNote={`${major.length} endpoint${major.length === 1 ? "" : "s"} > ${ENDPOINT_THRESHOLD_PERCENT}%`}
 						/>
 					) : (
 						<div class="body-1 card mt-0 text-muted">
-							No endpoints reach 5% of endpoint bandwidth in this view.
+							No endpoints reach {ENDPOINT_THRESHOLD_PERCENT}% of endpoint bandwidth in this view.
 						</div>
 					)}
 				</div>

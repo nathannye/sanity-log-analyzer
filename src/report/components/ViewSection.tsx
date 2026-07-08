@@ -1,5 +1,6 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportSections, ReportView } from "../../types.js";
+import { getSectionLabel } from "../sections.js";
 import { colorVar } from "../styles/colors.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { BarList } from "./BarList.js";
@@ -81,7 +82,7 @@ export function ViewSection({
 						{sections.domain ? (
 							<section class="scroll-mt-20" data-section="domain">
 								<BarList
-									title="Top domains"
+									title={getSectionLabel("domain") ?? "Top domains"}
 									rows={view.byDomain}
 									accent={colorVar("blue")}
 								/>
@@ -91,7 +92,7 @@ export function ViewSection({
 					{sections.endpoint ? (
 						<section class="scroll-mt-20" data-section="endpoint">
 							<EndpointBreakdown
-								title="Top endpoints"
+								title={getSectionLabel("endpoint") ?? "Top endpoints"}
 								rows={view.byEndpoint}
 							/>
 						</section>
@@ -100,7 +101,7 @@ export function ViewSection({
 						{sections.date ? (
 							<section class="scroll-mt-20" data-section="date">
 								<BandwidthBarChart
-									title="Daily bandwidth"
+									title={getSectionLabel("date") ?? "Daily bandwidth"}
 									rows={view.byDate}
 									accent={colorVar("amber")}
 								/>
@@ -109,7 +110,7 @@ export function ViewSection({
 						{sections.hour ? (
 							<section class="scroll-mt-20" data-section="hour">
 								<BandwidthBarChart
-									title="Hourly bandwidth"
+									title={getSectionLabel("hour") ?? "Hourly bandwidth"}
 									rows={view.byHour}
 									accent={colorVar("red")}
 								/>
@@ -120,7 +121,7 @@ export function ViewSection({
 						{sections.status ? (
 							<section class="scroll-mt-20" data-section="status">
 								<CountBarChart
-									title="Response codes"
+									title={getSectionLabel("status") ?? "Response codes"}
 									rows={view.byStatus}
 									accent={colorVar("purple")}
 								/>
@@ -129,7 +130,9 @@ export function ViewSection({
 						{sections.histogram ? (
 							<section class="scroll-mt-20" data-section="histogram">
 								<CountBars
-									title="Response size buckets"
+									title={
+										getSectionLabel("histogram") ?? "Response size buckets"
+									}
 									rows={view.responseSizeHistogram}
 									accent={colorVar("teal")}
 								/>
@@ -150,13 +153,16 @@ export function ViewSection({
 					) : null}
 					{sections.referers ? (
 						<section class="scroll-mt-20" data-section="referers">
-							<RefererDataTable title="Top referers" rows={view.byReferer} />
+							<RefererDataTable
+								title={getSectionLabel("referers") ?? "Top referers"}
+								rows={view.byReferer}
+							/>
 						</section>
 					) : null}
 					{sections.userAgents ? (
 						<section class="scroll-mt-20" data-section="userAgents">
 							<UserAgentDataTable
-								title="Top user agents"
+								title={getSectionLabel("userAgents") ?? "Top user agents"}
 								rows={view.byUserAgent}
 								userAgentByLabel={view.userAgentByLabel}
 								userAgentStats={view.userAgentStats}
@@ -168,7 +174,7 @@ export function ViewSection({
 							<DataTable
 								hasCopyButton
 								copyToastMessage="Copied IP"
-								title="Top IPs"
+								title={getSectionLabel("ips") ?? "Top IPs"}
 								rows={view.byIp}
 							/>
 						</section>

@@ -1,6 +1,7 @@
 import type { ReportViewInput, TopContributors } from "../types.js";
 import { type ReportInsight } from "./narrative.js";
-export type HealthStatus = "green" | "yellow" | "red";
+import type { Tone } from "./components/tone.js";
+export type HealthStatus = Tone;
 export type FindingId = "groq-spread" | "mp4-transfer" | "image-width" | "image-format" | "image-quality" | "status-5xx" | "status-4xx";
 export interface ReportProblem {
     id: FindingId;

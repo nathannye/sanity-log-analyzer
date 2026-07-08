@@ -1521,6 +1521,16 @@ async function loadReportConfig(configPath) {
 function formatNumber(value) {
   return Number(value).toLocaleString();
 }
+function pluralize(count, singular, plural = `${singular}s`) {
+  return count === 1 ? singular : plural;
+}
+function formatCountLabel(count, singular, plural) {
+  return `${formatNumber(count)} ${pluralize(count, singular, plural)}`;
+}
+function formatNullableMetric(value) {
+  if (value === null) return "\u2014";
+  return String(value);
+}
 function formatBytes(bytes) {
   if (!Number.isFinite(bytes)) return "0 B";
   const units = ["B", "KB", "MB", "GB", "TB"];
@@ -1694,6 +1704,23 @@ async function* streamLogEntries(inputPath, onProgress) {
   reportProgress(entriesProcessed, true);
 }
 
+// src/units.ts
+var KB = 1024;
+var MB = KB * 1024;
+var GB = MB * 1024;
+function scaleBytes(bytes, { decimals = 1 } = {}) {
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  const abs = Math.abs(bytes);
+  let unitIndex = 0;
+  let scaled = abs;
+  while (scaled >= 1024 && unitIndex < units.length - 1) {
+    scaled /= 1024;
+    unitIndex += 1;
+  }
+  const rendered = unitIndex === 0 ? Math.round(scaled) : Number(scaled.toFixed(decimals));
+  return { scaled: rendered, unitIndex, unit: units[unitIndex] ?? "B" };
+}
+
 // src/aggregate.ts
 function createBreakdown() {
   return { requests: 0, responseBytes: 0 };
@@ -1702,16 +1729,10 @@ function createTotals() {
   return { requests: 0, responseBytes: 0, requestBytes: 0 };
 }
 function formatBucketLabel(lower, upper) {
-  const units = ["B", "KB", "MB", "GB", "TB"];
   const format = (value) => {
     if (value === Infinity) return "\u221E";
-    let scaled = value;
-    let unitIndex = 0;
-    while (scaled >= 1024 && unitIndex < units.length - 1) {
-      scaled /= 1024;
-      unitIndex += 1;
-    }
-    return unitIndex === 0 ? `${Math.round(scaled)} ${units[unitIndex]}` : `${scaled.toFixed(0)} ${units[unitIndex]}`;
+    const { scaled, unitIndex, unit } = scaleBytes(value, { decimals: 0 });
+    return `${scaled} ${unit}`;
   };
   if (upper === Infinity) return `${format(lower)}+`;
   return `${format(lower)} - ${format(upper)}`;
@@ -2185,6 +2206,9 @@ function groupUrlsByKind(rows) {
 }
 
 // src/report/parse-image-url.ts
+var MAX_IMAGE_WIDTH = 2e3;
+var MAX_IMAGE_QUALITY = 87;
+var PREFERRED_IMAGE_FORMAT = "auto";
 function getExtension2(filename) {
   const lastDot = filename.lastIndexOf(".");
   if (lastDot === -1) return "";
@@ -2232,18 +2256,92 @@ function parseImageUrl(url) {
   }
 }
 function hasImageWidthError(width) {
-  return width !== null && width > 2e3;
+  return width !== null && width > MAX_IMAGE_WIDTH;
 }
 function hasImageQualityError(quality, isSvg) {
-  return !isSvg && quality !== null && quality > 87;
+  return !isSvg && quality !== null && quality > MAX_IMAGE_QUALITY;
 }
 function hasImageFormatError(format) {
-  return format !== null && format !== "auto";
+  return format !== null && format !== PREFERRED_IMAGE_FORMAT;
 }
 
-// src/report/narrative.ts
-var CONCENTRATION_SHARE = 0.5;
+// src/report/sections.ts
+var REPORT_SECTIONS = [
+  { slug: "findings", label: "Findings" },
+  { slug: "summary", label: "Summary" },
+  { slug: "domain", label: "Top domains", configKey: "domain" },
+  { slug: "endpoint", label: "Top endpoints", configKey: "endpoint" },
+  { slug: "date", label: "Daily bandwidth", configKey: "date" },
+  { slug: "hour", label: "Hourly bandwidth", configKey: "hour" },
+  { slug: "status", label: "Response codes", configKey: "status" },
+  { slug: "histogram", label: "Response size buckets", configKey: "histogram" },
+  {
+    slug: "urls",
+    label: "Top URLs",
+    configKey: "urls"
+  },
+  { slug: "referers", label: "Top referers", configKey: "referers" },
+  { slug: "userAgents", label: "Top user agents", configKey: "userAgents" },
+  { slug: "ips", label: "Top IPs", configKey: "ips" }
+];
+function getSectionLabel(slug) {
+  return REPORT_SECTIONS.find((section) => section.slug === slug)?.label;
+}
+
+// src/report/distribution.ts
+function dominantSegment(segments) {
+  if (segments.length === 0) return null;
+  return segments.reduce(
+    (largest, segment) => segment.bytes > largest.bytes ? segment : largest
+  );
+}
+function dominantRankedRow(rows, metric) {
+  const nonZero = rows.filter((row) => row[metric] > 0);
+  if (nonZero.length <= 1) return null;
+  const total = nonZero.reduce((sum, row) => sum + row[metric], 0);
+  if (total <= 0) return null;
+  let largest = nonZero[0];
+  for (const row of nonZero.slice(1)) {
+    if (row[metric] > largest[metric]) largest = row;
+  }
+  return {
+    label: largest.label,
+    value: largest[metric],
+    total,
+    share: largest[metric] / total
+  };
+}
+function dominantCountRow(rows) {
+  const nonZero = rows.filter((row) => row.count > 0);
+  if (nonZero.length <= 1) return null;
+  const total = nonZero.reduce((sum, row) => sum + row.count, 0);
+  if (total <= 0) return null;
+  let largest = nonZero[0];
+  for (const row of nonZero.slice(1)) {
+    if (row.count > largest.count) largest = row;
+  }
+  return {
+    label: largest.label,
+    count: largest.count,
+    total,
+    share: largest.count / total
+  };
+}
+
+// src/report/thresholds.ts
+var DISTRIBUTION_DOMINANCE_THRESHOLD = 0.5;
+var CONCENTRATION_SHARE_THRESHOLD = 0.75;
+var NARRATIVE_CONCENTRATION_SHARE = 0.5;
+var SPIKE_SHARE_THRESHOLD = 0.7;
+var STUDIO_NEGLIGIBLE_SHARE_THRESHOLD = 0.2;
+var CRITICAL_BYTES_THRESHOLD = 100 * MB;
+var CRITICAL_REQUESTS_THRESHOLD = 1e3;
+var CRITICAL_SHARE_THRESHOLD = 0.25;
+var CRITICAL_TOTAL_BYTES_THRESHOLD = 10 * MB;
+var CRITICAL_TOTAL_REQUESTS_THRESHOLD = 100;
 var REASSURING_5XX_RATE = 1e-3;
+
+// src/report/narrative.ts
 var PRIMARY_OPPORTUNITY_LABEL = {
   "image-width": "oversized image delivery",
   "image-format": "image CDN settings",
@@ -2253,12 +2351,6 @@ var PRIMARY_OPPORTUNITY_LABEL = {
   "status-5xx": "server reliability",
   "status-4xx": "client request errors"
 };
-function dominantSegment(segments) {
-  if (segments.length === 0) return null;
-  return segments.reduce(
-    (largest, segment) => segment.bytes > largest.bytes ? segment : largest
-  );
-}
 function primaryProblem(problems) {
   if (problems.length === 0) return null;
   return problems.reduce((primary, problem) => {
@@ -2282,7 +2374,7 @@ var INSIGHT_TEMPLATES = [
     kind: "fact",
     when: (ctx) => {
       const dominant = dominantSegment(ctx.summary.distribution.segments);
-      return dominant !== null && dominant.share >= CONCENTRATION_SHARE;
+      return dominant !== null && dominant.share >= NARRATIVE_CONCENTRATION_SHARE;
     },
     render: (ctx) => {
       const dominant = dominantSegment(ctx.summary.distribution.segments);
@@ -2303,7 +2395,7 @@ var INSIGHT_TEMPLATES = [
       return contributorShare(
         query.responseBytes,
         ctx.view.byUrlKind.query.responseBytes
-      ) >= CONCENTRATION_SHARE;
+      ) >= NARRATIVE_CONCENTRATION_SHARE;
     },
     render: () => "Only one query is responsible for most query bandwidth.",
     score: (ctx) => {
@@ -2323,7 +2415,7 @@ var INSIGHT_TEMPLATES = [
       return contributorShare(
         image.responseBytes,
         ctx.view.byUrlKind.image.responseBytes
-      ) >= CONCENTRATION_SHARE;
+      ) >= NARRATIVE_CONCENTRATION_SHARE;
     },
     render: () => "A single image accounts for most image bandwidth.",
     score: (ctx) => {
@@ -2450,24 +2542,7 @@ function buildAtAGlance(view, summary) {
 }
 
 // src/report/summarize.ts
-var KB = 1024;
-var MB = KB * 1024;
-var CRITICAL_BYTES_THRESHOLD = 100 * MB;
-var CRITICAL_REQUESTS_THRESHOLD = 1e3;
-var CRITICAL_SHARE_THRESHOLD = 0.25;
-var CRITICAL_TOTAL_BYTES_THRESHOLD = 10 * MB;
-var CRITICAL_TOTAL_REQUESTS_THRESHOLD = 100;
-var CONCENTRATION_SHARE_THRESHOLD = 0.75;
-var SPIKE_SHARE_THRESHOLD = 0.7;
 var REASONABLE_AVG_IMAGE_BYTES = 400 * KB;
-var STUDIO_NEGLIGIBLE_SHARE_THRESHOLD = 0.2;
-var DISTRIBUTION_DOMINANCE_THRESHOLD = 0.5;
-function pluralize(count, singular, plural = `${singular}s`) {
-  return count === 1 ? singular : plural;
-}
-function formatCountLabel(count, singular, plural) {
-  return `${formatNumber(count)} ${pluralize(count, singular, plural)}`;
-}
 function sumRows(rows) {
   return rows.reduce(
     (totals, row) => {
@@ -2521,38 +2596,6 @@ function getQuerySpreadRows(rows) {
 }
 function getMp4Rows(rows) {
   return groupUrlsByKind(rows).file.filter((row) => isMp4Url(row.label));
-}
-function dominantRankedRow(rows, metric) {
-  const nonZero = rows.filter((row) => row[metric] > 0);
-  if (nonZero.length <= 1) return null;
-  const total = nonZero.reduce((sum, row) => sum + row[metric], 0);
-  if (total <= 0) return null;
-  let largest = nonZero[0];
-  for (const row of nonZero.slice(1)) {
-    if (row[metric] > largest[metric]) largest = row;
-  }
-  return {
-    label: largest.label,
-    value: largest[metric],
-    total,
-    share: largest[metric] / total
-  };
-}
-function dominantCountRow(rows) {
-  const nonZero = rows.filter((row) => row.count > 0);
-  if (nonZero.length <= 1) return null;
-  const total = nonZero.reduce((sum, row) => sum + row.count, 0);
-  if (total <= 0) return null;
-  let largest = nonZero[0];
-  for (const row of nonZero.slice(1)) {
-    if (row.count > largest.count) largest = row;
-  }
-  return {
-    label: largest.label,
-    count: largest.count,
-    total,
-    share: largest.count / total
-  };
 }
 function friendlyDomainLabel(domain) {
   const lower = domain.toLowerCase();
@@ -2618,8 +2661,8 @@ function detectProblems(view, critical, warnings) {
     const problem = {
       id: "image-width",
       severity,
-      summary: `${formatCountLabel(images.wideRows.length, "image")} exceed 2000px`,
-      suggestedFix: "Cap CDN width requests at 2000px or below",
+      summary: `${formatCountLabel(images.wideRows.length, "image")} exceed ${MAX_IMAGE_WIDTH}px`,
+      suggestedFix: `Cap CDN width requests at ${MAX_IMAGE_WIDTH}px or below`,
       requests: totals.requests,
       responseBytes: totals.responseBytes
     };
@@ -2644,8 +2687,8 @@ function detectProblems(view, critical, warnings) {
     const problem = {
       id: "image-quality",
       severity,
-      summary: `${formatCountLabel(images.qualityRows.length, "image")} with quality above 87`,
-      suggestedFix: "Keep image quality at 87 or below for raster assets",
+      summary: `${formatCountLabel(images.qualityRows.length, "image")} with quality above ${MAX_IMAGE_QUALITY}`,
+      suggestedFix: `Keep image quality at ${MAX_IMAGE_QUALITY} or below for raster assets`,
       requests: totals.requests,
       responseBytes: totals.responseBytes
     };
@@ -2685,13 +2728,7 @@ function detectProblems(view, critical, warnings) {
 function buildObservations(view) {
   const observations = [];
   const distribution = buildDistribution(view);
-  const dominant = distribution.segments.reduce(
-    (largest, segment) => {
-      if (!largest || segment.bytes > largest.bytes) return segment;
-      return largest;
-    },
-    null
-  );
+  const dominant = dominantSegment(distribution.segments);
   if (dominant && dominant.share >= DISTRIBUTION_DOMINANCE_THRESHOLD && view.responseBytes > 0) {
     observations.push({
       summary: `${dominant.label} account for ${formatDistributionShare(dominant.share)} of bandwidth`
@@ -2868,27 +2905,32 @@ function buildExecutiveSummary(view) {
   ].filter(Boolean).join("\n");
 }
 function formatImageMetric(value, issue) {
-  if (value === null) return "\u2014";
-  const base = String(value);
+  const base = formatNullableMetric(value);
+  if (base === "\u2014") return base;
   return issue ? `${base} (${issue})` : base;
 }
-function rankedTable(title, rows) {
+function rankedRowMarkdownLine(row, label = row.label) {
+  return `| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`;
+}
+function rankedTable(title, rows, headingLevel = 3) {
   if (rows.length === 0) return "";
+  const heading = "#".repeat(headingLevel);
   const lines = [
-    `### ${title}`,
+    `${heading} ${title}`,
     "",
     "| Label | Requests | Bandwidth | Avg / req |",
     "| --- | ---: | ---: | ---: |"
   ];
   for (const row of rows) {
-    lines.push(
-      `| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`
-    );
+    lines.push(rankedRowMarkdownLine(row));
   }
   lines.push("");
   return lines.join("\n");
 }
 function urlRankedTable(title, rows) {
+  return rankedTable(title, rows, 4);
+}
+function rankedUrlSubtable(title, rows, formatLabel) {
   if (rows.length === 0) return "";
   const lines = [
     `#### ${title}`,
@@ -2897,9 +2939,7 @@ function urlRankedTable(title, rows) {
     "| --- | ---: | ---: | ---: |"
   ];
   for (const row of rows) {
-    lines.push(
-      `| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`
-    );
+    lines.push(rankedRowMarkdownLine(row, formatLabel(row)));
   }
   lines.push("");
   return lines.join("\n");
@@ -2916,15 +2956,15 @@ function imageUrlTable(rows) {
     const parsed = parseImageUrl(row.label);
     const width = formatImageMetric(
       parsed.width,
-      hasImageWidthError(parsed.width) ? "width exceeds 2000px" : void 0
+      hasImageWidthError(parsed.width) ? `width exceeds ${MAX_IMAGE_WIDTH}px` : void 0
     );
     const quality = formatImageMetric(
       parsed.quality,
-      hasImageQualityError(parsed.quality, parsed.isSvg) ? "quality exceeds 87" : void 0
+      hasImageQualityError(parsed.quality, parsed.isSvg) ? `quality exceeds ${MAX_IMAGE_QUALITY}` : void 0
     );
     const format = formatImageMetric(
       parsed.format,
-      hasImageFormatError(parsed.format) ? 'format should be "auto"' : void 0
+      hasImageFormatError(parsed.format) ? `format should be "${PREFERRED_IMAGE_FORMAT}"` : void 0
     );
     lines.push(
       `| ${escapeMarkdownCell(parsed.id)} | ${escapeMarkdownCell(row.label)} | ${width} | ${quality} | ${format} | ${formatBytes(row.responseBytes)} | ${formatNumber(row.requests)} | ${formatBytes(avgBytesPerRequest(row))} |`
@@ -2934,43 +2974,21 @@ function imageUrlTable(rows) {
   return lines.join("\n");
 }
 function queryUrlTable(rows, groqByUrl) {
-  if (rows.length === 0) return "";
-  const lines = [
-    "#### Queries",
-    "",
-    "| Label | Requests | Bandwidth | Avg / req |",
-    "| --- | ---: | ---: | ---: |"
-  ];
-  for (const row of rows) {
+  return rankedUrlSubtable("Queries", rows, (row) => {
     const groqDetails = groqByUrl[row.label];
-    const label = groqDetails?.hasSpreadOperator ? `${row.label} (${GROQ_SPREAD_WARNING})` : row.label;
-    lines.push(
-      `| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`
-    );
-  }
-  lines.push("");
-  return lines.join("\n");
+    return groqDetails?.hasSpreadOperator ? `${row.label} (${GROQ_SPREAD_WARNING})` : row.label;
+  });
 }
 function fileUrlTable(rows) {
-  if (rows.length === 0) return "";
-  const lines = [
-    "#### Files",
-    "",
-    "| Label | Requests | Bandwidth | Avg / req |",
-    "| --- | ---: | ---: | ---: |"
-  ];
-  for (const row of rows) {
-    const label = isMp4Url(row.label) ? `${row.label} (${MP4_WARNING})` : row.label;
-    lines.push(
-      `| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`
-    );
-  }
-  lines.push("");
-  return lines.join("\n");
+  return rankedUrlSubtable(
+    "Files",
+    rows,
+    (row) => isMp4Url(row.label) ? `${row.label} (${MP4_WARNING})` : row.label
+  );
 }
 function urlSectionsMarkdown(view) {
   const groups = groupUrlsByKind(view.byUrl);
-  const parts = ["### Top URLs", ""];
+  const parts = [`### ${getSectionLabel("urls") ?? "Top URLs"}`, ""];
   if (groups.image.length > 0) {
     parts.push(imageUrlTable(groups.image));
   }
@@ -3037,22 +3055,51 @@ function renderSummary(view) {
 }
 function renderSections(view, sections) {
   const parts = [];
-  if (sections.domain) parts.push(rankedTable("Top domains", view.byDomain));
-  if (sections.endpoint)
-    parts.push(rankedTable("Top endpoints", view.byEndpoint));
-  if (sections.date) parts.push(rankedTable("Daily bandwidth", view.byDate));
-  if (sections.hour) parts.push(rankedTable("Hourly bandwidth", view.byHour));
-  if (sections.status) parts.push(countTable("Response codes", view.byStatus));
+  if (sections.domain) {
+    parts.push(rankedTable(getSectionLabel("domain") ?? "Top domains", view.byDomain));
+  }
+  if (sections.endpoint) {
+    parts.push(
+      rankedTable(getSectionLabel("endpoint") ?? "Top endpoints", view.byEndpoint)
+    );
+  }
+  if (sections.date) {
+    parts.push(
+      rankedTable(getSectionLabel("date") ?? "Daily bandwidth", view.byDate)
+    );
+  }
+  if (sections.hour) {
+    parts.push(
+      rankedTable(getSectionLabel("hour") ?? "Hourly bandwidth", view.byHour)
+    );
+  }
+  if (sections.status) {
+    parts.push(
+      countTable(getSectionLabel("status") ?? "Response codes", view.byStatus)
+    );
+  }
   if (sections.histogram) {
-    parts.push(countTable("Response size buckets", view.responseSizeHistogram));
+    parts.push(
+      countTable(
+        getSectionLabel("histogram") ?? "Response size buckets",
+        view.responseSizeHistogram
+      )
+    );
   }
   if (sections.urls) parts.push(urlSectionsMarkdown(view));
-  if (sections.referers)
-    parts.push(rankedTable("Top referers", view.byReferer));
-  if (sections.userAgents) {
-    parts.push(userAgentTable("Top user agents", view));
+  if (sections.referers) {
+    parts.push(
+      rankedTable(getSectionLabel("referers") ?? "Top referers", view.byReferer)
+    );
   }
-  if (sections.ips) parts.push(rankedTable("Top IPs", view.byIp));
+  if (sections.userAgents) {
+    parts.push(
+      userAgentTable(getSectionLabel("userAgents") ?? "Top user agents", view)
+    );
+  }
+  if (sections.ips) {
+    parts.push(rankedTable(getSectionLabel("ips") ?? "Top IPs", view.byIp));
+  }
   return parts.filter(Boolean).join("\n");
 }
 function renderReportMarkdown(data, viewKey) {

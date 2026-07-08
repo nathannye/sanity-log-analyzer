@@ -1,5 +1,5 @@
-import { formatBytes, formatNumber } from "../../format.js";
-import { avgBytesPerRequest } from "../../ranked-row.js";
+import { formatNullableMetric } from "../../format.js";
+import { rankedRowSortAttrs } from "../../ranked-row.js";
 import type { GroqUrlDetails, RankedRow } from "../../types.js";
 import { isMp4Url } from "../classify-url.js";
 import { GROQ_SPREAD_WARNING } from "../groq-constants.js";
@@ -7,13 +7,18 @@ import {
 	hasImageFormatError,
 	hasImageQualityError,
 	hasImageWidthError,
+	MAX_IMAGE_QUALITY,
+	MAX_IMAGE_WIDTH,
+	PREFERRED_IMAGE_FORMAT,
 	parseImageUrl,
 	toInlineAssetUrl,
 } from "../parse-image-url.js";
 import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
-import { CopyIcon, ErrorIcon, ExternalLinkIcon, WarningIcon } from "./icons.js";
+import { ErrorIcon, WarningIcon } from "./icons.js";
+import { LabelActions } from "./LabelActions.js";
+import { RankedRowMetricCells } from "./RankedRowMetricCells.js";
 import { SortableTableHeader } from "./SortableTableHeader.js";
 import { Tooltip } from "./Tooltip.js";
 
@@ -23,11 +28,6 @@ interface UrlDataTableProps {
 	groqByUrl?: Record<string, GroqUrlDetails>;
 	variant?: "default" | "image" | "file";
 	idPrefix: string;
-}
-
-function formatMetric(value: string | number | null): string {
-	if (value === null) return "—";
-	return String(value);
 }
 
 export function UrlDataTable({
@@ -108,15 +108,18 @@ export function UrlDataTable({
 						const labelSortValue = isImageTable
 							? (imageDetails?.id ?? row.label)
 							: row.label;
+						const displayLabel = isImageTable
+							? (imageDetails?.id ?? row.label)
+							: row.label;
 
 						return (
 							<tr
 								key={`${row.label}-${index}`}
 								data-row-index={index}
-								data-sort-label={encodeSortValue(labelSortValue)}
-								data-sort-bandwidth={encodeSortValue(row.responseBytes)}
-								data-sort-requests={encodeSortValue(row.requests)}
-								data-sort-avg={encodeSortValue(avgBytesPerRequest(row))}
+								{...rankedRowSortAttrs({
+									...row,
+									label: labelSortValue,
+								})}
 								{...(isImageTable
 									? {
 											"data-sort-width": encodeSortValue(
@@ -135,58 +138,47 @@ export function UrlDataTable({
 									class="max-w-520"
 									title={isImageTable ? row.label : undefined}
 								>
-									<div class="flex min-w-0 items-center gap-6">
-										<Button
-											variant="ghost-icon-sm"
-											icon={<CopyIcon />}
-											data-copy-value={row.label}
-											data-copy-toast="Copied URL"
-											aria-label={`Copy "${row.label}"`}
-											title="Copy to clipboard"
-										/>
-										{showExternalLink ? (
-											<a
-												href={toInlineAssetUrl(row.label)}
-												target="_blank"
-												rel="noopener noreferrer"
-												class="btn-ghost-sm"
-												aria-label={`Open "${isImageTable ? (imageDetails?.id ?? row.label) : row.label}" in new tab`}
-												title="Open in new tab"
-											>
-												<span class="btn-icon">
-													<ExternalLinkIcon />
-												</span>
-											</a>
-										) : null}
-										<span class="min-w-0 flex-1 truncate">
-											{isImageTable ? imageDetails?.id : row.label}
-										</span>
-										{isFileTable && isMp4Url(row.label) ? (
-											<Tooltip content="Consider using HLS streaming services like Mux instead of serving large single MP4 files to reduce bandwidth and improve playback.">
-												<span class="inline-flex shrink-0 text-[var(--color-amber,#f59e0b)] [&>svg]:size-14">
-													<WarningIcon />
-												</span>
-											</Tooltip>
-										) : null}
-										{groqDetails?.hasSpreadOperator ? (
-											<Tooltip
-												content={`This query ${GROQ_SPREAD_WARNING}.`}
-											>
-												<span class="inline-flex shrink-0 text-[var(--color-amber,#f59e0b)] [&>svg]:size-14">
-													<WarningIcon />
-												</span>
-											</Tooltip>
-										) : null}
-										{flyoutId ? (
-											<Button
-												variant="outline-pill-accent"
-												data-groq-flyout-target={flyoutId}
-												aria-haspopup="dialog"
-											>
-												View query
-											</Button>
-										) : null}
-									</div>
+									<LabelActions
+										value={row.label}
+										copyToast="Copied URL"
+										href={
+											showExternalLink
+												? toInlineAssetUrl(row.label)
+												: undefined
+										}
+										externalLinkLabel={displayLabel}
+										adornments={
+											<>
+												{isFileTable && isMp4Url(row.label) ? (
+													<Tooltip content="Consider using HLS streaming services like Mux instead of serving large single MP4 files to reduce bandwidth and improve playback.">
+														<span class="icon-warning">
+															<WarningIcon />
+														</span>
+													</Tooltip>
+												) : null}
+												{groqDetails?.hasSpreadOperator ? (
+													<Tooltip
+														content={`This query ${GROQ_SPREAD_WARNING}.`}
+													>
+														<span class="icon-warning">
+															<WarningIcon />
+														</span>
+													</Tooltip>
+												) : null}
+												{flyoutId ? (
+													<Button
+														variant="outline-pill-accent"
+														data-groq-flyout-target={flyoutId}
+														aria-haspopup="dialog"
+													>
+														View query
+													</Button>
+												) : null}
+											</>
+										}
+									>
+										<span class="min-w-0 flex-1 truncate">{displayLabel}</span>
+									</LabelActions>
 									{flyoutId && groqDetails ? (
 										<GroqQueryFlyout
 											id={flyoutId}
@@ -200,9 +192,9 @@ export function UrlDataTable({
 									<>
 										<td class="num">
 											<div class="inline-flex items-center gap-6">
-												<span>{formatMetric(imageDetails.width)}</span>
+												<span>{formatNullableMetric(imageDetails.width)}</span>
 												{hasImageWidthError(imageDetails.width) ? (
-													<Tooltip content="Width exceeds 2000px">
+													<Tooltip content={`Width exceeds ${MAX_IMAGE_WIDTH}px`}>
 														<span class="badge-red">Too large</span>
 													</Tooltip>
 												) : null}
@@ -210,13 +202,13 @@ export function UrlDataTable({
 										</td>
 										<td class="num">
 											<div class="inline-flex items-center gap-6">
-												<span>{formatMetric(imageDetails.quality)}</span>
+												<span>{formatNullableMetric(imageDetails.quality)}</span>
 												{hasImageQualityError(
 													imageDetails.quality,
 													imageDetails.isSvg,
 												) ? (
-													<Tooltip content="Quality exceeds 87">
-														<span class="inline-flex shrink-0 text-[var(--color-red,#ef4444)] [&>svg]:size-14">
+													<Tooltip content={`Quality exceeds ${MAX_IMAGE_QUALITY}`}>
+														<span class="icon-error">
 															<ErrorIcon />
 														</span>
 													</Tooltip>
@@ -225,10 +217,10 @@ export function UrlDataTable({
 										</td>
 										<td>
 											<div class="inline-flex items-center gap-6">
-												<span>{formatMetric(imageDetails.format)}</span>
+												<span>{formatNullableMetric(imageDetails.format)}</span>
 												{hasImageFormatError(imageDetails.format) ? (
-													<Tooltip content='Format should be "auto"'>
-														<span class="inline-flex shrink-0 text-[var(--color-red,#ef4444)] [&>svg]:size-14">
+													<Tooltip content={`Format should be "${PREFERRED_IMAGE_FORMAT}"`}>
+														<span class="icon-error">
 															<ErrorIcon />
 														</span>
 													</Tooltip>
@@ -237,11 +229,7 @@ export function UrlDataTable({
 										</td>
 									</>
 								) : null}
-								<td class="num">{formatBytes(row.responseBytes)}</td>
-								<td class="num">{formatNumber(row.requests)}</td>
-								<td class="num">
-									{formatBytes(avgBytesPerRequest(row))}
-								</td>
+								<RankedRowMetricCells row={row} />
 							</tr>
 						);
 					})}

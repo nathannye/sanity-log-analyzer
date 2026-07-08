@@ -27,11 +27,13 @@ function getUrlTabChildren(urlRows?: RankedRow[]): TocSection[] {
 	}));
 }
 
-const TOC_SECTIONS: Array<{
+export interface ReportSectionDefinition {
 	slug: string;
 	label: string;
 	configKey?: keyof ReportSections;
-}> = [
+}
+
+export const REPORT_SECTIONS: ReportSectionDefinition[] = [
 	{ slug: "findings", label: "Findings" },
 	{ slug: "summary", label: "Summary" },
 	{ slug: "domain", label: "Top domains", configKey: "domain" },
@@ -49,6 +51,12 @@ const TOC_SECTIONS: Array<{
 	{ slug: "userAgents", label: "Top user agents", configKey: "userAgents" },
 	{ slug: "ips", label: "Top IPs", configKey: "ips" },
 ];
+
+export function getSectionLabel(slug: string): string | undefined {
+	return REPORT_SECTIONS.find((section) => section.slug === slug)?.label;
+}
+
+const TOC_SECTIONS = REPORT_SECTIONS;
 
 export function getVisibleTocSections(
 	sections: ReportSections,

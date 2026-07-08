@@ -1,5 +1,6 @@
 import {
 	formatBytes,
+	formatNullableMetric,
 	formatNumber,
 	formatPercentage,
 	formatReadableDate,
@@ -19,12 +20,16 @@ import {
 	hasImageFormatError,
 	hasImageQualityError,
 	hasImageWidthError,
+	MAX_IMAGE_QUALITY,
+	MAX_IMAGE_WIDTH,
+	PREFERRED_IMAGE_FORMAT,
 	parseImageUrl,
 } from "./parse-image-url.js";
 import {
 	markdownReportFilename,
 	slugifyReportFilename,
 } from "./report-filename.js";
+import { getSectionLabel } from "./sections.js";
 import {
 	type ReportHealthySignal,
 	type ReportObservation,
@@ -147,25 +152,35 @@ function formatImageMetric(
 	value: string | number | null,
 	issue?: string,
 ): string {
-	if (value === null) return "—";
-	const base = String(value);
+	const base = formatNullableMetric(value);
+	if (base === "—") return base;
 	return issue ? `${base} (${issue})` : base;
 }
 
-function rankedTable(title: string, rows: RankedRow[]): string {
+function rankedRowMarkdownLine(
+	row: RankedRow,
+	label = row.label,
+): string {
+	return `| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`;
+}
+
+function rankedTable(
+	title: string,
+	rows: RankedRow[],
+	headingLevel: 3 | 4 = 3,
+): string {
 	if (rows.length === 0) return "";
 
+	const heading = "#".repeat(headingLevel);
 	const lines = [
-		`### ${title}`,
+		`${heading} ${title}`,
 		"",
 		"| Label | Requests | Bandwidth | Avg / req |",
 		"| --- | ---: | ---: | ---: |",
 	];
 
 	for (const row of rows) {
-		lines.push(
-			`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
-		);
+		lines.push(rankedRowMarkdownLine(row));
 	}
 
 	lines.push("");
@@ -173,6 +188,14 @@ function rankedTable(title: string, rows: RankedRow[]): string {
 }
 
 function urlRankedTable(title: string, rows: RankedRow[]): string {
+	return rankedTable(title, rows, 4);
+}
+
+function rankedUrlSubtable(
+	title: string,
+	rows: RankedRow[],
+	formatLabel: (row: RankedRow) => string,
+): string {
 	if (rows.length === 0) return "";
 
 	const lines = [
@@ -183,9 +206,7 @@ function urlRankedTable(title: string, rows: RankedRow[]): string {
 	];
 
 	for (const row of rows) {
-		lines.push(
-			`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
-		);
+		lines.push(rankedRowMarkdownLine(row, formatLabel(row)));
 	}
 
 	lines.push("");
@@ -206,18 +227,20 @@ function imageUrlTable(rows: RankedRow[]): string {
 		const parsed = parseImageUrl(row.label);
 		const width = formatImageMetric(
 			parsed.width,
-			hasImageWidthError(parsed.width) ? "width exceeds 2000px" : undefined,
+			hasImageWidthError(parsed.width)
+				? `width exceeds ${MAX_IMAGE_WIDTH}px`
+				: undefined,
 		);
 		const quality = formatImageMetric(
 			parsed.quality,
 			hasImageQualityError(parsed.quality, parsed.isSvg)
-				? "quality exceeds 87"
+				? `quality exceeds ${MAX_IMAGE_QUALITY}`
 				: undefined,
 		);
 		const format = formatImageMetric(
 			parsed.format,
 			hasImageFormatError(parsed.format)
-				? 'format should be "auto"'
+				? `format should be "${PREFERRED_IMAGE_FORMAT}"`
 				: undefined,
 		);
 
@@ -234,55 +257,23 @@ function queryUrlTable(
 	rows: RankedRow[],
 	groqByUrl: ReportView["groqByUrl"],
 ): string {
-	if (rows.length === 0) return "";
-
-	const lines = [
-		"#### Queries",
-		"",
-		"| Label | Requests | Bandwidth | Avg / req |",
-		"| --- | ---: | ---: | ---: |",
-	];
-
-	for (const row of rows) {
+	return rankedUrlSubtable("Queries", rows, (row) => {
 		const groqDetails = groqByUrl[row.label];
-		const label = groqDetails?.hasSpreadOperator
+		return groqDetails?.hasSpreadOperator
 			? `${row.label} (${GROQ_SPREAD_WARNING})`
 			: row.label;
-		lines.push(
-			`| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
-		);
-	}
-
-	lines.push("");
-	return lines.join("\n");
+	});
 }
 
 function fileUrlTable(rows: RankedRow[]): string {
-	if (rows.length === 0) return "";
-
-	const lines = [
-		"#### Files",
-		"",
-		"| Label | Requests | Bandwidth | Avg / req |",
-		"| --- | ---: | ---: | ---: |",
-	];
-
-	for (const row of rows) {
-		const label = isMp4Url(row.label)
-			? `${row.label} (${MP4_WARNING})`
-			: row.label;
-		lines.push(
-			`| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
-		);
-	}
-
-	lines.push("");
-	return lines.join("\n");
+	return rankedUrlSubtable("Files", rows, (row) =>
+		isMp4Url(row.label) ? `${row.label} (${MP4_WARNING})` : row.label,
+	);
 }
 
 function urlSectionsMarkdown(view: ReportView): string {
 	const groups = groupUrlsByKind(view.byUrl);
-	const parts: string[] = ["### Top URLs", ""];
+	const parts: string[] = [`### ${getSectionLabel("urls") ?? "Top URLs"}`, ""];
 
 	if (groups.image.length > 0) {
 		parts.push(imageUrlTable(groups.image));
@@ -373,22 +364,51 @@ function renderSummary(view: ReportView): string {
 function renderSections(view: ReportView, sections: ReportSections): string {
 	const parts: string[] = [];
 
-	if (sections.domain) parts.push(rankedTable("Top domains", view.byDomain));
-	if (sections.endpoint)
-		parts.push(rankedTable("Top endpoints", view.byEndpoint));
-	if (sections.date) parts.push(rankedTable("Daily bandwidth", view.byDate));
-	if (sections.hour) parts.push(rankedTable("Hourly bandwidth", view.byHour));
-	if (sections.status) parts.push(countTable("Response codes", view.byStatus));
+	if (sections.domain) {
+		parts.push(rankedTable(getSectionLabel("domain") ?? "Top domains", view.byDomain));
+	}
+	if (sections.endpoint) {
+		parts.push(
+			rankedTable(getSectionLabel("endpoint") ?? "Top endpoints", view.byEndpoint),
+		);
+	}
+	if (sections.date) {
+		parts.push(
+			rankedTable(getSectionLabel("date") ?? "Daily bandwidth", view.byDate),
+		);
+	}
+	if (sections.hour) {
+		parts.push(
+			rankedTable(getSectionLabel("hour") ?? "Hourly bandwidth", view.byHour),
+		);
+	}
+	if (sections.status) {
+		parts.push(
+			countTable(getSectionLabel("status") ?? "Response codes", view.byStatus),
+		);
+	}
 	if (sections.histogram) {
-		parts.push(countTable("Response size buckets", view.responseSizeHistogram));
+		parts.push(
+			countTable(
+				getSectionLabel("histogram") ?? "Response size buckets",
+				view.responseSizeHistogram,
+			),
+		);
 	}
 	if (sections.urls) parts.push(urlSectionsMarkdown(view));
-	if (sections.referers)
-		parts.push(rankedTable("Top referers", view.byReferer));
-	if (sections.userAgents) {
-		parts.push(userAgentTable("Top user agents", view));
+	if (sections.referers) {
+		parts.push(
+			rankedTable(getSectionLabel("referers") ?? "Top referers", view.byReferer),
+		);
 	}
-	if (sections.ips) parts.push(rankedTable("Top IPs", view.byIp));
+	if (sections.userAgents) {
+		parts.push(
+			userAgentTable(getSectionLabel("userAgents") ?? "Top user agents", view),
+		);
+	}
+	if (sections.ips) {
+		parts.push(rankedTable(getSectionLabel("ips") ?? "Top IPs", view.byIp));
+	}
 
 	return parts.filter(Boolean).join("\n");
 }

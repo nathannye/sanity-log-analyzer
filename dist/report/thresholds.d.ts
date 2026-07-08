@@ -1,0 +1,12 @@
+export declare const ENDPOINT_SHARE_THRESHOLD = 0.05;
+export declare const DISTRIBUTION_DOMINANCE_THRESHOLD = 0.5;
+export declare const CONCENTRATION_SHARE_THRESHOLD = 0.75;
+export declare const NARRATIVE_CONCENTRATION_SHARE = 0.5;
+export declare const SPIKE_SHARE_THRESHOLD = 0.7;
+export declare const STUDIO_NEGLIGIBLE_SHARE_THRESHOLD = 0.2;
+export declare const CRITICAL_BYTES_THRESHOLD: number;
+export declare const CRITICAL_REQUESTS_THRESHOLD = 1000;
+export declare const CRITICAL_SHARE_THRESHOLD = 0.25;
+export declare const CRITICAL_TOTAL_BYTES_THRESHOLD: number;
+export declare const CRITICAL_TOTAL_REQUESTS_THRESHOLD = 100;
+export declare const REASSURING_5XX_RATE = 0.001;

@@ -5,6 +5,7 @@ import type {
 	UserAgentAggregateStats,
 } from "../parse-user-agent.js";
 import { DataTable } from "./DataTable.js";
+import { DesktopIcon, MobileIcon } from "./icons.js";
 
 interface UserAgentDataTableProps {
 	title: string;
@@ -15,36 +16,6 @@ interface UserAgentDataTableProps {
 
 function isSanityUserAgent(raw: string): boolean {
 	return /^@sanity/i.test(raw.trim());
-}
-
-function DesktopIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			aria-hidden="true"
-		>
-			<rect x="2" y="3" width="20" height="14" rx="2" />
-			<path d="M8 21h8" />
-			<path d="M12 17v4" />
-		</svg>
-	);
-}
-
-function MobileIcon() {
-	return (
-		<svg
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			aria-hidden="true"
-		>
-			<rect x="7" y="2" width="10" height="20" rx="2" />
-		</svg>
-	);
 }
 
 function UserAgentLabel({

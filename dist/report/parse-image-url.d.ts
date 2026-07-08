@@ -1,3 +1,6 @@
+export declare const MAX_IMAGE_WIDTH = 2000;
+export declare const MAX_IMAGE_QUALITY = 87;
+export declare const PREFERRED_IMAGE_FORMAT = "auto";
 export interface ParsedImageUrl {
     id: string;
     width: number | null;

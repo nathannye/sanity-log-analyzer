@@ -31,7 +31,9 @@ interface ReportInsight {
     kind: "fact" | "health" | "opportunity" | "synthesis";
 }
 
-type HealthStatus = "green" | "yellow" | "red";
+type Tone = "green" | "yellow" | "red";
+
+type HealthStatus = Tone;
 type FindingId = "groq-spread" | "mp4-transfer" | "image-width" | "image-format" | "image-quality" | "status-5xx" | "status-4xx";
 interface ReportProblem {
     id: FindingId;

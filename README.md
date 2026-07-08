@@ -1,12 +1,18 @@
 # sanity-log-analyzer
-Parse Sanity request logs (NDJSON) into an offline HTML report, no server required.
+Analyze Sanity request logs and generate an offline report to help triage bandwidth usage, expensive queries, and oversized images. No server required.
+
+## Why this exists
+Sanity's request logs contain a huge amount of operational data, but they're difficult to inspect manually. This package turns raw NDJSON logs into visual reports that surface common fixes for out-of-control bandwidth.
 
 ## Features
-- CLI Tool + Standalone utilities
-- Generates HTML + Markdown for LLMs
-- Callouts for common bandwidth pitfalls
-- GROQ viewer to label overly complex queries
-- 
+- Interactive self-contained HTML report
+- Markdown export for LLMs
+- Detects common bandwidth hogs
+- Highlights oversized image requests
+- Identifies expensive GROQ queries
+- GROQ query viewer with syntax highlighting
+- Streams multi-GB NDJSON logs without loading them into memory
+- Zero external services or uploads required
 
 ## Requirements
 - Node.js >= 22
@@ -23,6 +29,15 @@ pnpm add sanity-log-analyzer
 
 ## CLI
 
+```
+
+npmx sanity-log-analyzer
+
+⠴ Processed 1.2 GB / 1.2 GB (98.9%) — 1,264,879 entries
+Wrote output.html in 6.6s (1,284,676 requests).
+
+```
+
 ### HTML report
 
 ```bash
@@ -35,6 +50,19 @@ sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.jso
 - `--open` — open the report in your default browser after writing
 
 ## Config
+
+```json 
+// Minimal config:
+
+{
+  "title": "Production Report",
+  "topN": 50,
+  "sections": {
+    "urls": true,
+    "referers": false
+  }
+}
+```
 
 Optional JSON file passed via `--config`. Merges with defaults.
 
@@ -84,6 +112,6 @@ The HTML report includes a **Download markdown for LLM** button that exports whi
 - One Sanity API request log entry per line
 
 ## Roadmap
-- [ ] Redesign of components and layout, it's a bit too generic right now
 - [ ] Support Sanity [request tagging](https://www.sanity.io/docs/platform-management/reference-api-request-tags) via the `?tag=...` param
 - [ ] Export as PDF button
+- [ ] Rewrite parser in Rust

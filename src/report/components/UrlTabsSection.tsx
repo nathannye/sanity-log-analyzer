@@ -4,6 +4,7 @@ import {
 	groupUrlsByKind,
 	visibleUrlTabs,
 } from "../group-urls-by-kind.js";
+import { getSectionLabel } from "../sections.js";
 import { Button } from "./Button.js";
 import { UrlDataTable } from "./UrlDataTable.js";
 
@@ -25,7 +26,7 @@ export function UrlTabsSection({ rows, groqByUrl, idPrefix }: UrlTabsSectionProp
 			data-url-tabs
 			data-default-url-tab={activeTab}
 		>
-			<h3 class="heading-3">Top URLs</h3>
+			<h3 class="heading-3">{getSectionLabel("urls") ?? "Top URLs"}</h3>
 			<div
 				class="mt-12 flex flex-wrap gap-6"
 				role="tablist"

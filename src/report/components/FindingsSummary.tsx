@@ -2,7 +2,7 @@ import type { ReportSummary } from "../summarize.js";
 import { ContributorCard } from "./ContributorCard.js";
 import { DistributionCard } from "./DistributionCard.js";
 import { FindingBox } from "./FindingBox.js";
-import type { MetricCardTone } from "./MetricCard.js";
+import type { Tone } from "./tone.js";
 
 interface FindingsSummaryProps {
 	summary: ReportSummary;
@@ -17,7 +17,7 @@ function FindingsGroup({
 	title: string;
 	items: string[];
 	emptyMessage?: string;
-	tone?: MetricCardTone;
+	tone?: Tone;
 }) {
 	if (items.length === 0 && !emptyMessage) return null;
 

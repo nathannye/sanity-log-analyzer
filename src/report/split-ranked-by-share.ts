@@ -4,8 +4,9 @@ import {
 	type PaletteColorName,
 	colorVar,
 } from "./styles/colors.js";
+import { ENDPOINT_SHARE_THRESHOLD } from "./thresholds.js";
 
-export const ENDPOINT_SHARE_THRESHOLD = 0.05;
+export { ENDPOINT_SHARE_THRESHOLD };
 
 export interface ColoredRankedRow extends RankedRow {
 	share: number;

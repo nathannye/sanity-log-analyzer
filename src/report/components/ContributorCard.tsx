@@ -1,6 +1,7 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import type { TopContributor } from "../../types.js";
 import { parseImageUrl } from "../parse-image-url.js";
+import { CardMetric } from "./CardMetric.js";
 
 interface ContributorCardProps {
 	title: string;
@@ -28,7 +29,7 @@ export function ContributorCard({
 	const label = contributorLabel(contributor, labelKind);
 
 	return (
-		<article class="card card-metric grid min-w-0 content-between gap-8">
+		<CardMetric className="grid min-w-0 content-between gap-8">
 			<div class="eyebrow-1 text-muted">{title}</div>
 			<div class="body-1 truncate text-text" title={contributor.label}>
 				{label}
@@ -39,6 +40,6 @@ export function ContributorCard({
 					{formatNumber(contributor.requests)} requests
 				</div>
 			) : null}
-		</article>
+		</CardMetric>
 	);
 }

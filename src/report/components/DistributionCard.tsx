@@ -1,5 +1,6 @@
-import { formatBytes, formatDistributionShare, formatNumber } from "../../format.js";
+import { formatBytes, formatDistributionShare } from "../../format.js";
 import type { DistributionSegment } from "../summarize.js";
+import { CardMetric } from "./CardMetric.js";
 
 interface DistributionCardProps {
 	totalBytes: number;
@@ -8,7 +9,7 @@ interface DistributionCardProps {
 
 export function DistributionCard({ totalBytes, segments }: DistributionCardProps) {
 	return (
-		<article class="card card-metric grid content-between gap-12">
+		<CardMetric className="grid content-between gap-12">
 			<div class="eyebrow-1 text-muted">Distribution</div>
 			<div class="display-1 text-text">{formatBytes(totalBytes)}</div>
 			<div class="body-2 grid gap-4 text-muted">
@@ -18,6 +19,6 @@ export function DistributionCard({ totalBytes, segments }: DistributionCardProps
 					</div>
 				))}
 			</div>
-		</article>
+		</CardMetric>
 	);
 }

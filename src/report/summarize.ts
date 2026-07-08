@@ -1,11 +1,19 @@
 import {
 	formatDistributionShare,
+	formatCountLabel,
 	formatNumber,
 	formatPeakHour,
+	pluralize,
 } from "../format.js";
-import type { CountRow, RankedRow, ReportViewInput, TopContributors } from "../types.js";
+import { KB } from "../units.js";
+import type { RankedRow, ReportViewInput, TopContributors } from "../types.js";
 import { hasGroqSpreadOperator } from "./analyze-groq.js";
 import { isMp4Url } from "./classify-url.js";
+import {
+	dominantCountRow,
+	dominantRankedRow,
+	dominantSegment,
+} from "./distribution.js";
 import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import { buildAtAGlance, type ReportInsight } from "./narrative.js";
@@ -13,23 +21,26 @@ import {
 	hasImageFormatError,
 	hasImageQualityError,
 	hasImageWidthError,
+	MAX_IMAGE_QUALITY,
+	MAX_IMAGE_WIDTH,
 	parseImageUrl,
 } from "./parse-image-url.js";
+import {
+	CONCENTRATION_SHARE_THRESHOLD,
+	CRITICAL_BYTES_THRESHOLD,
+	CRITICAL_REQUESTS_THRESHOLD,
+	CRITICAL_SHARE_THRESHOLD,
+	CRITICAL_TOTAL_BYTES_THRESHOLD,
+	CRITICAL_TOTAL_REQUESTS_THRESHOLD,
+	DISTRIBUTION_DOMINANCE_THRESHOLD,
+	SPIKE_SHARE_THRESHOLD,
+	STUDIO_NEGLIGIBLE_SHARE_THRESHOLD,
+} from "./thresholds.js";
+import type { Tone } from "./components/tone.js";
 
-const KB = 1024;
-const MB = KB * 1024;
-const CRITICAL_BYTES_THRESHOLD = 100 * MB;
-const CRITICAL_REQUESTS_THRESHOLD = 1_000;
-const CRITICAL_SHARE_THRESHOLD = 0.25;
-const CRITICAL_TOTAL_BYTES_THRESHOLD = 10 * MB;
-const CRITICAL_TOTAL_REQUESTS_THRESHOLD = 100;
-const CONCENTRATION_SHARE_THRESHOLD = 0.75;
-const SPIKE_SHARE_THRESHOLD = 0.7;
 const REASONABLE_AVG_IMAGE_BYTES = 400 * KB;
-const STUDIO_NEGLIGIBLE_SHARE_THRESHOLD = 0.2;
-const DISTRIBUTION_DOMINANCE_THRESHOLD = 0.5;
 
-export type HealthStatus = "green" | "yellow" | "red";
+export type HealthStatus = Tone;
 
 export type FindingId =
 	| "groq-spread"
@@ -97,18 +108,6 @@ interface ImageAnalysis {
 		parsed: ReturnType<typeof parseImageUrl>;
 	}>;
 	imageTotals: IssueTotals;
-}
-
-function pluralize(count: number, singular: string, plural = `${singular}s`): string {
-	return count === 1 ? singular : plural;
-}
-
-function formatCountLabel(
-	count: number,
-	singular: string,
-	plural?: string,
-): string {
-	return `${formatNumber(count)} ${pluralize(count, singular, plural)}`;
 }
 
 function sumRows(rows: RankedRow[]): IssueTotals {
@@ -187,53 +186,6 @@ function getQuerySpreadRows(rows: RankedRow[]): RankedRow[] {
 
 function getMp4Rows(rows: RankedRow[]): RankedRow[] {
 	return groupUrlsByKind(rows).file.filter((row) => isMp4Url(row.label));
-}
-
-function dominantRankedRow(
-	rows: RankedRow[],
-	metric: "requests" | "responseBytes",
-):
-	| { label: string; value: number; total: number; share: number }
-	| null {
-	const nonZero = rows.filter((row) => row[metric] > 0);
-	if (nonZero.length <= 1) return null;
-
-	const total = nonZero.reduce((sum, row) => sum + row[metric], 0);
-	if (total <= 0) return null;
-
-	let largest = nonZero[0];
-	for (const row of nonZero.slice(1)) {
-		if (row[metric] > largest[metric]) largest = row;
-	}
-
-	return {
-		label: largest.label,
-		value: largest[metric],
-		total,
-		share: largest[metric] / total,
-	};
-}
-
-function dominantCountRow(rows: CountRow[]):
-	| { label: string; count: number; total: number; share: number }
-	| null {
-	const nonZero = rows.filter((row) => row.count > 0);
-	if (nonZero.length <= 1) return null;
-
-	const total = nonZero.reduce((sum, row) => sum + row.count, 0);
-	if (total <= 0) return null;
-
-	let largest = nonZero[0];
-	for (const row of nonZero.slice(1)) {
-		if (row.count > largest.count) largest = row;
-	}
-
-	return {
-		label: largest.label,
-		count: largest.count,
-		total,
-		share: largest.count / total,
-	};
 }
 
 function friendlyDomainLabel(domain: string): string {
@@ -322,8 +274,8 @@ function detectProblems(
 		const problem: ReportProblem = {
 			id: "image-width",
 			severity,
-			summary: `${formatCountLabel(images.wideRows.length, "image")} exceed 2000px`,
-			suggestedFix: "Cap CDN width requests at 2000px or below",
+			summary: `${formatCountLabel(images.wideRows.length, "image")} exceed ${MAX_IMAGE_WIDTH}px`,
+			suggestedFix: `Cap CDN width requests at ${MAX_IMAGE_WIDTH}px or below`,
 			requests: totals.requests,
 			responseBytes: totals.responseBytes,
 		};
@@ -350,8 +302,8 @@ function detectProblems(
 		const problem: ReportProblem = {
 			id: "image-quality",
 			severity,
-			summary: `${formatCountLabel(images.qualityRows.length, "image")} with quality above 87`,
-			suggestedFix: "Keep image quality at 87 or below for raster assets",
+			summary: `${formatCountLabel(images.qualityRows.length, "image")} with quality above ${MAX_IMAGE_QUALITY}`,
+			suggestedFix: `Keep image quality at ${MAX_IMAGE_QUALITY} or below for raster assets`,
 			requests: totals.requests,
 			responseBytes: totals.responseBytes,
 		};
@@ -402,13 +354,7 @@ function buildObservations(view: ReportViewInput): ReportObservation[] {
 	const observations: ReportObservation[] = [];
 
 	const distribution = buildDistribution(view);
-	const dominant = distribution.segments.reduce<DistributionSegment | null>(
-		(largest, segment) => {
-			if (!largest || segment.bytes > largest.bytes) return segment;
-			return largest;
-		},
-		null,
-	);
+	const dominant = dominantSegment(distribution.segments);
 
 	if (
 		dominant &&

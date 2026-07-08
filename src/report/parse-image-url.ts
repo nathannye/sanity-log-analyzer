@@ -1,3 +1,7 @@
+export const MAX_IMAGE_WIDTH = 2000;
+export const MAX_IMAGE_QUALITY = 87;
+export const PREFERRED_IMAGE_FORMAT = "auto";
+
 function getExtension(filename: string): string {
 	const lastDot = filename.lastIndexOf(".");
 	if (lastDot === -1) return "";
@@ -76,16 +80,16 @@ export function toInlineAssetUrl(url: string): string {
 }
 
 export function hasImageWidthError(width: number | null): boolean {
-	return width !== null && width > 2000;
+	return width !== null && width > MAX_IMAGE_WIDTH;
 }
 
 export function hasImageQualityError(
 	quality: number | null,
 	isSvg: boolean,
 ): boolean {
-	return !isSvg && quality !== null && quality > 87;
+	return !isSvg && quality !== null && quality > MAX_IMAGE_QUALITY;
 }
 
 export function hasImageFormatError(format: string | null): boolean {
-	return format !== null && format !== "auto";
+	return format !== null && format !== PREFERRED_IMAGE_FORMAT;
 }

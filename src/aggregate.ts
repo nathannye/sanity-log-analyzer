@@ -1,4 +1,5 @@
 import { streamLogEntries } from "./stream.js";
+import { scaleBytes } from "./units.js";
 import type {
   AggregationSummary,
   Breakdown,
@@ -16,18 +17,10 @@ function createTotals(): Totals {
 }
 
 export function formatBucketLabel(lower: number, upper: number): string {
-  const units = ["B", "KB", "MB", "GB", "TB"];
   const format = (value: number): string => {
     if (value === Infinity) return "∞";
-    let scaled = value;
-    let unitIndex = 0;
-    while (scaled >= 1024 && unitIndex < units.length - 1) {
-      scaled /= 1024;
-      unitIndex += 1;
-    }
-    return unitIndex === 0
-      ? `${Math.round(scaled)} ${units[unitIndex]}`
-      : `${scaled.toFixed(0)} ${units[unitIndex]}`;
+    const { scaled, unitIndex, unit } = scaleBytes(value, { decimals: 0 });
+    return `${scaled} ${unit}`;
   };
   if (upper === Infinity) return `${format(lower)}+`;
   return `${format(lower)} - ${format(upper)}`;

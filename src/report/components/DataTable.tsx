@@ -1,10 +1,10 @@
 import type { ComponentChildren } from "preact";
-import { formatBytes, formatNumber } from "../../format.js";
-import { avgBytesPerRequest } from "../../ranked-row.js";
+import { avgBytesPerRequest, rankedRowSortAttrs } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
-import { encodeSortValue } from "../sort-table-values.js";
-import { Button } from "./Button.js";
-import { CopyIcon } from "./icons.js";
+import { LabelActions } from "./LabelActions.js";
+import {
+	RankedRowMetricCells,
+} from "./RankedRowMetricCells.js";
 import { SortableTableHeader } from "./SortableTableHeader.js";
 
 interface DataTableProps {
@@ -64,10 +64,7 @@ export function DataTable({
 							<tr
 								key={row.label}
 								data-row-index={index}
-								data-sort-label={encodeSortValue(row.label)}
-								data-sort-bandwidth={encodeSortValue(row.responseBytes)}
-								data-sort-requests={encodeSortValue(row.requests)}
-								data-sort-avg={encodeSortValue(avgBytesPerRequest(row))}
+								{...rankedRowSortAttrs(row)}
 							>
 								<td
 									class="max-w-520"
@@ -75,26 +72,22 @@ export function DataTable({
 								>
 									{renderLabel ? (
 										renderLabel(row)
+									) : hasCopyButton ? (
+										<LabelActions
+											value={row.label}
+											copyToast={copyToastMessage}
+											adornments={labelAdornment?.(row)}
+										>
+											<span class="min-w-0 flex-1 truncate">{row.label}</span>
+										</LabelActions>
 									) : (
 										<div class="flex min-w-0 items-center gap-6">
-											{hasCopyButton ? (
-												<Button
-													variant="ghost-icon-sm"
-													icon={<CopyIcon />}
-													data-copy-value={row.label}
-													data-copy-toast={copyToastMessage}
-													aria-label={`Copy "${row.label}"`}
-													title="Copy to clipboard"
-												/>
-											) : null}
 											<span class="min-w-0 flex-1 truncate">{row.label}</span>
 											{labelAdornment ? labelAdornment(row) : null}
 										</div>
 									)}
 								</td>
-								<td class="num">{formatBytes(row.responseBytes)}</td>
-								<td class="num">{formatNumber(row.requests)}</td>
-								<td class="num">{formatBytes(avgBytesPerRequest(row))}</td>
+								<RankedRowMetricCells row={row} />
 							</tr>
 						))}
 					</tbody>

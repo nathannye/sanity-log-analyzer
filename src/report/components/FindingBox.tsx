@@ -1,24 +1,20 @@
-import type { MetricCardTone } from "./MetricCard.js";
-
-const TONE_CLASS: Record<MetricCardTone, string> = {
-	green: "tone-green",
-	red: "tone-red",
-	yellow: "tone-yellow",
-};
+import { CardMetric } from "./CardMetric.js";
+import type { Tone } from "./tone.js";
+import { toneClasses } from "./tone.js";
 
 interface FindingBoxProps {
 	text: string;
-	tone?: MetricCardTone;
+	tone?: Tone;
 }
 
 export function FindingBox({ text, tone }: FindingBoxProps) {
-	const classes = ["card", "grid", "min-h-0", "content-start", "gap-8"];
-	if (tone) {
-		classes.push(TONE_CLASS[tone]);
-	}
-
 	return (
-		<article class={classes.join(" ")}>
+		<CardMetric
+			className={toneClasses(
+				["grid", "min-h-0", "content-start", "gap-8"],
+				tone,
+			)}
+		>
 			{tone ? (
 				<div class="flex items-center gap-8">
 					<span class="status-dot shrink-0" aria-hidden="true" />
@@ -27,6 +23,6 @@ export function FindingBox({ text, tone }: FindingBoxProps) {
 			) : (
 				<p class="body-1 m-0 min-w-0 text-text">{text}</p>
 			)}
-		</article>
+		</CardMetric>
 	);
 }

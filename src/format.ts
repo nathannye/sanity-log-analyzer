@@ -16,6 +16,27 @@ export function formatNumber(value: number): string {
   return Number(value).toLocaleString();
 }
 
+export function pluralize(
+	count: number,
+	singular: string,
+	plural = `${singular}s`,
+): string {
+	return count === 1 ? singular : plural;
+}
+
+export function formatCountLabel(
+	count: number,
+	singular: string,
+	plural?: string,
+): string {
+	return `${formatNumber(count)} ${pluralize(count, singular, plural)}`;
+}
+
+export function formatNullableMetric(value: string | number | null): string {
+	if (value === null) return "—";
+	return String(value);
+}
+
 export function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes)) return "0 B";
   const units = ["B", "KB", "MB", "GB", "TB"];
