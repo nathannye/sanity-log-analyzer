@@ -64,7 +64,7 @@ test("renderReportMarkdown annotates GROQ queries that use spread operators", ()
             ],
         },
     }, "all");
-    assert.ok(markdown.includes("uses {...} spread operator"));
+    assert.ok(markdown.includes("uses the {...} spread operator"));
 });
 test("escapeMarkdownCell escapes pipes and newlines", () => {
     assert.equal(escapeMarkdownCell("a|b"), "a\\|b");

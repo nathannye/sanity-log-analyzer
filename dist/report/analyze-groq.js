@@ -1,5 +1,5 @@
 import { GroqSyntaxError, parse } from "groq-js";
-export const GROQ_SPREAD_WARNING = "uses {...} spread operator — may fetch more fields than needed, wasting bandwidth";
+export const GROQ_SPREAD_WARNING = "uses the {...} spread operator and may waste bandwidth by fetching more fields than needed";
 function emptyStats() {
     return {
         dereferences: 0,
