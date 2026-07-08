@@ -37,7 +37,7 @@ export function ViewSection({
 		<div data-report-view={viewKey} hidden={hidden || undefined}>
 			<FindingsSummary summary={findingsSummary} />
 			<section class="scroll-mt-20" data-section="summary">
-				<div class="mb-24 flex flex-wrap gap-16 [&>*]:min-w-[130px] [&>*]:flex-1 [&>*]:basis-[130px]">
+				<div class="mb-24 flex flex-wrap gap-16 [&>*]:min-w-[130px]">
 					<Metric
 						label="Requests"
 						value={formatNumber(view.requests)}
