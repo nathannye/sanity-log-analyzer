@@ -144,7 +144,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 
 			<FindingsGroup
 				title="No action needed"
-				items={summary.healthy.map((item) => `✓ ${item.summary}`)}
+				items={summary.healthy.map((item) => item.summary)}
 				tone="green"
 			/>
 			</div>

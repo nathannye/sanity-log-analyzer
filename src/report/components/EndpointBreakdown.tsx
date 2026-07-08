@@ -19,15 +19,6 @@ function MinorEndpointsAccordion({
 
 	return (
 		<div class="data-table-wrap mt-0 min-w-0 flex-1">
-			<table class="body-1 data-table">
-				<thead>
-					<tr>
-						<th>Label</th>
-						<th class="num">Bandwidth</th>
-						<th class="num">Requests</th>
-					</tr>
-				</thead>
-			</table>
 			<details class="endpoint-minor-details">
 				<summary class="endpoint-minor-summary body-1">
 					<span class="min-w-0 truncate text-text">{minorTotals.label}</span>
@@ -40,6 +31,13 @@ function MinorEndpointsAccordion({
 				</summary>
 				<div class="endpoint-minor-body">
 					<table class="body-1 data-table">
+						<thead>
+							<tr>
+								<th>Label</th>
+								<th class="num">Bandwidth</th>
+								<th class="num">Requests</th>
+							</tr>
+						</thead>
 						<tbody>
 							{minor.map((row) => (
 								<tr key={row.label}>

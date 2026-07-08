@@ -289,7 +289,7 @@ function detectProblems(
 		const problem: ReportProblem = {
 			id: "groq-spread",
 			severity,
-			summary: `${formatCountLabel(querySpreadRows.length, "query")} ${querySpreadRows.length === 1 ? "uses" : "use"} {...}`,
+			summary: `${formatCountLabel(querySpreadRows.length, "query")} ${querySpreadRows.length === 1 ? "uses" : "use"} the spread operator {...}`,
 			suggestedFix:
 				"Project only needed fields instead of using the {...} spread operator",
 			requests: totals.requests,
@@ -501,7 +501,7 @@ function buildHealthySignals(
 	}
 
 	if (images.imageRows.length > 0 && images.qualityRows.length === 0) {
-		healthy.push({ summary: "No high image quality settings detected" });
+		healthy.push({ summary: "No unreasonably high image quality settings detected" });
 	}
 
 	if (view.byUrlKind.file.requests > 0 && mp4Rows.length === 0) {

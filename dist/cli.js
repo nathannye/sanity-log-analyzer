@@ -2590,7 +2590,7 @@ function detectProblems(view, critical, warnings) {
     const problem = {
       id: "groq-spread",
       severity,
-      summary: `${formatCountLabel(querySpreadRows.length, "query")} ${querySpreadRows.length === 1 ? "uses" : "use"} {...}`,
+      summary: `${formatCountLabel(querySpreadRows.length, "query")} ${querySpreadRows.length === 1 ? "uses" : "use"} the spread operator {...}`,
       suggestedFix: "Project only needed fields instead of using the {...} spread operator",
       requests: totals.requests,
       responseBytes: totals.responseBytes
@@ -2863,7 +2863,7 @@ function buildExecutiveSummary(view) {
     ),
     renderBulletGroup(
       "No action needed",
-      summary.healthy.map((item) => `\u2713 ${item.summary}`)
+      summary.healthy.map((item) => item.summary)
     )
   ].filter(Boolean).join("\n");
 }
@@ -3012,14 +3012,11 @@ function userAgentTable(title, view) {
 }
 function countTable(title, rows) {
   if (rows.length === 0) return "";
-  const lines = [
-    `### ${title}`,
-    "",
-    "| Label | Count |",
-    "| --- | ---: |"
-  ];
+  const lines = [`### ${title}`, "", "| Label | Count |", "| --- | ---: |"];
   for (const row of rows) {
-    lines.push(`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.count)} |`);
+    lines.push(
+      `| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.count)} |`
+    );
   }
   lines.push("");
   return lines.join("\n");
@@ -3041,7 +3038,8 @@ function renderSummary(view) {
 function renderSections(view, sections) {
   const parts = [];
   if (sections.domain) parts.push(rankedTable("Top domains", view.byDomain));
-  if (sections.endpoint) parts.push(rankedTable("Top endpoints", view.byEndpoint));
+  if (sections.endpoint)
+    parts.push(rankedTable("Top endpoints", view.byEndpoint));
   if (sections.date) parts.push(rankedTable("Daily bandwidth", view.byDate));
   if (sections.hour) parts.push(rankedTable("Hourly bandwidth", view.byHour));
   if (sections.status) parts.push(countTable("Response codes", view.byStatus));
@@ -3049,7 +3047,8 @@ function renderSections(view, sections) {
     parts.push(countTable("Response size buckets", view.responseSizeHistogram));
   }
   if (sections.urls) parts.push(urlSectionsMarkdown(view));
-  if (sections.referers) parts.push(rankedTable("Top referers", view.byReferer));
+  if (sections.referers)
+    parts.push(rankedTable("Top referers", view.byReferer));
   if (sections.userAgents) {
     parts.push(userAgentTable("Top user agents", view));
   }

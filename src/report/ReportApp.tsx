@@ -50,11 +50,7 @@ export function ReportApp({ data }: ReportAppProps) {
 							viewKey="all"
 						/>
 					)}
-					<div class="body-2 mt-24 text-muted">
-						Raw report payload is embedded in{" "}
-						<code>&lt;script type="application/json"&gt;</code> for downstream
-						automation.
-					</div>
+					
 				</div>
 			</div>
 		</main>

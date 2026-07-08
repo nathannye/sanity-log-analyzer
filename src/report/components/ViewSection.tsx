@@ -96,7 +96,7 @@ export function ViewSection({
 							/>
 						</section>
 					) : null}
-					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
+				
 						{sections.date ? (
 							<section class="scroll-mt-20" data-section="date">
 								<BandwidthBarChart
@@ -115,7 +115,7 @@ export function ViewSection({
 								/>
 							</section>
 						) : null}
-					</div>
+	
 					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.status ? (
 							<section class="scroll-mt-20" data-section="status">

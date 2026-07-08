@@ -42,13 +42,15 @@ export function splitRankedByShare(
 		}
 	}
 
+	const formattedThreshold = Math.round(threshold * 100);
+
 	const minorTotals = minor.reduce<RankedRow>(
 		(totals, row) => ({
 			label: totals.label,
 			requests: totals.requests + row.requests,
 			responseBytes: totals.responseBytes + row.responseBytes,
 		}),
-		{ label: `Show < ${Math.round(threshold * 100)}%`, requests: 0, responseBytes: 0 },
+		{ label: `Show < ${formattedThreshold}%`, requests: 0, responseBytes: 0 },
 	);
 
 	return { totalBytes, major, minor, minorTotals };

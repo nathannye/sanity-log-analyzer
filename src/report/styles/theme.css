@@ -188,6 +188,10 @@ pre {
 }
 
 .endpoint-minor-details {
+	border-radius: inherit;
+}
+
+.endpoint-minor-body {
 	border-top: 0.1rem solid rgba(255, 255, 255, 0.07);
 }
 

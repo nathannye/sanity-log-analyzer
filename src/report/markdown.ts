@@ -5,8 +5,15 @@ import {
 	formatReadableDate,
 } from "../format.js";
 import { avgBytesPerRequest } from "../ranked-row.js";
-import { GROQ_SPREAD_WARNING } from "./groq-constants.js";
+import type {
+	CountRow,
+	RankedRow,
+	ReportData,
+	ReportSections,
+	ReportView,
+} from "../types.js";
 import { isMp4Url } from "./classify-url.js";
+import { GROQ_SPREAD_WARNING } from "./groq-constants.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import {
 	hasImageFormatError,
@@ -15,23 +22,16 @@ import {
 	parseImageUrl,
 } from "./parse-image-url.js";
 import {
-	summaryHeadline,
+	markdownReportFilename,
+	slugifyReportFilename,
+} from "./report-filename.js";
+import {
 	type ReportHealthySignal,
 	type ReportObservation,
 	type ReportProblem,
 	type ReportSummary,
+	summaryHeadline,
 } from "./summarize.js";
-import type {
-	CountRow,
-	RankedRow,
-	ReportData,
-	ReportSections,
-	ReportView,
-} from "../types.js";
-import {
-	markdownReportFilename,
-	slugifyReportFilename,
-} from "./report-filename.js";
 
 export type MarkdownView = "billable" | "all";
 
@@ -43,7 +43,10 @@ export interface GenerateMarkdownOptions {
 export { markdownReportFilename, slugifyReportFilename };
 
 export function escapeMarkdownCell(value: string): string {
-	return value.replaceAll("|", "\\|").replaceAll("\n", " ").replaceAll("\r", "");
+	return value
+		.replaceAll("|", "\\|")
+		.replaceAll("\n", " ")
+		.replaceAll("\r", "");
 }
 
 const MP4_WARNING = "consider HLS streaming instead of MP4";
@@ -65,8 +68,7 @@ function renderDistributionSummary(summary: ReportSummary): string {
 		"",
 		`- Total: ${formatBytes(summary.distribution.totalBytes)}`,
 		...summary.distribution.segments.map(
-			(segment) =>
-				`- ${segment.label}: ${formatBytes(segment.bytes)}`,
+			(segment) => `- ${segment.label}: ${formatBytes(segment.bytes)}`,
 		),
 		"",
 	];
@@ -134,7 +136,7 @@ function buildExecutiveSummary(view: ReportView): string {
 		),
 		renderBulletGroup(
 			"No action needed",
-			summary.healthy.map((item: ReportHealthySignal) => `✓ ${item.summary}`),
+			summary.healthy.map((item: ReportHealthySignal) => item.summary),
 		),
 	]
 		.filter(Boolean)
@@ -337,15 +339,12 @@ function userAgentTable(title: string, view: ReportView): string {
 function countTable(title: string, rows: CountRow[]): string {
 	if (rows.length === 0) return "";
 
-	const lines = [
-		`### ${title}`,
-		"",
-		"| Label | Count |",
-		"| --- | ---: |",
-	];
+	const lines = [`### ${title}`, "", "| Label | Count |", "| --- | ---: |"];
 
 	for (const row of rows) {
-		lines.push(`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.count)} |`);
+		lines.push(
+			`| ${escapeMarkdownCell(row.label)} | ${formatNumber(row.count)} |`,
+		);
 	}
 
 	lines.push("");
@@ -375,7 +374,8 @@ function renderSections(view: ReportView, sections: ReportSections): string {
 	const parts: string[] = [];
 
 	if (sections.domain) parts.push(rankedTable("Top domains", view.byDomain));
-	if (sections.endpoint) parts.push(rankedTable("Top endpoints", view.byEndpoint));
+	if (sections.endpoint)
+		parts.push(rankedTable("Top endpoints", view.byEndpoint));
 	if (sections.date) parts.push(rankedTable("Daily bandwidth", view.byDate));
 	if (sections.hour) parts.push(rankedTable("Hourly bandwidth", view.byHour));
 	if (sections.status) parts.push(countTable("Response codes", view.byStatus));
@@ -383,7 +383,8 @@ function renderSections(view: ReportView, sections: ReportSections): string {
 		parts.push(countTable("Response size buckets", view.responseSizeHistogram));
 	}
 	if (sections.urls) parts.push(urlSectionsMarkdown(view));
-	if (sections.referers) parts.push(rankedTable("Top referers", view.byReferer));
+	if (sections.referers)
+		parts.push(rankedTable("Top referers", view.byReferer));
 	if (sections.userAgents) {
 		parts.push(userAgentTable("Top user agents", view));
 	}

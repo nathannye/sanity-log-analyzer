@@ -17,7 +17,6 @@ export function Header({ data }: HeaderProps) {
 				</div>
 			</div>
 			<div class="body-2 grid justify-items-start gap-8 text-left text-muted lg:justify-items-end lg:text-right">
-				<div>Generated on: {formatReadableDate(data.generatedAt)}</div>
 				<div>Max table rows: {data.config.topN}</div>
 			</div>
 		</header>
