@@ -4,11 +4,11 @@ const QUERY_URL =
 	"https://abc.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type%20%3D%3D%20%22post%22%5D%7Btitle%7D";
 
 export const SAMPLE_REPORT: ReportData = {
-	title: "Sanity Log Report",
+	title: "Sanity Request Log Report",
 	sourcePath: "sample.ndjson",
 	generatedAt: "2026-07-07T00:00:00.000Z",
 	config: {
-		title: "Sanity Log Report",
+		title: "Sanity Request Log Report",
 		topN: 50,
 		histogramBuckets: [0, 1024, Infinity],
 		palette: [
@@ -112,6 +112,31 @@ export const SAMPLE_REPORT: ReportData = {
 			{ label: "404", count: 1 },
 		],
 		responseSizeHistogram: [{ label: "0 B - 1 KB", count: 9 }],
+		byUrlKind: {
+			image: { requests: 5, responseBytes: 860 },
+			file: { requests: 2, responseBytes: 300 },
+			query: { requests: 1, responseBytes: 75 },
+			other: { requests: 1, responseBytes: 200 },
+		},
+		topContributors: {
+			image: {
+				label: "https://cdn.sanity.io/images/project/dataset/hero.jpg?w=2400",
+				requests: 2,
+				responseBytes: 400,
+			},
+			file: {
+				label: "https://cdn.sanity.io/files/project/dataset/brochure.pdf",
+				requests: 1,
+				responseBytes: 150,
+			},
+			query: {
+				label: QUERY_URL,
+				requests: 1,
+				responseBytes: 75,
+			},
+			referer: { label: "(empty)", requests: 9, responseBytes: 1435 },
+		},
+		includesStudio: true,
 	},
 	billable: {
 		label: "Billable requests",
@@ -172,5 +197,25 @@ export const SAMPLE_REPORT: ReportData = {
 		byIp: [{ label: "127.0.0.1", requests: 8, responseBytes: 1360 }],
 		byStatus: [{ label: "200", count: 8 }],
 		responseSizeHistogram: [{ label: "0 B - 1 KB", count: 8 }],
+		byUrlKind: {
+			image: { requests: 5, responseBytes: 860 },
+			file: { requests: 2, responseBytes: 300 },
+			query: { requests: 0, responseBytes: 0 },
+			other: { requests: 1, responseBytes: 200 },
+		},
+		topContributors: {
+			image: {
+				label: "https://cdn.sanity.io/images/project/dataset/hero.jpg?w=2400",
+				requests: 2,
+				responseBytes: 400,
+			},
+			file: {
+				label: "https://cdn.sanity.io/files/project/dataset/brochure.pdf",
+				requests: 1,
+				responseBytes: 150,
+			},
+			referer: { label: "(empty)", requests: 8, responseBytes: 1360 },
+		},
+		includesStudio: false,
 	},
 };

@@ -1,4 +1,5 @@
 import { formatIsoDate } from "./format.js";
+import { classifyUrl } from "./report/classify-url.js";
 import type {
   AggregationSummary,
   Breakdown,
@@ -7,7 +8,10 @@ import type {
   ReportConfig,
   ReportData,
   ReportView,
+  TopContributor,
+  TopContributors,
   Totals,
+  UrlKindBreakdown,
 } from "./types.js";
 
 function topN(
@@ -51,6 +55,70 @@ function zeroTotals(): Totals {
   return { requests: 0, responseBytes: 0, requestBytes: 0 };
 }
 
+function zeroBreakdown(): Breakdown {
+  return { requests: 0, responseBytes: 0 };
+}
+
+function emptyUrlKindBreakdown(): UrlKindBreakdown {
+  return {
+    image: zeroBreakdown(),
+    file: zeroBreakdown(),
+    query: zeroBreakdown(),
+    other: zeroBreakdown(),
+  };
+}
+
+type UrlKindTab = keyof UrlKindBreakdown;
+
+function urlKindTab(url: string): UrlKindTab {
+  const kind = classifyUrl(url);
+  if (kind === "image") return "image";
+  if (kind === "file" || kind === "video") return "file";
+  if (kind === "query") return "query";
+  return "other";
+}
+
+function updateTopContributor(
+  current: TopContributor | undefined,
+  label: string,
+  breakdown: Breakdown,
+): TopContributor {
+  if (!current || breakdown.responseBytes > current.responseBytes) {
+    return { label, ...breakdown };
+  }
+  return current;
+}
+
+export function computeUrlKindStats(map: Record<string, Breakdown>): {
+  byUrlKind: UrlKindBreakdown;
+  topContributors: Pick<TopContributors, "image" | "file" | "query">;
+} {
+  const byUrlKind = emptyUrlKindBreakdown();
+  let topContributors: Pick<TopContributors, "image" | "file" | "query"> = {};
+
+  for (const [label, breakdown] of Object.entries(map)) {
+    const tab = urlKindTab(label);
+    byUrlKind[tab].requests += breakdown.requests;
+    byUrlKind[tab].responseBytes += breakdown.responseBytes;
+    if (tab !== "other") {
+      topContributors = {
+        ...topContributors,
+        [tab]: updateTopContributor(topContributors[tab], label, breakdown),
+      };
+    }
+  }
+
+  return { byUrlKind, topContributors };
+}
+
+function topReferer(map: Record<string, Breakdown>): TopContributor | undefined {
+  let top: TopContributor | undefined;
+  for (const [label, breakdown] of Object.entries(map)) {
+    top = updateTopContributor(top, label, breakdown);
+  }
+  return top;
+}
+
 function viewFromSummary(
   label: string,
   summary: AggregationSummary,
@@ -64,6 +132,11 @@ function viewFromSummary(
     summary.responseSizeHistogramNonStudio,
   ).map(([bucketLabel, count]) => ({ label: bucketLabel, count }));
 
+  const urlMap = prefix ? summary.byUrlNonStudio : summary.byUrl;
+  const refererMap = prefix ? summary.byRefererNonStudio : summary.byReferer;
+  const { byUrlKind, topContributors: urlTops } = computeUrlKindStats(urlMap);
+  const refererTop = topReferer(refererMap);
+
   const byDomain = prefix
     ? topN(summary.byDomainNonStudio, topLimit)
     : topN(summary.byDomain, topLimit);
@@ -72,10 +145,8 @@ function viewFromSummary(
     : topN(summary.byEndpoint, topLimit);
   const byDate = prefix ? sortDateRows(summary.byDateNonStudio) : sortDateRows(summary.byDate);
   const byHour = prefix ? sortHourRows(summary.byHourNonStudio) : sortHourRows(summary.byHour);
-  const byUrl = prefix ? topN(summary.byUrlNonStudio, topLimit) : topN(summary.byUrl, topLimit);
-  const byReferer = prefix
-    ? topN(summary.byRefererNonStudio, topLimit)
-    : topN(summary.byReferer, topLimit);
+  const byUrl = topN(urlMap, topLimit);
+  const byReferer = topN(refererMap, topLimit);
   const byUserAgent = prefix
     ? topN(summary.byUserAgentNonStudio, topLimit)
     : topN(summary.byUserAgent, topLimit);
@@ -103,6 +174,12 @@ function viewFromSummary(
     byIp,
     byStatus,
     responseSizeHistogram: prefix ? responseHistogramNonStudio : responseHistogram,
+    byUrlKind,
+    topContributors: {
+      ...urlTops,
+      referer: refererTop,
+    },
+    includesStudio: !prefix,
   };
 }
 

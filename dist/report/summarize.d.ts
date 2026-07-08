@@ -1,37 +1,38 @@
-import type { ReportView } from "../types.js";
+import type { ReportView, TopContributors } from "../types.js";
+import { type ReportInsight } from "./narrative.js";
 export type HealthStatus = "green" | "yellow" | "red";
-export type FindingSeverity = "critical" | "warning" | "passed";
-export type FindingId = "groq-spread" | "mp4-transfer" | "image-width" | "image-format" | "image-quality" | "image-bandwidth" | "status-5xx" | "status-4xx" | "response-size-concentration" | "hour-concentration" | "domain-concentration" | "endpoint-concentration";
-export interface ReportFinding {
+export type FindingId = "groq-spread" | "mp4-transfer" | "image-width" | "image-format" | "image-quality" | "status-5xx" | "status-4xx";
+export interface ReportProblem {
     id: FindingId;
-    severity: FindingSeverity;
-    title: string;
+    severity: "critical" | "warning";
     summary: string;
     suggestedFix?: string;
     requests?: number;
     responseBytes?: number;
 }
-export interface ReportOpportunity {
-    priority: "critical" | "warning";
-    issue: string;
-    impact: string;
-    suggestedFix: string;
-    responseBytes?: number;
-    /** Only set when the bytes basis is explicitly measured from the issue rows. */
-    estimatedSavingsBytes?: number;
+export interface ReportObservation {
+    summary: string;
+}
+export interface ReportHealthySignal {
+    summary: string;
+}
+export interface DistributionSegment {
+    label: string;
+    bytes: number;
+    share: number;
 }
 export interface ReportSummary {
     overallHealth: HealthStatus;
-    issueCounts: {
-        critical: number;
-        warning: number;
-        passed: number;
+    critical: ReportProblem[];
+    warnings: ReportProblem[];
+    observations: ReportObservation[];
+    healthy: ReportHealthySignal[];
+    atAGlance: ReportInsight[];
+    distribution: {
+        totalBytes: number;
+        segments: DistributionSegment[];
     };
-    findings: ReportFinding[];
-    topOpportunities: ReportOpportunity[];
-    /** Sum of opportunity estimatedSavingsBytes when any are present. */
-    estimatedSavingsBytes?: number;
-    signals: ReportFinding[];
+    topContributors: TopContributors;
 }
 export declare function buildReportSummary(view: ReportView): ReportSummary;
 export declare function summaryHeadline(summary: ReportSummary): string;

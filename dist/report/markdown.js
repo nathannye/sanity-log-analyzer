@@ -26,29 +26,64 @@ export function markdownReportFilename(data, view) {
     return `${base}${suffix}.md`;
 }
 const MP4_WARNING = "consider HLS streaming instead of MP4";
-function renderSummaryGroup(title, items) {
+function renderBulletGroup(title, items) {
     if (items.length === 0)
         return "";
     return [
         `### ${title}`,
         "",
-        ...items.slice(0, 5).map((item) => `- ${item.summary}`),
+        ...items.slice(0, 8).map((item) => `- ${item}`),
         "",
     ].join("\n");
 }
+function renderDistributionSummary(summary) {
+    const lines = [
+        "### Distribution",
+        "",
+        `- Total: ${formatBytes(summary.distribution.totalBytes)}`,
+        ...summary.distribution.segments.map((segment) => `- ${segment.label}: ${formatBytes(segment.bytes)}`),
+        "",
+    ];
+    return lines.join("\n");
+}
+function renderContributorSummary(summary) {
+    const items = [];
+    const { topContributors } = summary;
+    if (topContributors.image) {
+        items.push(`- Largest image: ${formatBytes(topContributors.image.responseBytes)} (${formatNumber(topContributors.image.requests)} requests)`);
+    }
+    if (topContributors.query) {
+        items.push(`- Largest query: ${formatBytes(topContributors.query.responseBytes)} (${formatNumber(topContributors.query.requests)} requests)`);
+    }
+    if (topContributors.file) {
+        items.push(`- Largest file: ${formatBytes(topContributors.file.responseBytes)} (${formatNumber(topContributors.file.requests)} requests)`);
+    }
+    if (topContributors.referer) {
+        items.push(`- Largest referer: ${formatBytes(topContributors.referer.responseBytes)}`);
+    }
+    if (items.length === 0)
+        return "";
+    return ["### Top contributors", "", ...items, ""].join("\n");
+}
 function buildExecutiveSummary(view) {
     const summary = buildReportSummary(view);
-    const critical = summary.findings.filter((f) => f.severity === "critical");
-    const warnings = summary.findings.filter((f) => f.severity === "warning");
-    const passed = summary.signals;
+    const atAGlanceBullets = summary.atAGlance
+        .filter((insight) => insight.kind !== "synthesis")
+        .map((insight) => insight.text);
+    const synthesis = summary.atAGlance.find((insight) => insight.kind === "synthesis");
     return [
         "## Executive Summary",
         "",
         summaryHeadline(summary),
         "",
-        renderSummaryGroup("Critical", critical),
-        renderSummaryGroup("Warnings", warnings),
-        renderSummaryGroup("Passed", passed),
+        renderBulletGroup("At a glance", atAGlanceBullets),
+        synthesis ? `${synthesis.text}\n` : "",
+        renderDistributionSummary(summary),
+        renderContributorSummary(summary),
+        renderBulletGroup("Critical", summary.critical.map((item) => item.summary)),
+        renderBulletGroup("Warnings", summary.warnings.map((item) => item.summary)),
+        renderBulletGroup("Observations", summary.observations.map((item) => item.summary)),
+        renderBulletGroup("No action needed", summary.healthy.map((item) => `✓ ${item.summary}`)),
     ]
         .filter(Boolean)
         .join("\n");

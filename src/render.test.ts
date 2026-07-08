@@ -6,7 +6,7 @@ import { SAMPLE_REPORT } from "./sample-report-data.js";
 test("renderReportHtml produces a self-contained html report", () => {
 	const html = renderReportHtml(SAMPLE_REPORT);
 	assert.ok(html.includes("<!DOCTYPE html>"));
-	assert.ok(html.includes("Sanity Log Report"));
+	assert.ok(html.includes("Sanity Request Log Report"));
 	assert.ok(html.includes('id="report-data"'));
 	assert.ok(html.includes("Top domains"));
 	assert.ok(html.includes("<style>"));
@@ -24,15 +24,17 @@ test("renderReportHtml includes TOC links for enabled sections", () => {
 	assert.ok(html.includes("data-toc-link"));
 });
 
-test("renderReportHtml includes health badge and top opportunities from shared summary", () => {
+test("renderReportHtml includes findings summary sections from shared summary", () => {
 	const html = renderReportHtml(SAMPLE_REPORT);
 	assert.ok(html.includes('data-section="findings"'));
 	assert.ok(html.includes('data-health="yellow"'));
-	assert.ok(html.includes("Overall health"));
-	assert.ok(html.includes("Top opportunities"));
-	assert.ok(html.includes("MP4 transfer concentration"));
-	assert.ok(html.includes("Oversized image requests"));
-	assert.ok(html.includes("Missing format=auto"));
+	assert.ok(html.includes("At a glance"));
+	assert.ok(html.includes("Distribution"));
+	assert.ok(html.includes("Largest image"));
+	assert.ok(html.includes("Critical"));
+	assert.ok(html.includes("Observations"));
+	assert.ok(html.includes("exceed 2000px"));
+	assert.ok(html.includes("missing format=auto"));
 });
 
 test("renderReportHtml includes tabbed Top URLs with GROQ flyout", () => {
@@ -92,7 +94,7 @@ test("renderReportHtml includes markdown download payload and scripts", () => {
 	assert.ok(html.includes('id="download-markdown"'));
 	assert.ok(html.includes("Download markdown for LLM"));
 	assert.ok(html.includes('id="report-markdown"'));
-	assert.ok(html.includes('"filenameBase":"sanity-log-report"'));
+	assert.ok(html.includes('"filenameBase":"sanity-request-log-report"'));
 	assert.ok(html.includes("Billable requests"));
 	assert.ok(html.includes("All requests"));
 	assert.ok(html.includes("window.__showReportToast"));

@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 export const DEFAULT_REPORT_CONFIG = {
-    title: "Sanity Log Report",
+    title: "Sanity Request Log Report",
     topN: 50,
     histogramBuckets: [0, 1024, 10_240, 102_400, 1_048_576, 10_485_760, Infinity],
     palette: [

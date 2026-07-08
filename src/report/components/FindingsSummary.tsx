@@ -1,89 +1,152 @@
-import { formatBytes, formatNumber } from "../../format.js";
 import type { ReportSummary } from "../summarize.js";
-import { MetricCard } from "./MetricCard.js";
+import { ContributorCard } from "./ContributorCard.js";
+import { DistributionCard } from "./DistributionCard.js";
+import { FindingBox } from "./FindingBox.js";
+import type { MetricCardTone } from "./MetricCard.js";
 
 interface FindingsSummaryProps {
 	summary: ReportSummary;
 }
 
-function priorityLabel(priority: "critical" | "warning"): string {
-	return priority === "critical" ? "Critical" : "Warning";
+function FindingsGroup({
+	title,
+	items,
+	emptyMessage,
+	tone,
+}: {
+	title: string;
+	items: string[];
+	emptyMessage?: string;
+	tone?: MetricCardTone;
+}) {
+	if (items.length === 0 && !emptyMessage) return null;
+
+	return (
+		<div class="flex flex-col gap-12">
+			<div class="eyebrow-1 section-title">{title}</div>
+			{items.length === 0 ? (
+				<FindingBox text={emptyMessage ?? ""} tone={tone} />
+			) : (
+				<div class="flex flex-col gap-12">
+					{items.map((item) => (
+						<FindingBox key={item} text={item} tone={tone} />
+					))}
+				</div>
+			)}
+		</div>
+	);
 }
 
 export function FindingsSummary({ summary }: FindingsSummaryProps) {
-	const issueTotal = summary.issueCounts.critical + summary.issueCounts.warning;
+	const bulletInsights = summary.atAGlance.filter(
+		(insight) => insight.kind !== "synthesis",
+	);
+	const synthesis = summary.atAGlance.find(
+		(insight) => insight.kind === "synthesis",
+	);
+
+	const contributors = [
+		summary.topContributors.image
+			? {
+					key: "image",
+					title: "Largest image",
+					contributor: summary.topContributors.image,
+					labelKind: "image" as const,
+				}
+			: null,
+		summary.topContributors.file
+			? {
+					key: "file",
+					title: "Largest file",
+					contributor: summary.topContributors.file,
+				}
+			: null,
+		summary.topContributors.query
+			? {
+					key: "query",
+					title: "Largest query",
+					contributor: summary.topContributors.query,
+				}
+			: null,
+		summary.topContributors.referer
+			? {
+					key: "referer",
+					title: "Largest referer",
+					contributor: summary.topContributors.referer,
+					showRequests: false,
+				}
+			: null,
+	].filter((item) => item !== null);
+
+	const metricCards = [
+		<DistributionCard
+			key="distribution"
+			totalBytes={summary.distribution.totalBytes}
+			segments={summary.distribution.segments}
+		/>,
+		...contributors.map((item) => (
+			<ContributorCard
+				key={item.key}
+				title={item.title}
+				contributor={item.contributor}
+				labelKind={item.labelKind}
+				showRequests={item.showRequests ?? true}
+			/>
+		)),
+	];
 
 	return (
-		<section class="mb-24 grid scroll-mt-20 gap-16" data-section="findings">
-			<div class="grid grid-cols-1 gap-16 lg:grid-cols-3">
-				<MetricCard
-					tone="red"
-					eyebrow="Critical"
-					value={formatNumber(summary.issueCounts.critical)}
-					note="High-impact findings"
-				/>
-				<MetricCard
-					tone="yellow"
-					eyebrow="Warnings"
-					value={formatNumber(summary.issueCounts.warning)}
-					note="Worth reviewing"
-				/>
-				<MetricCard
-					tone="green"
-					eyebrow="Passed"
-					value={formatNumber(summary.issueCounts.passed)}
-					note="Healthy signals"
-				/>
-				{summary.estimatedSavingsBytes !== undefined ? (
-					<MetricCard
-						eyebrow="Est. savings"
-						value={formatBytes(summary.estimatedSavingsBytes)}
-						note="From explicit byte opportunities"
-					/>
-				) : null}
-			</div>
+		<section
+			class="mb-24 grid scroll-mt-20 gap-16"
+			data-section="findings"
+			data-health={summary.overallHealth}
+		>
+			{summary.atAGlance.length > 0 ? (
+				<div class="card grid gap-12">
+					<div class="eyebrow-1 section-title">At a glance</div>
+					{bulletInsights.length > 0 ? (
+						<div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+							{bulletInsights.map((insight) => (
+								<FindingBox key={insight.text} text={insight.text} />
+							))}
+						</div>
+					) : null}
+					{synthesis ? (
+						<p class="body-1 m-0 text-text font-medium">{synthesis.text}</p>
+					) : null}
+				</div>
+			) : null}
 
-			<div class="grid gap-0">
-				<div class="eyebrow-1 section-title">Top opportunities</div>
-				{summary.topOpportunities.length === 0 ? (
-					<p class="body-1 empty card mt-12">
-						No optimization opportunities detected for this view.
-					</p>
-				) : (
-					<div class="data-table-wrap">
-						<table class="body-1 data-table">
-							<thead>
-								<tr>
-									<th>Priority</th>
-									<th>Issue</th>
-									<th>Impact</th>
-									<th>Suggested fix</th>
-								</tr>
-							</thead>
-							<tbody>
-								{summary.topOpportunities.map((item) => (
-									<tr key={`${item.priority}-${item.issue}`}>
-										<td>
-											<span
-												class={`priority ${
-													item.priority === "critical"
-														? "priority-critical"
-														: "priority-warning"
-												}`}
-											>
-												<span class="priority-dot" aria-hidden="true" />
-												{priorityLabel(item.priority)}
-											</span>
-										</td>
-										<td>{item.issue}</td>
-										<td>{item.impact}</td>
-										<td>{item.suggestedFix}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				)}
+			{metricCards.length > 0 ? (
+				<div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+					{metricCards}
+				</div>
+			) : null}
+
+		<div class="grid grid-cols-2 lg:grid-cols-4 gap-x-24 gap-y-48">
+			<FindingsGroup
+				title="Critical"
+				items={summary.critical.map((item) => item.summary)}
+				emptyMessage="No critical issues detected."
+				tone="red"
+			/>
+
+			<FindingsGroup
+				title="Warnings"
+				items={summary.warnings.map((item) => item.summary)}
+				tone="yellow"
+			/>
+
+			<FindingsGroup
+				title="Observations"
+				items={summary.observations.map((item) => item.summary)}
+			/>
+
+			<FindingsGroup
+				title="No action needed"
+				items={summary.healthy.map((item) => `✓ ${item.summary}`)}
+				tone="green"
+			/>
 			</div>
 		</section>
 	);

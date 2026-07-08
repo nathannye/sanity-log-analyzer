@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import type { PartialReportConfig, ReportConfig } from "./types.js";
 
 export const DEFAULT_REPORT_CONFIG: ReportConfig = {
-  title: "Sanity Log Report",
+  title: "Sanity Request Log Report",
   topN: 50,
   histogramBuckets: [0, 1024, 10_240, 102_400, 1_048_576, 10_485_760, Infinity],
   palette: [

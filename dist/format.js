@@ -30,6 +30,22 @@ export function formatBytes(bytes) {
 export function formatPercentage(value) {
     return `${value.toFixed(1)}%`;
 }
+export function formatDistributionShare(share) {
+    const percent = share * 100;
+    if (percent > 0 && percent < 1)
+        return "<1%";
+    return `${Math.round(percent)}%`;
+}
+export function formatPeakHour(hourLabel) {
+    const hour = Number.parseInt(hourLabel.split(":")[0] ?? "", 10);
+    if (!Number.isFinite(hour))
+        return hourLabel;
+    if (hour === 0)
+        return "12AM";
+    if (hour === 12)
+        return "12PM";
+    return hour < 12 ? `${hour}AM` : `${hour - 12}PM`;
+}
 const readableDateFormatter = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",

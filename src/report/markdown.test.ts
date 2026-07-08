@@ -17,7 +17,7 @@ import {
 
 test("renderReportMarkdown includes title, summary, and table sections", () => {
 	const markdown = renderReportMarkdown(SAMPLE_REPORT, "billable");
-	assert.ok(markdown.includes("# Sanity Log Report"));
+	assert.ok(markdown.includes("# Sanity Request Log Report"));
 	assert.ok(markdown.includes("## Executive Summary"));
 	assert.ok(markdown.includes("## Summary"));
 	assert.ok(markdown.includes("Requests: 8"));
@@ -62,15 +62,14 @@ test("renderReportMarkdown shows compact summary findings for sample traffic", (
 	const markdown = renderReportMarkdown(SAMPLE_REPORT, "billable");
 
 	assert.ok(markdown.includes("### Warnings"));
-	assert.ok(markdown.includes("### Passed"));
-	assert.ok(markdown.includes("image URL requested above 2000px"));
-	assert.ok(markdown.includes("image URL missing format=auto"));
-	assert.ok(markdown.includes("MP4 URL instead of HLS"));
-	assert.ok(markdown.includes("No 5xx responses"));
-	assert.ok(markdown.includes("No 4xx responses"));
-	assert.ok(
-		markdown.includes("80% of image requests avoid explicit non-auto formats"),
-	);
+	assert.ok(markdown.includes("### No action needed"));
+	assert.ok(markdown.includes("exceed 2000px"));
+	assert.ok(markdown.includes("missing format=auto"));
+	assert.ok(markdown.includes("MP4 URL"));
+	assert.ok(markdown.includes("No server errors detected"));
+	assert.ok(markdown.includes("No client errors detected"));
+	assert.ok(markdown.includes("### At a glance"));
+	assert.ok(markdown.includes("### Distribution"));
 });
 
 test("renderReportMarkdown includes grouped URL sections with issue annotations", () => {
@@ -112,6 +111,17 @@ test("renderReportMarkdown annotates GROQ queries that use spread operators", ()
 });
 
 test("renderReportMarkdown omits empty summary groups when there are no findings", () => {
+	const emptyViewFields = {
+		byUrlKind: {
+			image: { requests: 0, responseBytes: 0 },
+			file: { requests: 0, responseBytes: 0 },
+			query: { requests: 0, responseBytes: 0 },
+			other: { requests: 0, responseBytes: 0 },
+		},
+		topContributors: {},
+		includesStudio: false,
+	};
+
 	const noIssueReport = {
 		...SAMPLE_REPORT,
 		all: {
@@ -129,6 +139,8 @@ test("renderReportMarkdown omits empty summary groups when there are no findings
 			byIp: [],
 			byStatus: [{ label: "200", count: 1 }],
 			responseSizeHistogram: [{ label: "0 B - 1 KB", count: 1 }],
+			...emptyViewFields,
+			includesStudio: true,
 		},
 		billable: {
 			...SAMPLE_REPORT.billable,
@@ -145,6 +157,7 @@ test("renderReportMarkdown omits empty summary groups when there are no findings
 			byIp: [],
 			byStatus: [{ label: "200", count: 1 }],
 			responseSizeHistogram: [{ label: "0 B - 1 KB", count: 1 }],
+			...emptyViewFields,
 		},
 	};
 
@@ -153,12 +166,33 @@ test("renderReportMarkdown omits empty summary groups when there are no findings
 	assert.ok(markdown.includes("✅ No issues detected"));
 	assert.ok(!markdown.includes("### Critical"));
 	assert.ok(!markdown.includes("### Warnings"));
-	assert.ok(markdown.includes("### Passed"));
+	assert.ok(markdown.includes("### No action needed"));
 });
 
 test("renderReportMarkdown surfaces critical findings for high-bandwidth issues", () => {
 	const spreadQuery =
 		"https://abc.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type%20%3D%3D%20%22post%22%5D%7B...%2Ctitle%7D";
+	const highBandwidthFields = {
+		byUrlKind: {
+			image: { requests: 0, responseBytes: 0 },
+			file: { requests: 50, responseBytes: 150_000_000 },
+			query: { requests: 100, responseBytes: 200_000_000 },
+			other: { requests: 0, responseBytes: 0 },
+		},
+		topContributors: {
+			query: {
+				label: spreadQuery,
+				requests: 100,
+				responseBytes: 200_000_000,
+			},
+			file: {
+				label: "https://cdn.sanity.io/files/project/dataset/clip.mp4",
+				requests: 50,
+				responseBytes: 150_000_000,
+			},
+		},
+	};
+
 	const criticalReport = {
 		...SAMPLE_REPORT,
 		all: {
@@ -183,6 +217,8 @@ test("renderReportMarkdown surfaces critical findings for high-bandwidth issues"
 				{ label: "0 B - 1 KB", count: 1 },
 				{ label: "1 KB - 1 MB", count: 149 },
 			],
+			...highBandwidthFields,
+			includesStudio: true,
 		},
 		billable: {
 			...SAMPLE_REPORT.billable,
@@ -206,16 +242,17 @@ test("renderReportMarkdown surfaces critical findings for high-bandwidth issues"
 				{ label: "0 B - 1 KB", count: 1 },
 				{ label: "1 KB - 1 MB", count: 149 },
 			],
+			...highBandwidthFields,
 		},
 	};
 
 	const markdown = renderReportMarkdown(criticalReport, "billable");
 
 	assert.ok(markdown.includes("### Critical"));
-	assert.ok(markdown.includes("GROQ query URL"));
+	assert.ok(markdown.includes("1 query uses {...}"));
 	assert.ok(markdown.includes("MP4 URL"));
-	assert.ok(markdown.includes("5xx responses detected"));
-	assert.ok(markdown.includes("🚨 4 issues detected"));
+	assert.ok(markdown.includes("server error"));
+	assert.ok(markdown.includes("🚨 3 issues detected"));
 });
 
 test("escapeMarkdownCell escapes pipes and newlines", () => {
@@ -231,11 +268,11 @@ test("slugifyReportFilename produces safe filenames", () => {
 test("markdownReportFilename uses view suffixes", () => {
 	assert.equal(
 		markdownReportFilename(SAMPLE_REPORT, "billable"),
-		"sanity-log-report_billable-only.md",
+		"sanity-request-log-report_billable-only.md",
 	);
 	assert.equal(
 		markdownReportFilename(SAMPLE_REPORT, "all"),
-		"sanity-log-report_all.md",
+		"sanity-request-log-report_all.md",
 	);
 });
 

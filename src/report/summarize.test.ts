@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { SAMPLE_REPORT } from "../sample-report-data.js";
-import { buildReportSummary, summaryHeadline } from "./summarize.js";
 import type { ReportView } from "../types.js";
+import { buildReportSummary, summaryHeadline } from "./summarize.js";
 
 function emptyView(overrides: Partial<ReportView> = {}): ReportView {
 	return {
@@ -24,41 +24,52 @@ function emptyView(overrides: Partial<ReportView> = {}): ReportView {
 		byIp: [],
 		byStatus: [{ label: "200", count: 1 }],
 		responseSizeHistogram: [{ label: "0 B - 1 KB", count: 1 }],
+		byUrlKind: {
+			image: { requests: 0, responseBytes: 0 },
+			file: { requests: 0, responseBytes: 0 },
+			query: { requests: 0, responseBytes: 0 },
+			other: { requests: 0, responseBytes: 0 },
+		},
+		topContributors: {},
+		includesStudio: true,
 		...overrides,
 	};
 }
 
 describe("buildReportSummary", () => {
-	it("marks low-signal traffic as green with passed signals", () => {
+	it("marks low-signal traffic as green with healthy signals", () => {
 		const summary = buildReportSummary(emptyView());
 
 		assert.equal(summary.overallHealth, "green");
-		assert.equal(summary.issueCounts.critical, 0);
-		assert.equal(summary.issueCounts.warning, 0);
-		assert.ok(summary.issueCounts.passed > 0);
-		assert.equal(summary.topOpportunities.length, 0);
-		assert.equal(summary.estimatedSavingsBytes, undefined);
+		assert.equal(summary.critical.length, 0);
+		assert.equal(summary.warnings.length, 0);
+		assert.ok(summary.healthy.length > 0);
+		assert.ok(summary.atAGlance.length > 0);
 		assert.equal(summaryHeadline(summary), "✅ No issues detected");
 	});
 
-	it("surfaces GROQ, MP4, and image findings for sample traffic", () => {
+	it("surfaces image and MP4 problems for sample traffic", () => {
 		const summary = buildReportSummary(SAMPLE_REPORT.billable);
-		const ids = summary.findings
-			.filter((finding) => finding.severity !== "passed")
-			.map((finding) => finding.id);
+		const problemIds = [...summary.critical, ...summary.warnings].map(
+			(problem) => problem.id,
+		);
 
 		assert.equal(summary.overallHealth, "yellow");
-		assert.ok(ids.includes("mp4-transfer"));
-		assert.ok(ids.includes("image-width"));
-		assert.ok(ids.includes("image-format"));
-		assert.ok(ids.includes("image-quality"));
-		assert.ok(ids.includes("image-bandwidth"));
-		assert.ok(summary.signals.some((signal) => signal.summary.includes("No 5xx")));
-		assert.ok(summary.signals.some((signal) => signal.summary.includes("No 4xx")));
+		assert.ok(problemIds.includes("mp4-transfer"));
+		assert.ok(problemIds.includes("image-width"));
+		assert.ok(problemIds.includes("image-format"));
+		assert.ok(problemIds.includes("image-quality"));
 		assert.ok(
-			summary.topOpportunities.some((item) => item.issue.includes("MP4")),
+			summary.observations.some((item) =>
+				item.summary.includes("Images account"),
+			),
 		);
-		assert.equal(summary.estimatedSavingsBytes, undefined);
+		assert.ok(
+			summary.warnings.some((item) => item.summary.includes("exceed 2000px")),
+		);
+		assert.ok(
+			summary.warnings.some((item) => item.summary.includes("MP4 URL")),
+		);
 	});
 
 	it("marks high-bandwidth GROQ and MP4 traffic red", () => {
@@ -81,6 +92,24 @@ describe("buildReportSummary", () => {
 						responseBytes: 150_000_000,
 					},
 				],
+				byUrlKind: {
+					image: { requests: 0, responseBytes: 0 },
+					file: { requests: 50, responseBytes: 150_000_000 },
+					query: { requests: 100, responseBytes: 200_000_000 },
+					other: { requests: 0, responseBytes: 0 },
+				},
+				topContributors: {
+					query: {
+						label: spreadQuery,
+						requests: 100,
+						responseBytes: 200_000_000,
+					},
+					file: {
+						label: "https://cdn.sanity.io/files/project/dataset/clip.mp4",
+						requests: 50,
+						responseBytes: 150_000_000,
+					},
+				},
 				byStatus: [{ label: "500", count: 3 }],
 				responseSizeHistogram: [
 					{ label: "0 B - 1 KB", count: 1 },
@@ -90,36 +119,41 @@ describe("buildReportSummary", () => {
 		);
 
 		assert.equal(summary.overallHealth, "red");
-		assert.ok(summary.issueCounts.critical >= 3);
+		assert.ok(summary.critical.length >= 3);
 		assert.ok(
-			summary.findings.some(
-				(finding) =>
-					finding.id === "groq-spread" && finding.severity === "critical",
+			summary.critical.some(
+				(problem) =>
+					problem.id === "groq-spread" && problem.severity === "critical",
 			),
 		);
 		assert.ok(
-			summary.findings.some(
-				(finding) =>
-					finding.id === "mp4-transfer" && finding.severity === "critical",
+			summary.critical.some(
+				(problem) =>
+					problem.id === "mp4-transfer" && problem.severity === "critical",
 			),
 		);
 		assert.ok(
-			summary.findings.some(
-				(finding) =>
-					finding.id === "status-5xx" && finding.severity === "critical",
+			summary.critical.some(
+				(problem) =>
+					problem.id === "status-5xx" && problem.severity === "critical",
 			),
 		);
 		assert.ok(summaryHeadline(summary).includes("issues detected"));
 	});
 
-	it("only exposes estimated savings when opportunities set an explicit bytes basis", () => {
-		const summary = buildReportSummary(SAMPLE_REPORT.billable);
-		assert.equal(
-			summary.topOpportunities.every(
-				(item) => item.estimatedSavingsBytes === undefined,
-			),
-			true,
+	it("does not emit endpoint concentration problems", () => {
+		const summary = buildReportSummary(
+			emptyView({
+				byEndpoint: [
+					{ label: "images", requests: 90, responseBytes: 900 },
+					{ label: "query", requests: 10, responseBytes: 100 },
+				],
+			}),
 		);
-		assert.equal(summary.estimatedSavingsBytes, undefined);
+
+		const summaries = [...summary.critical, ...summary.warnings].map(
+			(item) => item.summary,
+		);
+		assert.ok(!summaries.some((item) => item.includes("endpoint")));
 	});
 });

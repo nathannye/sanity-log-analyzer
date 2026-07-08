@@ -57,7 +57,17 @@
       { "label": "200", "count": 1 },
       { "label": "404", "count": 1 }
     ],
-    "responseSizeHistogram": [{ "label": "0 B - 1 KB", "count": 2 }]
+    "responseSizeHistogram": [{ "label": "0 B - 1 KB", "count": 2 }],
+    "byUrlKind": {
+      "image": { "requests": 0, "responseBytes": 0 },
+      "file": { "requests": 0, "responseBytes": 0 },
+      "query": { "requests": 0, "responseBytes": 0 },
+      "other": { "requests": 2, "responseBytes": 275 }
+    },
+    "topContributors": {
+      "other": { "label": "https://example.com/a", "requests": 1, "responseBytes": 200 }
+    },
+    "includesStudio": true
   },
   "billable": {
     "label": "Billable requests",
@@ -77,6 +87,16 @@
     "byUserAgent": [{ "label": "UA-1", "requests": 1, "responseBytes": 200 }],
     "byIp": [{ "label": "127.0.0.1", "requests": 1, "responseBytes": 200 }],
     "byStatus": [{ "label": "200", "count": 1 }],
-    "responseSizeHistogram": [{ "label": "0 B - 1 KB", "count": 1 }]
+    "responseSizeHistogram": [{ "label": "0 B - 1 KB", "count": 1 }],
+    "byUrlKind": {
+      "image": { "requests": 0, "responseBytes": 0 },
+      "file": { "requests": 0, "responseBytes": 0 },
+      "query": { "requests": 0, "responseBytes": 0 },
+      "other": { "requests": 1, "responseBytes": 200 }
+    },
+    "topContributors": {
+      "other": { "label": "https://example.com/a", "requests": 1, "responseBytes": 200 }
+    },
+    "includesStudio": false
   }
 }

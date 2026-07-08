@@ -91,6 +91,23 @@ export interface CountRow {
     label: string;
     count: number;
 }
+export interface UrlKindBreakdown {
+    image: Breakdown;
+    file: Breakdown;
+    query: Breakdown;
+    other: Breakdown;
+}
+export interface TopContributor {
+    label: string;
+    requests: number;
+    responseBytes: number;
+}
+export interface TopContributors {
+    image?: TopContributor;
+    file?: TopContributor;
+    query?: TopContributor;
+    referer?: TopContributor;
+}
 export interface ReportView {
     label: string;
     requests: number;
@@ -110,6 +127,9 @@ export interface ReportView {
     byIp: RankedRow[];
     byStatus: CountRow[];
     responseSizeHistogram: CountRow[];
+    byUrlKind: UrlKindBreakdown;
+    topContributors: TopContributors;
+    includesStudio: boolean;
 }
 export interface ReportData {
     title: string;
