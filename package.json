@@ -2,6 +2,9 @@
   "name": "sanity-log-analyzer",
   "version": "0.0.1",
   "type": "module",
+  "description": "Parse Sanity request logs (NDJSON) into an offline HTML report, no server required.",
+  "author": "Nathan Nye <nathan@nye.dev> (https://nye.dev)",
+  "license": "MIT",
   "engines": {
     "node": ">=22"
   },
@@ -20,10 +23,11 @@
   ],
   "dependencies": {
     "open": "^10.1.0",
-    "ua-parser-js": "^2.0.10"
+    "ua-parser-js": "^2.0.10",
+    "groq-js": "^1.30.3"
   },
   "scripts": {
-    "build:core": "tsc && find dist -name '*.test.*' -delete",
+    "build:core": "rm -rf dist && tsc && find dist -name '*.test.*' -delete",
     "build:report": "vite build",
     "build:tests": "tsc -p tsconfig.tests.json",
     "build": "npm run build:core && npm run build:report",
@@ -39,7 +43,7 @@
     "@tailwindcss/vite": "^4.3.2",
     "@types/node": "24",
     "@types/prismjs": "^1.26.6",
-    "groq-js": "^1.30.3",
+
     "preact": "^10.29.5",
     "preact-render-to-string": "^6.7.0",
     "prismjs": "^1.30.0",

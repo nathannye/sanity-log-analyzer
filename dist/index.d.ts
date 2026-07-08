@@ -1,6 +1,6 @@
 import { type GenerateMarkdownOptions } from "./report/markdown.js";
 import type { LogProgress, PartialReportConfig, ReportData } from "./types.js";
-export { DEFAULT_REPORT_CONFIG, resolveReportConfig } from "./config.js";
+export { DEFAULT_REPORT_CONFIG, loadReportConfig, resolveReportConfig, } from "./config.js";
 export type { LogProgress, PartialReportConfig, ReportConfig, ReportData, ReportSections, ReportView, } from "./types.js";
 export type { GenerateMarkdownOptions, MarkdownView } from "./report/markdown.js";
 export { markdownReportFilename } from "./report/markdown.js";

@@ -5,7 +5,7 @@ import { resolveReportConfig } from "./config.js";
 import { renderReportMarkdown, } from "./report/markdown.js";
 import { renderReportHtml } from "./report/render.js";
 import { buildReportData } from "./report-data.js";
-export { DEFAULT_REPORT_CONFIG, resolveReportConfig } from "./config.js";
+export { DEFAULT_REPORT_CONFIG, loadReportConfig, resolveReportConfig, } from "./config.js";
 export { markdownReportFilename } from "./report/markdown.js";
 export async function analyzeLog(inputPath, options = {}) {
     const config = resolveReportConfig(options.config);

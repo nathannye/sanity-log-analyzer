@@ -11,7 +11,11 @@ import { renderReportHtml } from "./report/render.js";
 import { buildReportData } from "./report-data.js";
 import type { LogProgress, PartialReportConfig, ReportData } from "./types.js";
 
-export { DEFAULT_REPORT_CONFIG, resolveReportConfig } from "./config.js";
+export {
+	DEFAULT_REPORT_CONFIG,
+	loadReportConfig,
+	resolveReportConfig,
+} from "./config.js";
 export type {
 	LogProgress,
 	PartialReportConfig,
