@@ -3,7 +3,7 @@ import {
 	formatNumber,
 	formatPeakHour,
 } from "../format.js";
-import type { CountRow, RankedRow, ReportView, TopContributors } from "../types.js";
+import type { CountRow, RankedRow, ReportViewInput, TopContributors } from "../types.js";
 import { hasGroqSpreadOperator } from "./analyze-groq.js";
 import { isMp4Url } from "./classify-url.js";
 import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
@@ -122,7 +122,7 @@ function sumRows(rows: RankedRow[]): IssueTotals {
 	);
 }
 
-function isCriticalIssue(issue: IssueTotals, view: ReportView): boolean {
+function isCriticalIssue(issue: IssueTotals, view: ReportViewInput): boolean {
 	return (
 		issue.responseBytes >= CRITICAL_BYTES_THRESHOLD ||
 		issue.requests >= CRITICAL_REQUESTS_THRESHOLD ||
@@ -135,7 +135,7 @@ function isCriticalIssue(issue: IssueTotals, view: ReportView): boolean {
 
 function severityForIssue(
 	issue: IssueTotals,
-	view: ReportView,
+	view: ReportViewInput,
 ): "critical" | "warning" {
 	return isCriticalIssue(issue, view) ? "critical" : "warning";
 }
@@ -251,7 +251,7 @@ function healthFromCounts(critical: number, warning: number): HealthStatus {
 	return "green";
 }
 
-function buildDistribution(view: ReportView): ReportSummary["distribution"] {
+function buildDistribution(view: ReportViewInput): ReportSummary["distribution"] {
 	const segments: DistributionSegment[] = [
 		{ label: "Images", bytes: view.byUrlKind.image.responseBytes, share: 0 },
 		{ label: "Queries", bytes: view.byUrlKind.query.responseBytes, share: 0 },
@@ -272,7 +272,7 @@ function buildDistribution(view: ReportView): ReportSummary["distribution"] {
 }
 
 function detectProblems(
-	view: ReportView,
+	view: ReportViewInput,
 	critical: ReportProblem[],
 	warnings: ReportProblem[],
 ): {
@@ -398,7 +398,7 @@ function detectProblems(
 	};
 }
 
-function buildObservations(view: ReportView): ReportObservation[] {
+function buildObservations(view: ReportViewInput): ReportObservation[] {
 	const observations: ReportObservation[] = [];
 
 	const distribution = buildDistribution(view);
@@ -451,7 +451,7 @@ function buildObservations(view: ReportView): ReportObservation[] {
 }
 
 function buildHealthySignals(
-	view: ReportView,
+	view: ReportViewInput,
 	context: ReturnType<typeof detectProblems>,
 ): ReportHealthySignal[] {
 	const healthy: ReportHealthySignal[] = [];
@@ -511,7 +511,7 @@ function buildHealthySignals(
 	return healthy.slice(0, 8);
 }
 
-export function buildReportSummary(view: ReportView): ReportSummary {
+export function buildReportSummary(view: ReportViewInput): ReportSummary {
 	const critical: ReportProblem[] = [];
 	const warnings: ReportProblem[] = [];
 	const detection = detectProblems(view, critical, warnings);

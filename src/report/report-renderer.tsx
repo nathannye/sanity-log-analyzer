@@ -1,7 +1,7 @@
 import { render } from "preact-render-to-string";
 import { escapeJsonForHtml } from "../format.js";
 import type { ReportData } from "../types.js";
-import { renderReportMarkdown, slugifyReportFilename } from "./markdown.js";
+import { slugifyReportFilename } from "./report-filename.js";
 import { ReportApp } from "./ReportApp.js";
 import { copyButtonsScript } from "./scripts/copy-buttons.js";
 import { groqFlyoutScript } from "./scripts/groq-flyout.js";
@@ -18,8 +18,8 @@ export function renderReportHtml(data: ReportData): string {
 	const json = escapeJsonForHtml(data);
 	const markdownPayload = escapeJsonForHtml({
 		filenameBase: slugifyReportFilename(data.title),
-		billable: renderReportMarkdown(data, "billable"),
-		all: renderReportMarkdown(data, "all"),
+		billable: data.markdown.billable,
+		all: data.markdown.all,
 	});
 
 	return `<!DOCTYPE html>

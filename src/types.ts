@@ -1,3 +1,40 @@
+import type { GroqQueryStats } from "./report/analyze-groq.js";
+import type {
+	ParsedUserAgent,
+	UserAgentAggregateStats,
+} from "./report/parse-user-agent.js";
+import type { ReportSummary } from "./report/summarize.js";
+
+export type { GroqQueryStats };
+
+export interface GroqUrlDetails {
+	query: string;
+	params: Record<string, unknown> | null;
+	formattedQuery: string;
+	highlightedQuery: string;
+	stats: GroqQueryStats | null;
+	hasSpreadOperator: boolean;
+}
+
+export interface ReportMarkdown {
+	billable: string;
+	all: string;
+}
+
+export type ReportViewInput = Omit<
+	ReportView,
+	"summary" | "userAgentByLabel" | "userAgentStats" | "groqByUrl"
+>;
+
+export type ReportDataInput = Omit<
+	ReportData,
+	"markdown" | "all" | "billable"
+> & {
+	all: ReportViewInput;
+	billable: ReportViewInput;
+	markdown?: ReportMarkdown;
+};
+
 export interface LogEntry {
   timestamp: string;
   date: string;
@@ -140,6 +177,10 @@ export interface ReportView {
   byUrlKind: UrlKindBreakdown;
   topContributors: TopContributors;
   includesStudio: boolean;
+  summary: ReportSummary;
+  userAgentByLabel: Record<string, ParsedUserAgent>;
+  userAgentStats: UserAgentAggregateStats;
+  groqByUrl: Record<string, GroqUrlDetails>;
 }
 
 export interface ReportData {
@@ -149,6 +190,7 @@ export interface ReportData {
   config: ReportConfig;
   all: ReportView;
   billable: ReportView;
+  markdown: ReportMarkdown;
 }
 
 export interface LogProgress {

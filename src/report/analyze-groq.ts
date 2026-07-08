@@ -1,5 +1,7 @@
 import { GroqSyntaxError, parse } from "groq-js";
+import { GROQ_SPREAD_WARNING } from "./groq-constants.js";
 
+export { GROQ_SPREAD_WARNING };
 export interface GroqQueryStats {
 	dereferences: number;
 	projections: number;
@@ -8,9 +10,6 @@ export interface GroqQueryStats {
 	arrayTraversals: number;
 	functionCalls: Record<string, number>;
 }
-
-export const GROQ_SPREAD_WARNING =
-	"uses the {...} spread operator and may waste bandwidth by fetching more fields than needed";
 
 type AstNode = {
 	type: string;

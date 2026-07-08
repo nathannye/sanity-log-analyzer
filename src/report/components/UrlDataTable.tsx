@@ -1,9 +1,8 @@
 import { formatBytes, formatNumber } from "../../format.js";
 import { avgBytesPerRequest } from "../../ranked-row.js";
-import type { RankedRow } from "../../types.js";
+import type { GroqUrlDetails, RankedRow } from "../../types.js";
 import { isMp4Url } from "../classify-url.js";
-import { hasGroqSpreadOperator, GROQ_SPREAD_WARNING } from "../analyze-groq.js";
-import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
+import { GROQ_SPREAD_WARNING } from "../groq-constants.js";
 import {
 	hasImageFormatError,
 	hasImageQualityError,
@@ -21,6 +20,7 @@ import { Tooltip } from "./Tooltip.js";
 interface UrlDataTableProps {
 	rows: RankedRow[];
 	showFlyout?: boolean;
+	groqByUrl?: Record<string, GroqUrlDetails>;
 	variant?: "default" | "image" | "file";
 	idPrefix: string;
 }
@@ -33,6 +33,7 @@ function formatMetric(value: string | number | null): string {
 export function UrlDataTable({
 	rows,
 	showFlyout = false,
+	groqByUrl = {},
 	variant = "default",
 	idPrefix,
 }: UrlDataTableProps) {
@@ -97,14 +98,8 @@ export function UrlDataTable({
 				</thead>
 				<tbody>
 					{rows.map((row, index) => {
-						const groqQuery = showFlyout ? extractGroqQuery(row.label) : null;
-						const groqParams =
-							groqQuery !== null ? extractGroqParams(row.label) : null;
-						const hasSpreadOperator =
-							groqQuery !== null
-								? hasGroqSpreadOperator(groqQuery, groqParams ?? undefined)
-								: false;
-						const flyoutId = groqQuery
+						const groqDetails = showFlyout ? groqByUrl[row.label] : undefined;
+						const flyoutId = groqDetails
 							? `${idPrefix}-flyout-${index}`
 							: undefined;
 						const imageDetails = isImageTable
@@ -173,7 +168,7 @@ export function UrlDataTable({
 												</span>
 											</Tooltip>
 										) : null}
-										{hasSpreadOperator ? (
+										{groqDetails?.hasSpreadOperator ? (
 											<Tooltip
 												content={`This query ${GROQ_SPREAD_WARNING}.`}
 											>
@@ -192,11 +187,10 @@ export function UrlDataTable({
 											</Button>
 										) : null}
 									</div>
-									{flyoutId && groqQuery ? (
+									{flyoutId && groqDetails ? (
 										<GroqQueryFlyout
 											id={flyoutId}
-											query={groqQuery}
-											params={groqParams}
+											details={groqDetails}
 											requests={row.requests}
 											responseBytes={row.responseBytes}
 										/>

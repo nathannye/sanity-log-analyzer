@@ -1,5 +1,6 @@
 import { formatIsoDate } from "./format.js";
 import { classifyUrl } from "./report/classify-url.js";
+import { enrichReportData } from "./report/enrich-report.js";
 import type {
   AggregationSummary,
   Breakdown,
@@ -7,7 +8,7 @@ import type {
   RankedRow,
   ReportConfig,
   ReportData,
-  ReportView,
+  ReportViewInput,
   TopContributor,
   TopContributors,
   Totals,
@@ -124,7 +125,7 @@ function viewFromSummary(
   summary: AggregationSummary,
   prefix: "" | "NonStudio",
   topLimit: number,
-): ReportView {
+): ReportViewInput {
   const responseHistogram = Object.entries(summary.responseSizeHistogram).map(
     ([bucketLabel, count]) => ({ label: bucketLabel, count }),
   );
@@ -188,12 +189,12 @@ export function buildReportData(
   config: ReportConfig,
   sourcePath: string,
 ): ReportData {
-  return {
+  return enrichReportData({
     title: config.title,
     sourcePath,
     generatedAt: new Date().toISOString(),
     config,
     all: viewFromSummary("All requests", summary, "", config.topN),
     billable: viewFromSummary("Billable requests", summary, "NonStudio", config.topN),
-  };
+  });
 }

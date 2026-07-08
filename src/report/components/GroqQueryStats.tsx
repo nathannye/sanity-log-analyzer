@@ -1,4 +1,4 @@
-import type { GroqQueryStats } from "../analyze-groq.js";
+import type { GroqQueryStats } from "../../types.js";
 
 interface GroqQueryStatsViewProps {
 	stats: GroqQueryStats;

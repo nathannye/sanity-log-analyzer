@@ -1,4 +1,4 @@
-import type { RankedRow } from "../../types.js";
+import type { GroqUrlDetails, RankedRow } from "../../types.js";
 import {
 	defaultUrlTab,
 	groupUrlsByKind,
@@ -9,10 +9,11 @@ import { UrlDataTable } from "./UrlDataTable.js";
 
 interface UrlTabsSectionProps {
 	rows: RankedRow[];
+	groqByUrl: Record<string, GroqUrlDetails>;
 	idPrefix: string;
 }
 
-export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
+export function UrlTabsSection({ rows, groqByUrl, idPrefix }: UrlTabsSectionProps) {
 	const groups = groupUrlsByKind(rows);
 	const activeTab = defaultUrlTab(groups);
 	const tabs = visibleUrlTabs(groups);
@@ -55,6 +56,7 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 					<UrlDataTable
 						rows={groups[tab.id]}
 						showFlyout={tab.id === "query"}
+						groqByUrl={groqByUrl}
 						variant={
 							tab.id === "image"
 								? "image"

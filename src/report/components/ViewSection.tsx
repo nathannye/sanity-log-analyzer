@@ -1,7 +1,6 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportSections, ReportView } from "../../types.js";
 import { colorVar } from "../styles/colors.js";
-import { buildReportSummary } from "../summarize.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { BarList } from "./BarList.js";
 import { CountBarChart } from "./CountBarChart.js";
@@ -32,7 +31,7 @@ export function ViewSection({
 		view.firstTimestamp && view.lastTimestamp
 			? `${formatReadableDate(view.firstTimestamp)} → ${formatReadableDate(view.lastTimestamp)}`
 			: "No timestamps found";
-	const findingsSummary = buildReportSummary(view);
+	const findingsSummary = view.summary;
 
 	return (
 		<div data-report-view={viewKey} hidden={hidden || undefined}>
@@ -142,7 +141,11 @@ export function ViewSection({
 					<div class="eyebrow-1 section-title">Top lists</div>
 					{sections.urls ? (
 						<div class="scroll-mt-20">
-							<UrlTabsSection rows={view.byUrl} idPrefix={`urls-${viewKey}`} />
+							<UrlTabsSection
+								rows={view.byUrl}
+								groqByUrl={view.groqByUrl}
+								idPrefix={`urls-${viewKey}`}
+							/>
 						</div>
 					) : null}
 					{sections.referers ? (
@@ -155,6 +158,8 @@ export function ViewSection({
 							<UserAgentDataTable
 								title="Top user agents"
 								rows={view.byUserAgent}
+								userAgentByLabel={view.userAgentByLabel}
+								userAgentStats={view.userAgentStats}
 							/>
 						</section>
 					) : null}

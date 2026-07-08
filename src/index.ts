@@ -2,10 +2,10 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { aggregateLogFile } from "./aggregate.js";
 import { resolveReportConfig } from "./config.js";
+import { enrichReportData } from "./report/enrich-report.js";
 import {
 	type GenerateMarkdownOptions,
 	markdownReportFilename,
-	renderReportMarkdown,
 } from "./report/markdown.js";
 import { renderReportHtml } from "./report/render.js";
 import { buildReportData } from "./report-data.js";
@@ -26,6 +26,7 @@ export type {
 } from "./types.js";
 export type { GenerateMarkdownOptions, MarkdownView } from "./report/markdown.js";
 export { markdownReportFilename } from "./report/markdown.js";
+export { enrichReportData } from "./report/enrich-report.js";
 
 export interface AnalyzeLogOptions {
 	config?: PartialReportConfig;
@@ -58,7 +59,8 @@ export function generateMarkdown(
 	report: ReportData,
 	options?: GenerateMarkdownOptions,
 ): string {
-	return renderReportMarkdown(report, options?.view ?? "billable");
+	const view = options?.view ?? "billable";
+	return report.markdown[view];
 }
 
 export async function writeMarkdownReport(

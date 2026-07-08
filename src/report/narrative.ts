@@ -1,5 +1,5 @@
 import { formatDistributionShare, formatNumber } from "../format.js";
-import type { ReportView, TopContributors } from "../types.js";
+import type { ReportViewInput, TopContributors } from "../types.js";
 import type {
 	DistributionSegment,
 	FindingId,
@@ -13,7 +13,7 @@ export interface ReportInsight {
 }
 
 interface NarrativeContext {
-	view: ReportView;
+	view: ReportViewInput;
 	summary: Pick<
 		ReportSummary,
 		"critical" | "warnings" | "distribution" | "overallHealth"
@@ -74,7 +74,7 @@ function contributorShare(
 	return contributorBytes / kindBytes;
 }
 
-function serverErrorCount(view: ReportView): number {
+function serverErrorCount(view: ReportViewInput): number {
 	return view.byStatus
 		.filter(({ label }) => Number(label) >= 500)
 		.reduce((sum, row) => sum + row.count, 0);
@@ -243,7 +243,7 @@ function renderSynthesis(ctx: NarrativeContext): string | null {
 }
 
 export function buildAtAGlance(
-	view: ReportView,
+	view: ReportViewInput,
 	summary: ReportSummary,
 ): ReportInsight[] {
 	const ctx: NarrativeContext = {

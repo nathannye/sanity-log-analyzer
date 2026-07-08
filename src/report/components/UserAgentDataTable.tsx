@@ -1,14 +1,16 @@
 import { formatPercentage } from "../../format.js";
 import type { RankedRow } from "../../types.js";
-import {
-	aggregateUserAgentStats,
-	parseUserAgent,
+import type {
+	ParsedUserAgent,
+	UserAgentAggregateStats,
 } from "../parse-user-agent.js";
 import { DataTable } from "./DataTable.js";
 
 interface UserAgentDataTableProps {
 	title: string;
 	rows: RankedRow[];
+	userAgentByLabel: Record<string, ParsedUserAgent>;
+	userAgentStats: UserAgentAggregateStats;
 }
 
 function isSanityUserAgent(raw: string): boolean {
@@ -45,9 +47,13 @@ function MobileIcon() {
 	);
 }
 
-function UserAgentLabel({ raw }: { raw: string }) {
-	const parsed = parseUserAgent(raw);
-
+function UserAgentLabel({
+	raw,
+	parsed,
+}: {
+	raw: string;
+	parsed: ParsedUserAgent;
+}) {
 	return (
 		<div class="flex min-w-0 flex-col gap-3">
 			<div class="flex min-w-0 items-center gap-6">
@@ -82,8 +88,7 @@ function UserAgentLabel({ raw }: { raw: string }) {
 	);
 }
 
-function UserAgentSummary({ rows }: { rows: RankedRow[] }) {
-	const stats = aggregateUserAgentStats(rows);
+function UserAgentSummary({ stats }: { stats: UserAgentAggregateStats }) {
 	if (stats.trackableRequests === 0) return null;
 
 	return (
@@ -108,13 +113,23 @@ function UserAgentSummary({ rows }: { rows: RankedRow[] }) {
 	);
 }
 
-export function UserAgentDataTable({ title, rows }: UserAgentDataTableProps) {
+export function UserAgentDataTable({
+	title,
+	rows,
+	userAgentByLabel,
+	userAgentStats,
+}: UserAgentDataTableProps) {
 	return (
 		<DataTable
 			title={title}
 			rows={rows}
-			header={<UserAgentSummary rows={rows} />}
-			renderLabel={(row) => <UserAgentLabel raw={row.label} />}
+			header={<UserAgentSummary stats={userAgentStats} />}
+			renderLabel={(row) => (
+				<UserAgentLabel
+					raw={row.label}
+					parsed={userAgentByLabel[row.label]}
+				/>
+			)}
 		/>
 	);
 }

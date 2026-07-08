@@ -1,37 +1,30 @@
 import { formatBytes, formatNumber } from "../../format.js";
-import {
-	analyzeGroqQuery,
-	GROQ_SPREAD_WARNING,
-	hasGroqSpreadOperator,
-} from "../analyze-groq.js";
-import { formatGroqForDisplay } from "../format-groq.js";
-import { highlightGroq } from "../highlight-groq.js";
+import type { GroqUrlDetails } from "../../types.js";
+import { GROQ_SPREAD_WARNING } from "../groq-constants.js";
 import { Button } from "./Button.js";
 import { GroqQueryStatsView } from "./GroqQueryStats.js";
 import { CopyIcon } from "./icons.js";
 
 interface GroqQueryFlyoutProps {
 	id: string;
-	query: string;
-	params?: Record<string, unknown> | null;
+	details: GroqUrlDetails;
 	requests: number;
 	responseBytes: number;
 }
 
 export function GroqQueryFlyout({
 	id,
-	query,
-	params = null,
+	details,
 	requests,
 	responseBytes,
 }: GroqQueryFlyoutProps) {
-	const formatted = formatGroqForDisplay(query);
-	const highlighted = highlightGroq(formatted);
-	const stats = analyzeGroqQuery(formatted, params ?? undefined);
-	const hasSpreadOperator = hasGroqSpreadOperator(
-		formatted,
-		params ?? undefined,
-	);
+	const {
+		formattedQuery,
+		highlightedQuery,
+		stats,
+		hasSpreadOperator,
+		params,
+	} = details;
 	const avgBytes = requests > 0 ? responseBytes / requests : 0;
 	const formattedParams =
 		params && Object.keys(params).length > 0
@@ -51,7 +44,7 @@ export function GroqQueryFlyout({
 						variant="outline-pill"
 						icon={<CopyIcon />}
 						iconPosition="end"
-						data-copy-value={formatted}
+						data-copy-value={formattedQuery}
 						data-copy-toast="Copied query"
 						aria-label="Copy query"
 					>
@@ -103,7 +96,7 @@ export function GroqQueryFlyout({
 					<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-border-subtle bg-black/35 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
 						<code
 							class="language-groq"
-							dangerouslySetInnerHTML={{ __html: highlighted }}
+							dangerouslySetInnerHTML={{ __html: highlightedQuery }}
 						/>
 					</pre>
 				</div>

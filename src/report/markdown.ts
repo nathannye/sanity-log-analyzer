@@ -5,9 +5,8 @@ import {
 	formatReadableDate,
 } from "../format.js";
 import { avgBytesPerRequest } from "../ranked-row.js";
-import { GROQ_SPREAD_WARNING, hasGroqSpreadOperator } from "./analyze-groq.js";
+import { GROQ_SPREAD_WARNING } from "./groq-constants.js";
 import { isMp4Url } from "./classify-url.js";
-import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import {
 	hasImageFormatError,
@@ -16,15 +15,11 @@ import {
 	parseImageUrl,
 } from "./parse-image-url.js";
 import {
-	aggregateUserAgentStats,
-	parseUserAgent,
-} from "./parse-user-agent.js";
-import {
-	buildReportSummary,
 	summaryHeadline,
 	type ReportHealthySignal,
 	type ReportObservation,
 	type ReportProblem,
+	type ReportSummary,
 } from "./summarize.js";
 import type {
 	CountRow,
@@ -33,6 +28,10 @@ import type {
 	ReportSections,
 	ReportView,
 } from "../types.js";
+import {
+	markdownReportFilename,
+	slugifyReportFilename,
+} from "./report-filename.js";
 
 export type MarkdownView = "billable" | "all";
 
@@ -41,28 +40,10 @@ export interface GenerateMarkdownOptions {
 	view?: MarkdownView;
 }
 
+export { markdownReportFilename, slugifyReportFilename };
+
 export function escapeMarkdownCell(value: string): string {
 	return value.replaceAll("|", "\\|").replaceAll("\n", " ").replaceAll("\r", "");
-}
-
-export function slugifyReportFilename(title: string): string {
-	const slug = title
-		.toLowerCase()
-		.trim()
-		.replaceAll(/[^\w\s-]/g, "")
-		.replaceAll(/\s+/g, "-")
-		.replaceAll(/-+/g, "-")
-		.replace(/^-+|-+$/g, "");
-	return slug || "report";
-}
-
-export function markdownReportFilename(
-	data: ReportData,
-	view: MarkdownView,
-): string {
-	const base = slugifyReportFilename(data.title);
-	const suffix = view === "billable" ? "_billable-only" : "_all";
-	return `${base}${suffix}.md`;
 }
 
 const MP4_WARNING = "consider HLS streaming instead of MP4";
@@ -78,9 +59,7 @@ function renderBulletGroup(title: string, items: string[]): string {
 	].join("\n");
 }
 
-function renderDistributionSummary(
-	summary: ReturnType<typeof buildReportSummary>,
-): string {
+function renderDistributionSummary(summary: ReportSummary): string {
 	const lines = [
 		"### Distribution",
 		"",
@@ -94,9 +73,7 @@ function renderDistributionSummary(
 	return lines.join("\n");
 }
 
-function renderContributorSummary(
-	summary: ReturnType<typeof buildReportSummary>,
-): string {
+function renderContributorSummary(summary: ReportSummary): string {
 	const items: string[] = [];
 	const { topContributors } = summary;
 
@@ -126,7 +103,7 @@ function renderContributorSummary(
 }
 
 function buildExecutiveSummary(view: ReportView): string {
-	const summary = buildReportSummary(view);
+	const summary = view.summary;
 	const atAGlanceBullets = summary.atAGlance
 		.filter((insight) => insight.kind !== "synthesis")
 		.map((insight) => insight.text);
@@ -251,7 +228,10 @@ function imageUrlTable(rows: RankedRow[]): string {
 	return lines.join("\n");
 }
 
-function queryUrlTable(rows: RankedRow[]): string {
+function queryUrlTable(
+	rows: RankedRow[],
+	groqByUrl: ReportView["groqByUrl"],
+): string {
 	if (rows.length === 0) return "";
 
 	const lines = [
@@ -262,13 +242,10 @@ function queryUrlTable(rows: RankedRow[]): string {
 	];
 
 	for (const row of rows) {
-		const query = extractGroqQuery(row.label);
-		const params = query ? extractGroqParams(row.label) : null;
-		const label =
-			query &&
-			hasGroqSpreadOperator(query, params ?? undefined)
-				? `${row.label} (${GROQ_SPREAD_WARNING})`
-				: row.label;
+		const groqDetails = groqByUrl[row.label];
+		const label = groqDetails?.hasSpreadOperator
+			? `${row.label} (${GROQ_SPREAD_WARNING})`
+			: row.label;
 		lines.push(
 			`| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`,
 		);
@@ -301,8 +278,8 @@ function fileUrlTable(rows: RankedRow[]): string {
 	return lines.join("\n");
 }
 
-function urlSectionsMarkdown(rows: RankedRow[]): string {
-	const groups = groupUrlsByKind(rows);
+function urlSectionsMarkdown(view: ReportView): string {
+	const groups = groupUrlsByKind(view.byUrl);
 	const parts: string[] = ["### Top URLs", ""];
 
 	if (groups.image.length > 0) {
@@ -312,7 +289,7 @@ function urlSectionsMarkdown(rows: RankedRow[]): string {
 		parts.push(fileUrlTable(groups.file));
 	}
 	if (groups.query.length > 0) {
-		parts.push(queryUrlTable(groups.query));
+		parts.push(queryUrlTable(groups.query, view.groqByUrl));
 	}
 	if (groups.other.length > 0) {
 		parts.push(urlRankedTable("Other", groups.other));
@@ -321,10 +298,11 @@ function urlSectionsMarkdown(rows: RankedRow[]): string {
 	return parts.filter(Boolean).join("\n");
 }
 
-function userAgentTable(title: string, rows: RankedRow[]): string {
+function userAgentTable(title: string, view: ReportView): string {
+	const rows = view.byUserAgent;
 	if (rows.length === 0) return "";
 
-	const stats = aggregateUserAgentStats(rows);
+	const stats = view.userAgentStats;
 	const lines = [`### ${title}`, ""];
 
 	if (stats.trackableRequests > 0) {
@@ -340,7 +318,7 @@ function userAgentTable(title: string, rows: RankedRow[]): string {
 	);
 
 	for (const row of rows) {
-		const parsed = parseUserAgent(row.label);
+		const parsed = view.userAgentByLabel[row.label];
 		const device =
 			parsed.deviceKind === "mobile"
 				? "Mobile"
@@ -404,10 +382,10 @@ function renderSections(view: ReportView, sections: ReportSections): string {
 	if (sections.histogram) {
 		parts.push(countTable("Response size buckets", view.responseSizeHistogram));
 	}
-	if (sections.urls) parts.push(urlSectionsMarkdown(view.byUrl));
+	if (sections.urls) parts.push(urlSectionsMarkdown(view));
 	if (sections.referers) parts.push(rankedTable("Top referers", view.byReferer));
 	if (sections.userAgents) {
-		parts.push(userAgentTable("Top user agents", view.byUserAgent));
+		parts.push(userAgentTable("Top user agents", view));
 	}
 	if (sections.ips) parts.push(rankedTable("Top IPs", view.byIp));
 

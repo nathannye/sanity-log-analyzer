@@ -1,9 +1,10 @@
 import type { ReportData } from "./types.js";
+import { enrichReportData } from "./report/enrich-report.js";
 
 const QUERY_URL =
 	"https://abc.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type%20%3D%3D%20%22post%22%5D%7Btitle%7D";
 
-export const SAMPLE_REPORT: ReportData = {
+export const SAMPLE_REPORT: ReportData = enrichReportData({
 	title: "Sanity Request Log Report",
 	sourcePath: "sample.ndjson",
 	generatedAt: "2026-07-07T00:00:00.000Z",
@@ -215,4 +216,4 @@ export const SAMPLE_REPORT: ReportData = {
 		},
 		includesStudio: false,
 	},
-};
+});

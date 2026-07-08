@@ -14,5 +14,14 @@ export default defineConfig({
 		outDir: "dist/report",
 		emptyOutDir: false,
 		cssCodeSplit: false,
+		rollupOptions: {
+			external: [
+				"groq-js",
+				"ua-parser-js",
+				"ua-parser-js/bot-detection",
+				"prismjs",
+				"@sanity/prism-groq",
+			],
+		},
 	},
 });
