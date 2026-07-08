@@ -1,1 +1,0 @@
-{"version":3,"file":"sections.d.ts","sourceRoot":"","sources":["../../src/report/sections.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,cAAc,EAAE,MAAM,aAAa,CAAC;AAO7D,MAAM,WAAW,UAAU;IAC1B,IAAI,EAAE,MAAM,CAAC;IACb,KAAK,EAAE,MAAM,CAAC;IACd,QAAQ,CAAC,EAAE,UAAU,EAAE,CAAC;CACxB;AAyCD,wBAAgB,qBAAqB,CACpC,QAAQ,EAAE,cAAc,EACxB,OAAO,CAAC,EAAE,SAAS,EAAE,GACnB,UAAU,EAAE,CAQd"}

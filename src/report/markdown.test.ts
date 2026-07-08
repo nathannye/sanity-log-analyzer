@@ -7,7 +7,7 @@ import {
 	generateMarkdown,
 	markdownReportFilename,
 	writeMarkdownReport,
-} from "../index.js";
+} from "../../dist/index.js";
 import { SAMPLE_REPORT } from "../sample-report-data.js";
 import {
 	escapeMarkdownCell,

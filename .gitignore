@@ -1,5 +1,7 @@
 node_modules/
 
+.test-dist/
+
 output.html
 sample.ndjson
 sample.gz

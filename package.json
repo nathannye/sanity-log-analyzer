@@ -22,19 +22,19 @@
     "dist"
   ],
   "dependencies": {
+    "groq-js": "^1.30.3",
     "open": "^10.1.0",
-    "ua-parser-js": "^2.0.10",
-    "groq-js": "^1.30.3"
+    "ua-parser-js": "^2.0.10"
   },
   "scripts": {
-    "build:core": "rm -rf dist && tsc && find dist -name '*.test.*' -delete",
+    "build:core": "rm -rf dist && tsup && tsc -p tsconfig.render-types.json && rm -f dist/types.d.ts dist/types.d.ts.map && npm run build:report && rm -f dist/report/render.css",
     "build:report": "vite build",
-    "build:tests": "tsc -p tsconfig.tests.json",
-    "build": "npm run build:core && npm run build:report",
+    "build:test-support": "rm -rf .test-dist && tsc -p tsconfig.test-support.json && mkdir -p .test-dist/report && cp dist/report/render.js dist/report/render.js.map .test-dist/report/",
+    "build": "npm run build:core",
     "prepublishOnly": "npm run build",
     "analyze": "npm run build && node dist/cli.js",
     "preview:report": "vite --config vite.preview.config.ts",
-    "test": "npm run build:core && npm run build:tests && npm run build:report && node --test 'dist/**/*.test.js'"
+    "test": "npm run build && npm run build:test-support && node --test '.test-dist/**/*.test.js'"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.3",
@@ -43,11 +43,11 @@
     "@tailwindcss/vite": "^4.3.2",
     "@types/node": "24",
     "@types/prismjs": "^1.26.6",
-
     "preact": "^10.29.5",
     "preact-render-to-string": "^6.7.0",
     "prismjs": "^1.30.0",
     "tailwindcss": "^4.3.2",
+    "tsup": "^8.5.1",
     "typescript": "^5.8.3",
     "vite": "^8.1.3"
   }

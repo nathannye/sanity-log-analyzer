@@ -13,7 +13,8 @@
 		"forceConsistentCasingInFileNames": true,
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"noEmit": true
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": [
@@ -23,9 +24,13 @@
 		"src/report/**/*.tsx",
 		"src/report/**/*.css",
 		"src/report/preview",
-		"src/report/styles",
 		"src/report/components",
 		"src/report/utils",
-		"src/report/fixtures"
+		"src/report/fixtures",
+		"src/report/scripts",
+		"src/report/highlight-groq.ts",
+		"src/report/sections.ts",
+		"src/report/vertical-bar-chart.ts",
+		"src/report/styles/collect-css.ts"
 	]
 }

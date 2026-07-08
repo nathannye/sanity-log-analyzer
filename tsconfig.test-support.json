@@ -1,0 +1,38 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"outDir": ".test-dist",
+		"rootDir": "src",
+		"declaration": false,
+		"declarationMap": false
+	},
+	"include": [
+		"src/**/*.test.ts",
+		"src/sample-report-data.ts",
+		"src/types.ts",
+		"src/format.ts",
+		"src/ranked-row.ts",
+		"src/report/**/*.ts"
+	],
+	"exclude": [
+		"src/index.ts",
+		"src/cli.ts",
+		"src/aggregate.ts",
+		"src/config.ts",
+		"src/log-entry.ts",
+		"src/progress-line.ts",
+		"src/report-data.ts",
+		"src/stream.ts",
+		"src/report/render.ts",
+		"src/report/scripts/**",
+		"src/report/highlight-groq.ts",
+		"src/report/sections.ts",
+		"src/report/vertical-bar-chart.ts",
+		"src/report/styles/collect-css.ts",
+		"src/report/utils/**",
+		"src/report/preview/**",
+		"src/report/fixtures/**",
+		"src/report/vite-env.d.ts"
+	]
+}
