@@ -4,3 +4,32 @@
 	color: var(--muted);
 	font-size: var(--text-size-sm);
 }
+
+.metricCell {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.errorBadge {
+	flex-shrink: 0;
+	padding: 0.2rem 0.6rem;
+	border: 0.1rem solid var(--border-faint);
+	border-radius: var(--radius-pill);
+	background: rgba(239, 68, 68, 0.12);
+	color: var(--color-red, #ef4444);
+	font-size: var(--text-size-xs);
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.errorIcon {
+	display: inline-flex;
+	flex-shrink: 0;
+	color: var(--color-red, #ef4444);
+}
+
+.errorIcon svg {
+	width: 1.4rem;
+	height: 1.4rem;
+}

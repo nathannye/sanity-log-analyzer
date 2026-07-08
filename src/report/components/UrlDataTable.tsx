@@ -2,36 +2,98 @@ import { formatBytes, formatNumber } from "../../format.js";
 import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
 import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
+import {
+	hasImageFormatError,
+	hasImageQualityError,
+	hasImageWidthError,
+	parseImageUrl,
+} from "../parse-image-url.js";
+import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
+import buttonStyles from "./Button.module.css";
 import tableStyles from "./DataTable.module.css";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
-import { CopyIcon } from "./icons.js";
+import { CopyIcon, ErrorIcon, ExternalLinkIcon } from "./icons.js";
+import { SortableTableHeader } from "./SortableTableHeader.js";
+import { Tooltip } from "./Tooltip.js";
 import styles from "./UrlDataTable.module.css";
 
 interface UrlDataTableProps {
 	rows: RankedRow[];
 	showFlyout?: boolean;
+	variant?: "default" | "image";
 	idPrefix: string;
+}
+
+function formatMetric(value: string | number | null): string {
+	if (value === null) return "—";
+	return String(value);
 }
 
 export function UrlDataTable({
 	rows,
 	showFlyout = false,
+	variant = "default",
 	idPrefix,
 }: UrlDataTableProps) {
 	if (rows.length === 0) {
 		return <p class={styles.empty}>No URLs in this category.</p>;
 	}
 
+	const isImageTable = variant === "image";
+
 	return (
 		<div class={tableStyles.wrap}>
-			<table class={`body-1 ${tableStyles.table}`}>
+			<table
+				class={`body-1 ${tableStyles.table}`}
+				data-sortable-table
+			>
 				<thead>
 					<tr>
-						<th>Label</th>
-						<th class="num">Bandwidth</th>
-						<th class="num">Requests</th>
-						<th class="num">Avg / req</th>
+						<SortableTableHeader
+							label="Label"
+							sortKey="label"
+							sortType="string"
+						/>
+						{isImageTable ? (
+							<>
+								<SortableTableHeader
+									label="Width"
+									sortKey="width"
+									sortType="number"
+									className="num"
+								/>
+								<SortableTableHeader
+									label="Quality"
+									sortKey="quality"
+									sortType="number"
+									className="num"
+								/>
+								<SortableTableHeader
+									label="Format"
+									sortKey="format"
+									sortType="string"
+								/>
+							</>
+						) : null}
+						<SortableTableHeader
+							label="Bandwidth"
+							sortKey="bandwidth"
+							sortType="number"
+							className="num"
+						/>
+						<SortableTableHeader
+							label="Requests"
+							sortKey="requests"
+							sortType="number"
+							className="num"
+						/>
+						<SortableTableHeader
+							label="Avg / req"
+							sortKey="avg"
+							sortType="number"
+							className="num"
+						/>
 					</tr>
 				</thead>
 				<tbody>
@@ -42,10 +104,39 @@ export function UrlDataTable({
 						const flyoutId = groqQuery
 							? `${idPrefix}-flyout-${index}`
 							: undefined;
+						const imageDetails = isImageTable
+							? parseImageUrl(row.label)
+							: null;
+						const labelSortValue = isImageTable
+							? (imageDetails?.id ?? row.label)
+							: row.label;
 
 						return (
-							<tr key={`${row.label}-${index}`}>
-								<td class={tableStyles.labelCell} title={row.label}>
+							<tr
+								key={`${row.label}-${index}`}
+								data-row-index={index}
+								data-sort-label={encodeSortValue(labelSortValue)}
+								data-sort-bandwidth={encodeSortValue(row.responseBytes)}
+								data-sort-requests={encodeSortValue(row.requests)}
+								data-sort-avg={encodeSortValue(avgBytesPerRequest(row))}
+								{...(isImageTable
+									? {
+											"data-sort-width": encodeSortValue(
+												imageDetails?.width ?? null,
+											),
+											"data-sort-quality": encodeSortValue(
+												imageDetails?.quality ?? null,
+											),
+											"data-sort-format": encodeSortValue(
+												imageDetails?.format ?? null,
+											),
+										}
+									: {})}
+							>
+								<td
+									class={tableStyles.labelCell}
+									title={isImageTable ? row.label : undefined}
+								>
 									<div class={tableStyles.labelCellInner}>
 										<Button
 											variant="ghost-icon-sm"
@@ -55,7 +146,23 @@ export function UrlDataTable({
 											aria-label={`Copy "${row.label}"`}
 											title="Copy to clipboard"
 										/>
-										<span class={tableStyles.labelText}>{row.label}</span>
+										{isImageTable ? (
+											<a
+												href={row.label}
+												target="_blank"
+												rel="noopener noreferrer"
+												class={`${buttonStyles.button} ${buttonStyles.ghostIconSm}`}
+												aria-label={`Open "${imageDetails?.id ?? row.label}" in new tab`}
+												title="Open in new tab"
+											>
+												<span class={buttonStyles.icon}>
+													<ExternalLinkIcon />
+												</span>
+											</a>
+										) : null}
+										<span class={tableStyles.labelText}>
+											{isImageTable ? imageDetails?.id : row.label}
+										</span>
 										{flyoutId ? (
 											<Button
 												variant="outline-pill-accent"
@@ -76,9 +183,52 @@ export function UrlDataTable({
 										/>
 									) : null}
 								</td>
+								{isImageTable && imageDetails ? (
+									<>
+										<td class="num">
+											<div class={styles.metricCell}>
+												<span>{formatMetric(imageDetails.width)}</span>
+												{hasImageWidthError(imageDetails.width) ? (
+													<Tooltip content="Width exceeds 2000px">
+														<span class={styles.errorBadge}>Too large</span>
+													</Tooltip>
+												) : null}
+											</div>
+										</td>
+										<td class="num">
+											<div class={styles.metricCell}>
+												<span>{formatMetric(imageDetails.quality)}</span>
+												{hasImageQualityError(
+													imageDetails.quality,
+													imageDetails.isSvg,
+												) ? (
+													<Tooltip content="Quality exceeds 87">
+														<span class={styles.errorIcon}>
+															<ErrorIcon />
+														</span>
+													</Tooltip>
+												) : null}
+											</div>
+										</td>
+										<td>
+											<div class={styles.metricCell}>
+												<span>{formatMetric(imageDetails.format)}</span>
+												{hasImageFormatError(imageDetails.format) ? (
+													<Tooltip content='Format should be "auto"'>
+														<span class={styles.errorIcon}>
+															<ErrorIcon />
+														</span>
+													</Tooltip>
+												) : null}
+											</div>
+										</td>
+									</>
+								) : null}
 								<td class="num">{formatBytes(row.responseBytes)}</td>
 								<td class="num">{formatNumber(row.requests)}</td>
-								<td class="num">{formatBytes(avgBytesPerRequest(row))}</td>
+								<td class="num">
+									{formatBytes(avgBytesPerRequest(row))}
+								</td>
 							</tr>
 						);
 					})}

@@ -10,6 +10,7 @@ import headerCss from "../components/Header.module.css?inline";
 import metricCss from "../components/Metric.module.css?inline";
 import reportControlsCss from "../components/ReportControls.module.css?inline";
 import tableOfContentsCss from "../components/TableOfContents.module.css?inline";
+import tooltipCss from "../components/Tooltip.module.css?inline";
 import urlDataTableCss from "../components/UrlDataTable.module.css?inline";
 import urlTabsSectionCss from "../components/UrlTabsSection.module.css?inline";
 import userAgentDataTableCss from "../components/UserAgentDataTable.module.css?inline";
@@ -36,6 +37,7 @@ export const reportCss = [
 	refererDataTableCss,
 	userAgentDataTableCss,
 	urlTabsSectionCss,
+	tooltipCss,
 	urlDataTableCss,
 	groqQueryFlyoutCss,
 	groqQueryStatsCss,

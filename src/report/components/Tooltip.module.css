@@ -1,0 +1,67 @@
+.wrap {
+	position: relative;
+	display: inline-flex;
+	vertical-align: middle;
+}
+
+.tooltip {
+	position: absolute;
+	left: 50%;
+	z-index: 20;
+	width: max-content;
+	max-width: 24rem;
+	padding: 0.5rem 0.8rem;
+	border: 0.1rem solid var(--border-faint);
+	border-radius: var(--radius-sm);
+	background: #18181b;
+	box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.4);
+	color: var(--text);
+	font-size: var(--text-size-xs);
+	font-weight: 500;
+	line-height: 1.4;
+	text-align: center;
+	white-space: normal;
+	pointer-events: none;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease,
+		visibility 0.15s ease;
+}
+
+.placementTop .tooltip {
+	bottom: calc(100% + 0.5rem);
+	transform: translateX(-50%) translateY(0.3rem);
+}
+
+.placementBottom .tooltip {
+	top: calc(100% + 0.5rem);
+	transform: translateX(-50%) translateY(-0.3rem);
+}
+
+.placementTop .tooltip::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	border: 0.4rem solid transparent;
+	border-top-color: #18181b;
+	transform: translateX(-50%);
+}
+
+.placementBottom .tooltip::after {
+	content: "";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	border: 0.4rem solid transparent;
+	border-bottom-color: #18181b;
+	transform: translateX(-50%);
+}
+
+.wrap:hover .tooltip {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(-50%) translateY(0);
+}

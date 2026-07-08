@@ -46,3 +46,63 @@
   min-width: 0;
   flex: 1;
 }
+
+.sortHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  text-align: inherit;
+  border-radius: var(--radius-sm);
+}
+
+.sortHeader:hover {
+  color: var(--text);
+}
+
+.sortHeader:focus-visible {
+  outline: 0.2rem solid var(--accent);
+  outline-offset: 0.2rem;
+}
+
+.num .sortHeader {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.sortHeaderLabel {
+  line-height: 1.2;
+}
+
+.sortIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  opacity: 0.45;
+}
+
+.sortIcon svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.sortHeader[data-sort-direction="asc"] .sortIcon,
+.sortHeader[data-sort-direction="desc"] .sortIcon {
+  opacity: 1;
+}
+
+.sortHeader[data-sort-direction="asc"] .sortIcon svg path:first-child,
+.sortHeader[data-sort-direction="desc"] .sortIcon svg path:last-child {
+  stroke: var(--text);
+}
+
+.sortHeader[data-sort-direction="asc"] .sortIcon svg path:last-child,
+.sortHeader[data-sort-direction="desc"] .sortIcon svg path:first-child {
+  opacity: 0.35;
+}

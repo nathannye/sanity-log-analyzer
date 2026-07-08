@@ -13,6 +13,53 @@ export function CopyIcon() {
 	);
 }
 
+export function ExternalLinkIcon() {
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			aria-hidden="true"
+		>
+			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+			<polyline points="15 3 21 3 21 9" />
+			<line x1="10" y1="14" x2="21" y2="3" />
+		</svg>
+	);
+}
+
+export function ErrorIcon() {
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			aria-hidden="true"
+		>
+			<circle cx="12" cy="12" r="10" />
+			<line x1="12" y1="8" x2="12" y2="12" />
+			<line x1="12" y1="16" x2="12.01" y2="16" />
+		</svg>
+	);
+}
+
+export function SortIcon() {
+	return (
+		<svg
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			aria-hidden="true"
+		>
+			<path d="m8 9 4-4 4 4" />
+			<path d="m8 15 4 4 4-4" />
+		</svg>
+	);
+}
+
 export function DownloadIcon() {
 	return (
 		<svg

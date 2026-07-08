@@ -50,5 +50,8 @@ export function formatReadableDate(timestamp: string): string {
 
 export function formatIsoDate(isoDate: string): string {
   if (!isoDate) return "";
-  return formatReadableDate(`${isoDate}T00:00:00Z`);
+  const date = new Date(`${isoDate}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return "";
+  const weekday = date.toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" });
+  return `${weekday} ${readableDateFormatter.format(date)}`;
 }

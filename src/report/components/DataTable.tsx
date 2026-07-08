@@ -2,9 +2,11 @@ import type { ComponentChildren } from "preact";
 import { formatBytes, formatNumber } from "../../format.js";
 import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
+import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
 import styles from "./DataTable.module.css";
 import { CopyIcon } from "./icons.js";
+import { SortableTableHeader } from "./SortableTableHeader.js";
 
 interface DataTableProps {
 	title: string;
@@ -30,18 +32,47 @@ export function DataTable({
 			<h3 class="heading-3">{title}</h3>
 			{header}
 			<div class={styles.wrap}>
-				<table class={`body-1 ${styles.table}`}>
+				<table
+					class={`body-1 ${styles.table}`}
+					data-sortable-table
+				>
 					<thead>
 						<tr>
-							<th>Label</th>
-							<th class="num">Bandwidth</th>
-							<th class="num">Requests</th>
-							<th class="num">Avg / req</th>
+							<SortableTableHeader
+								label="Label"
+								sortKey="label"
+								sortType="string"
+							/>
+							<SortableTableHeader
+								label="Bandwidth"
+								sortKey="bandwidth"
+								sortType="number"
+								className="num"
+							/>
+							<SortableTableHeader
+								label="Requests"
+								sortKey="requests"
+								sortType="number"
+								className="num"
+							/>
+							<SortableTableHeader
+								label="Avg / req"
+								sortKey="avg"
+								sortType="number"
+								className="num"
+							/>
 						</tr>
 					</thead>
 					<tbody>
-						{rows.map((row) => (
-							<tr key={row.label}>
+						{rows.map((row, index) => (
+							<tr
+								key={row.label}
+								data-row-index={index}
+								data-sort-label={encodeSortValue(row.label)}
+								data-sort-bandwidth={encodeSortValue(row.responseBytes)}
+								data-sort-requests={encodeSortValue(row.requests)}
+								data-sort-avg={encodeSortValue(avgBytesPerRequest(row))}
+							>
 								<td class={styles.labelCell} title={renderLabel ? undefined : row.label}>
 									{renderLabel ? (
 										renderLabel(row)

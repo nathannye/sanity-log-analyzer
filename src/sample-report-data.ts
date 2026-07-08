@@ -48,7 +48,7 @@ export const SAMPLE_REPORT: ReportData = {
 			{ label: "listen", requests: 1, responseBytes: 200 },
 			{ label: "query", requests: 1, responseBytes: 75 },
 		],
-		byDate: [{ label: "Jun 14, 2026", requests: 5, responseBytes: 775 }],
+		byDate: [{ label: "Sun Jun 14, 2026", requests: 5, responseBytes: 775 }],
 		byHour: [
 			{ label: "00:00", requests: 4, responseBytes: 700 },
 			{ label: "01:00", requests: 1, responseBytes: 75 },
@@ -109,7 +109,7 @@ export const SAMPLE_REPORT: ReportData = {
 		nonStudio: { requests: 4, responseBytes: 700, requestBytes: 300 },
 		byDomain: [{ label: "api", requests: 4, responseBytes: 700 }],
 		byEndpoint: [{ label: "listen", requests: 4, responseBytes: 700 }],
-		byDate: [{ label: "Jun 14, 2026", requests: 4, responseBytes: 700 }],
+		byDate: [{ label: "Sun Jun 14, 2026", requests: 4, responseBytes: 700 }],
 		byHour: [{ label: "00:00", requests: 4, responseBytes: 700 }],
 		byUrl: [
 			{

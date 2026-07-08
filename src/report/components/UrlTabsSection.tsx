@@ -20,9 +20,16 @@ const TABS: Array<{ id: UrlTab; label: string }> = [
 	{ id: "other", label: "Other" },
 ];
 
+function visibleTabs(groups: Record<UrlTab, RankedRow[]>) {
+	return TABS.filter(
+		(tab) => tab.id !== "other" || groups.other.length > 0,
+	);
+}
+
 export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 	const groups = groupUrlsByKind(rows);
 	const activeTab = defaultUrlTab(groups);
+	const tabs = visibleTabs(groups);
 
 	return (
 		<section
@@ -33,7 +40,7 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 		>
 			<h3 class="heading-3">Top URLs</h3>
 			<div class={styles.tabList} role="tablist" aria-label="URL categories">
-				{TABS.map((tab) => (
+				{tabs.map((tab) => (
 					<Button
 						key={tab.id}
 						variant="tab"
@@ -46,7 +53,7 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 					</Button>
 				))}
 			</div>
-			{TABS.map((tab) => (
+			{tabs.map((tab) => (
 				<div
 					key={tab.id}
 					id={`${idPrefix}-panel-${tab.id}`}
@@ -58,6 +65,7 @@ export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 					<UrlDataTable
 						rows={groups[tab.id]}
 						showFlyout={tab.id === "query"}
+						variant={tab.id === "image" ? "image" : "default"}
 						idPrefix={`${idPrefix}-${tab.id}`}
 					/>
 				</div>

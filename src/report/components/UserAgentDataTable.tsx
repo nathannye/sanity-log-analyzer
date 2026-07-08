@@ -12,6 +12,10 @@ interface UserAgentDataTableProps {
 	rows: RankedRow[];
 }
 
+function isSanityUserAgent(raw: string): boolean {
+	return /^@sanity/i.test(raw.trim());
+}
+
 function DesktopIcon() {
 	return (
 		<svg
@@ -62,6 +66,9 @@ function UserAgentLabel({ raw }: { raw: string }) {
 						? parsed.displayLabel
 						: parsed.raw || parsed.displayLabel}
 				</span>
+				{isSanityUserAgent(raw) ? (
+					<span class={styles.chip}>Sanity client</span>
+				) : null}
 			</div>
 			{parsed.deviceKind ? (
 				<div class={styles.rawLabel} title={parsed.raw}>

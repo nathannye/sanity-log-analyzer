@@ -6,6 +6,7 @@ import { ReportApp } from "./ReportApp.js";
 import { copyButtonsScript } from "./scripts/copy-buttons.js";
 import { groqFlyoutScript } from "./scripts/groq-flyout.js";
 import { markdownDownloadScript } from "./scripts/markdown-download.js";
+import { tableSortScript } from "./scripts/table-sort.js";
 import { toastScript } from "./scripts/toast.js";
 import { tocNavScript } from "./scripts/toc-nav.js";
 import { urlTabsScript } from "./scripts/url-tabs.js";
@@ -38,6 +39,7 @@ ${body}
   <script>${viewToggleScript}</script>
   <script>${markdownDownloadScript}</script>
   <script>${urlTabsScript}</script>
+  <script>${tableSortScript}</script>
   <script>${groqFlyoutScript}</script>
   <script>${tocNavScript}</script>
 </body>

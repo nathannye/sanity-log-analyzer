@@ -29,7 +29,7 @@
     "prepublishOnly": "npm run build",
     "analyze": "npm run build && node dist/cli.js",
     "preview:report": "vite --config vite.preview.config.ts",
-    "test": "npm run build && node --test dist/index.test.js dist/progress-line.test.js dist/render.test.js dist/report/markdown.test.js dist/report/parse-user-agent.test.js dist/report/classify-url.test.js dist/report/is-development-url.test.js dist/report/groq-query.test.js dist/report/highlight-groq.test.js dist/report/analyze-groq.test.js dist/report/group-urls-by-kind.test.js dist/report/format-groq.test.js dist/stream.test.js"
+    "test": "npm run build && node --test dist/index.test.js dist/progress-line.test.js dist/render.test.js dist/report/markdown.test.js dist/report/parse-user-agent.test.js dist/report/classify-url.test.js dist/report/is-development-url.test.js dist/report/groq-query.test.js dist/report/highlight-groq.test.js dist/report/analyze-groq.test.js dist/report/group-urls-by-kind.test.js dist/report/format-groq.test.js dist/report/parse-image-url.test.js dist/report/sort-table-values.test.js dist/stream.test.js"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.5",

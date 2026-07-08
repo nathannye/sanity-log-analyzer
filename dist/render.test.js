@@ -1,5 +1,5 @@
-import test from "node:test";
 import assert from "node:assert/strict";
+import test from "node:test";
 import { renderReportHtml } from "./report/render.js";
 import { SAMPLE_REPORT } from "./sample-report-data.js";
 test("renderReportHtml produces a self-contained html report", () => {
@@ -22,7 +22,7 @@ test("renderReportHtml includes TOC links for enabled sections", () => {
 });
 test("renderReportHtml includes tabbed Top URLs with GROQ flyout", () => {
     const html = renderReportHtml(SAMPLE_REPORT);
-    assert.ok(html.includes('data-url-tabs'));
+    assert.ok(html.includes("data-url-tabs"));
     assert.ok(html.includes('data-url-tab="query"'));
     assert.ok(html.includes("Avg / req"));
     assert.ok(html.includes("language-groq"));
@@ -78,5 +78,14 @@ test("renderReportHtml includes markdown download payload and scripts", () => {
     assert.ok(html.includes("All requests"));
     assert.ok(html.includes("window.__showReportToast"));
     assert.ok(html.includes('__showReportToast("Downloaded")'));
+});
+test("renderReportHtml includes sortable table headers and script", () => {
+    const html = renderReportHtml(SAMPLE_REPORT);
+    assert.ok(html.includes("data-sortable-table"));
+    assert.ok(html.includes('data-sort-key="bandwidth"'));
+    assert.ok(html.includes('data-sort-direction="none"'));
+    assert.ok(html.includes('data-row-index="0"'));
+    assert.ok(html.includes('data-sort-bandwidth="'));
+    assert.ok(html.includes("[data-sort-key]"));
 });
 //# sourceMappingURL=render.test.js.map

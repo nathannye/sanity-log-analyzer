@@ -67,3 +67,14 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
+.chip {
+	flex-shrink: 0;
+	padding: 0.3rem 0.8rem;
+	border: 0.1rem solid var(--border-faint);
+	border-radius: var(--radius-pill);
+	background: rgba(59, 130, 246, 0.12);
+	color: var(--color-blue, #3b82f6);
+	font-size: var(--text-size-xs);
+	font-weight: 600;
+}
