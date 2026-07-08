@@ -6,7 +6,6 @@ import { defineConfig } from "vite";
 export default defineConfig({
 	plugins: [preact(), tailwindcss()],
 	build: {
-		sourcemap: true,
 		lib: {
 			entry: resolve(__dirname, "src/report/report-renderer.tsx"),
 			formats: ["es"],

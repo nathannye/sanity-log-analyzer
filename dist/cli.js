@@ -714,4 +714,3 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-//# sourceMappingURL=cli.js.map

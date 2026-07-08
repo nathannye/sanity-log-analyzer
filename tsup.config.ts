@@ -8,14 +8,10 @@ export default defineConfig({
 	format: ["esm"],
 	platform: "node",
 	target: "node22",
-	sourcemap: true,
 	clean: true,
 	splitting: false,
 	dts: {
 		entry: ["src/index.ts"],
-		compilerOptions: {
-			declarationMap: true,
-		},
 	},
 	external: ["open", "ua-parser-js", "groq-js", "./report/render.js"],
 	esbuildOptions(options, context) {

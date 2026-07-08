@@ -1768,4 +1768,3 @@ export {
   writeHtmlReport,
   writeMarkdownReport
 };
-//# sourceMappingURL=index.js.map
