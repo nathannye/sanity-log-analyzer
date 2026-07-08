@@ -3,6 +3,21 @@ import { classifyUrl } from "./classify-url.js";
 
 export type UrlTab = "image" | "file" | "query" | "other";
 
+export const URL_TABS: Array<{ id: UrlTab; label: string }> = [
+	{ id: "image", label: "Images" },
+	{ id: "file", label: "Files" },
+	{ id: "query", label: "Queries" },
+	{ id: "other", label: "Other" },
+];
+
+export function visibleUrlTabs(
+	groups: Record<UrlTab, RankedRow[]>,
+): Array<{ id: UrlTab; label: string }> {
+	return URL_TABS.filter(
+		(tab) => tab.id !== "other" || groups.other.length > 0,
+	);
+}
+
 const EMPTY_GROUPS: Record<UrlTab, RankedRow[]> = {
 	image: [],
 	file: [],

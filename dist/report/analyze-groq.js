@@ -1,4 +1,5 @@
 import { GroqSyntaxError, parse } from "groq-js";
+export const GROQ_SPREAD_WARNING = "uses {...} spread operator — may fetch more fields than needed, wasting bandwidth";
 function emptyStats() {
     return {
         dereferences: 0,
@@ -94,5 +95,9 @@ export function analyzeGroqQuery(query, params) {
             return null;
         throw error;
     }
+}
+export function hasGroqSpreadOperator(query, params) {
+    const stats = analyzeGroqQuery(query, params);
+    return stats !== null && stats.spreads > 0;
 }
 //# sourceMappingURL=analyze-groq.js.map

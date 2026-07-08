@@ -2,7 +2,7 @@ import type { RankedRow } from "../../types.js";
 import {
 	defaultUrlTab,
 	groupUrlsByKind,
-	type UrlTab,
+	visibleUrlTabs,
 } from "../group-urls-by-kind.js";
 import { Button } from "./Button.js";
 import styles from "./UrlTabsSection.module.css";
@@ -13,23 +13,10 @@ interface UrlTabsSectionProps {
 	idPrefix: string;
 }
 
-const TABS: Array<{ id: UrlTab; label: string }> = [
-	{ id: "image", label: "Images" },
-	{ id: "file", label: "Files" },
-	{ id: "query", label: "Queries" },
-	{ id: "other", label: "Other" },
-];
-
-function visibleTabs(groups: Record<UrlTab, RankedRow[]>) {
-	return TABS.filter(
-		(tab) => tab.id !== "other" || groups.other.length > 0,
-	);
-}
-
 export function UrlTabsSection({ rows, idPrefix }: UrlTabsSectionProps) {
 	const groups = groupUrlsByKind(rows);
 	const activeTab = defaultUrlTab(groups);
-	const tabs = visibleTabs(groups);
+	const tabs = visibleUrlTabs(groups);
 
 	return (
 		<section

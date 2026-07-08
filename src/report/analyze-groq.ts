@@ -9,6 +9,9 @@ export interface GroqQueryStats {
 	functionCalls: Record<string, number>;
 }
 
+export const GROQ_SPREAD_WARNING =
+	"uses the {...} spread operator and may waste bandwidth by fetching more fields than needed";
+
 type AstNode = {
 	type: string;
 	[key: string]: unknown;
@@ -109,4 +112,12 @@ export function analyzeGroqQuery(
 		if (error instanceof GroqSyntaxError) return null;
 		throw error;
 	}
+}
+
+export function hasGroqSpreadOperator(
+	query: string,
+	params?: Record<string, unknown>,
+): boolean {
+	const stats = analyzeGroqQuery(query, params);
+	return stats !== null && stats.spreads > 0;
 }

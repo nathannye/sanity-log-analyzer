@@ -89,9 +89,20 @@
 	color: var(--muted);
 }
 
+.warning {
+	margin-top: 2.2rem;
+	margin-bottom: 1.4rem;
+	padding: 0.8rem 1rem;
+	border: 0.1rem solid var(--color-amber, #f59e0b);
+	border-radius: var(--radius-sm);
+	background: var(--color-amber-light);
+	color: var(--color-amber);
+	font-size: var(--text-size-sm);
+	line-height: 1.5;
+}
+
 .note {
 	margin-top: 2.2rem;
 	font-size: var(--text-size-sm);
 	color: var(--muted);
-	
 }

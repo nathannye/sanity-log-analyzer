@@ -13,12 +13,18 @@ interface ReportAppProps {
 export function ReportApp({ data }: ReportAppProps) {
 	const colorStyle = paletteColorVars(data.config.palette);
 	const showBillableComparison = data.config.sections.billableComparison;
+	const tocUrlRows = showBillableComparison
+		? data.billable.byUrl
+		: data.all.byUrl;
 
 	return (
 		<main class={styles.page} style={colorStyle}>
 			<Header data={data} />
 			<div class={styles.layout}>
-				<TableOfContents sections={data.config.sections} />
+				<TableOfContents
+					sections={data.config.sections}
+					urlRows={tocUrlRows}
+				/>
 				<div class={styles.content}>
 					<ReportControls showToggle={showBillableComparison} />
 					{showBillableComparison ? (

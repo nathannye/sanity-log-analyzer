@@ -1,9 +1,10 @@
 import type { RankedRow } from "../../types.js";
 import { isDevelopmentUrl } from "../is-development-url.js";
 import { Button } from "./Button.js";
+import buttonStyles from "./Button.module.css";
 import { DataTable } from "./DataTable.js";
 import tableStyles from "./DataTable.module.css";
-import { CopyIcon } from "./icons.js";
+import { CopyIcon, ExternalLinkIcon } from "./icons.js";
 import styles from "./RefererDataTable.module.css";
 
 interface RefererDataTableProps {
@@ -16,19 +17,6 @@ function isHttpsUrl(label: string): boolean {
 }
 
 function RefererLabel({ row }: { row: RankedRow }) {
-	const label = isHttpsUrl(row.label) ? (
-		<a
-			href={row.label}
-			target="_blank"
-			rel="noopener noreferrer"
-			class={`${tableStyles.labelText} ${styles.link}`}
-		>
-			{row.label}
-		</a>
-	) : (
-		<span class={tableStyles.labelText}>{row.label}</span>
-	);
-
 	return (
 		<div class={tableStyles.labelCellInner}>
 			<Button
@@ -38,7 +26,21 @@ function RefererLabel({ row }: { row: RankedRow }) {
 				aria-label={`Copy "${row.label}"`}
 				title="Copy to clipboard"
 			/>
-			{label}
+			{isHttpsUrl(row.label) ? (
+				<a
+					href={row.label}
+					target="_blank"
+					rel="noopener noreferrer"
+					class={`${buttonStyles.button} ${buttonStyles.ghostIconSm}`}
+					aria-label={`Open "${row.label}" in new tab`}
+					title="Open in new tab"
+				>
+					<span class={buttonStyles.icon}>
+						<ExternalLinkIcon />
+					</span>
+				</a>
+			) : null}
+			<span class={tableStyles.labelText}>{row.label}</span>
 			{isDevelopmentUrl(row.label) ? (
 				<span class={styles.chip}>Development</span>
 			) : null}

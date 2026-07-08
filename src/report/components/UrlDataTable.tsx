@@ -2,6 +2,7 @@ import { formatBytes, formatNumber } from "../../format.js";
 import { avgBytesPerRequest } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
 import { isMp4Url } from "../classify-url.js";
+import { hasGroqSpreadOperator, GROQ_SPREAD_WARNING } from "../analyze-groq.js";
 import { extractGroqParams, extractGroqQuery } from "../groq-query.js";
 import {
 	hasImageFormatError,
@@ -104,6 +105,13 @@ export function UrlDataTable({
 						const groqQuery = showFlyout ? extractGroqQuery(row.label) : null;
 						const groqParams =
 							groqQuery !== null ? extractGroqParams(row.label) : null;
+						const hasSpreadOperator =
+							groqQuery !== null
+								? hasGroqSpreadOperator(
+										groqQuery,
+										groqParams ?? undefined,
+									)
+								: false;
 						const flyoutId = groqQuery
 							? `${idPrefix}-flyout-${index}`
 							: undefined;
@@ -168,6 +176,15 @@ export function UrlDataTable({
 										</span>
 										{isFileTable && isMp4Url(row.label) ? (
 											<Tooltip content="Consider using HLS streaming services like Mux instead of serving large single MP4 files to reduce bandwidth and improve playback.">
+												<span class={styles.warningIcon}>
+													<WarningIcon />
+												</span>
+											</Tooltip>
+										) : null}
+										{hasSpreadOperator ? (
+											<Tooltip
+												content={`This query ${GROQ_SPREAD_WARNING}.`}
+											>
 												<span class={styles.warningIcon}>
 													<WarningIcon />
 												</span>

@@ -1,13 +1,14 @@
 import { getVisibleTocSections } from "../sections.js";
-import type { ReportSections } from "../../types.js";
+import type { RankedRow, ReportSections } from "../../types.js";
 import styles from "./TableOfContents.module.css";
 
 interface TableOfContentsProps {
 	sections: ReportSections;
+	urlRows?: RankedRow[];
 }
 
-export function TableOfContents({ sections }: TableOfContentsProps) {
-	const tocSections = getVisibleTocSections(sections);
+export function TableOfContents({ sections, urlRows }: TableOfContentsProps) {
+	const tocSections = getVisibleTocSections(sections, urlRows);
 
 	return (
 		<nav class={styles.toc} aria-label="Report sections">

@@ -1,4 +1,9 @@
-import type { ReportSections } from "../types.js";
+import type { RankedRow, ReportSections } from "../types.js";
+import {
+	groupUrlsByKind,
+	visibleUrlTabs,
+	type UrlTab,
+} from "./group-urls-by-kind.js";
 
 export interface TocSection {
 	slug: string;
@@ -6,18 +11,26 @@ export interface TocSection {
 	children?: TocSection[];
 }
 
-const URL_TAB_CHILDREN: TocSection[] = [
-	{ slug: "urls/image", label: "Images" },
-	{ slug: "urls/file", label: "Files" },
-	{ slug: "urls/query", label: "Queries" },
-	{ slug: "urls/other", label: "Other" },
-];
+const URL_TAB_SLUGS: Record<UrlTab, string> = {
+	image: "urls/image",
+	file: "urls/file",
+	query: "urls/query",
+	other: "urls/other",
+};
+
+function getUrlTabChildren(urlRows?: RankedRow[]): TocSection[] {
+	const tabs = visibleUrlTabs(groupUrlsByKind(urlRows ?? []));
+
+	return tabs.map((tab) => ({
+		slug: URL_TAB_SLUGS[tab.id],
+		label: tab.label,
+	}));
+}
 
 const TOC_SECTIONS: Array<{
 	slug: string;
 	label: string;
 	configKey?: keyof ReportSections;
-	children?: TocSection[];
 }> = [
 	{ slug: "summary", label: "Summary" },
 	{ slug: "domain", label: "Top domains", configKey: "domain" },
@@ -30,19 +43,21 @@ const TOC_SECTIONS: Array<{
 		slug: "urls",
 		label: "Top URLs",
 		configKey: "urls",
-		children: URL_TAB_CHILDREN,
 	},
 	{ slug: "referers", label: "Top referers", configKey: "referers" },
 	{ slug: "userAgents", label: "Top user agents", configKey: "userAgents" },
 	{ slug: "ips", label: "Top IPs", configKey: "ips" },
 ];
 
-export function getVisibleTocSections(sections: ReportSections): TocSection[] {
+export function getVisibleTocSections(
+	sections: ReportSections,
+	urlRows?: RankedRow[],
+): TocSection[] {
 	return TOC_SECTIONS.filter(
 		(entry) => !entry.configKey || sections[entry.configKey],
-	).map(({ slug, label, children }) => ({
+	).map(({ slug, label }) => ({
 		slug,
 		label,
-		children,
+		children: slug === "urls" ? getUrlTabChildren(urlRows) : undefined,
 	}));
 }

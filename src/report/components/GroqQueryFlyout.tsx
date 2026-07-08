@@ -1,5 +1,9 @@
 import { formatBytes, formatNumber } from "../../format.js";
-import { analyzeGroqQuery } from "../analyze-groq.js";
+import {
+	analyzeGroqQuery,
+	GROQ_SPREAD_WARNING,
+	hasGroqSpreadOperator,
+} from "../analyze-groq.js";
 import { formatGroqForDisplay } from "../format-groq.js";
 import { highlightGroq } from "../highlight-groq.js";
 import { Button } from "./Button.js";
@@ -25,6 +29,10 @@ export function GroqQueryFlyout({
 	const formatted = formatGroqForDisplay(query);
 	const highlighted = highlightGroq(formatted);
 	const stats = analyzeGroqQuery(formatted, params ?? undefined);
+	const hasSpreadOperator = hasGroqSpreadOperator(
+		formatted,
+		params ?? undefined,
+	);
 	const avgBytes = requests > 0 ? responseBytes / requests : 0;
 	const formattedParams =
 		params && Object.keys(params).length > 0
@@ -70,6 +78,11 @@ export function GroqQueryFlyout({
 						</div>
 					</dl>
 				</div>
+				{hasSpreadOperator ? (
+					<p class={styles.warning}>
+						This query {GROQ_SPREAD_WARNING}.
+					</p>
+				) : null}
 				<div class={styles.section}>
 					<div class={`eyebrow-1 ${styles.sectionLabel}`}>Query</div>
 					<pre class={styles.pre}>

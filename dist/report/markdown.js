@@ -1,6 +1,8 @@
 import { formatBytes, formatNumber, formatPercentage, formatReadableDate, } from "../format.js";
 import { avgBytesPerRequest } from "../ranked-row.js";
+import { GROQ_SPREAD_WARNING, hasGroqSpreadOperator } from "./analyze-groq.js";
 import { isMp4Url } from "./classify-url.js";
+import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import { hasImageFormatError, hasImageQualityError, hasImageWidthError, parseImageUrl, } from "./parse-image-url.js";
 import { aggregateUserAgentStats, parseUserAgent, } from "./parse-user-agent.js";
@@ -82,6 +84,27 @@ function imageUrlTable(rows) {
     lines.push("");
     return lines.join("\n");
 }
+function queryUrlTable(rows) {
+    if (rows.length === 0)
+        return "";
+    const lines = [
+        "#### Queries",
+        "",
+        "| Label | Requests | Bandwidth | Avg / req |",
+        "| --- | ---: | ---: | ---: |",
+    ];
+    for (const row of rows) {
+        const query = extractGroqQuery(row.label);
+        const params = query ? extractGroqParams(row.label) : null;
+        const label = query &&
+            hasGroqSpreadOperator(query, params ?? undefined)
+            ? `${row.label} (${GROQ_SPREAD_WARNING})`
+            : row.label;
+        lines.push(`| ${escapeMarkdownCell(label)} | ${formatNumber(row.requests)} | ${formatBytes(row.responseBytes)} | ${formatBytes(avgBytesPerRequest(row))} |`);
+    }
+    lines.push("");
+    return lines.join("\n");
+}
 function fileUrlTable(rows) {
     if (rows.length === 0)
         return "";
@@ -110,7 +133,7 @@ function urlSectionsMarkdown(rows) {
         parts.push(fileUrlTable(groups.file));
     }
     if (groups.query.length > 0) {
-        parts.push(urlRankedTable("Queries", groups.query));
+        parts.push(queryUrlTable(groups.query));
     }
     if (groups.other.length > 0) {
         parts.push(urlRankedTable("Other", groups.other));

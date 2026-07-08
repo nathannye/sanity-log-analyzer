@@ -8,14 +8,3 @@
 	font-size: var(--text-size-xs);
 	font-weight: 600;
 }
-
-.link {
-	color: inherit;
-	text-decoration: underline;
-	text-underline-offset: 0.15em;
-	transition: opacity 0.15s ease;
-}
-
-.link:hover {
-	opacity: 0.65;
-}

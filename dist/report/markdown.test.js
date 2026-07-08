@@ -52,6 +52,20 @@ test("renderReportMarkdown includes Queries when query URLs are present", () => 
     const markdown = renderReportMarkdown(SAMPLE_REPORT, "all");
     assert.ok(markdown.includes("#### Queries"));
 });
+test("renderReportMarkdown annotates GROQ queries that use spread operators", () => {
+    const spreadQuery = "https://abc.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type%20%3D%3D%20%22post%22%5D%7B...%2C%20title%7D";
+    const markdown = renderReportMarkdown({
+        ...SAMPLE_REPORT,
+        all: {
+            ...SAMPLE_REPORT.all,
+            byUrl: [
+                ...SAMPLE_REPORT.all.byUrl,
+                { label: spreadQuery, requests: 2, responseBytes: 120 },
+            ],
+        },
+    }, "all");
+    assert.ok(markdown.includes("uses {...} spread operator"));
+});
 test("escapeMarkdownCell escapes pipes and newlines", () => {
     assert.equal(escapeMarkdownCell("a|b"), "a\\|b");
     assert.equal(escapeMarkdownCell("line\nbreak"), "line break");
