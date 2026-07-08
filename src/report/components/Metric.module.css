@@ -1,23 +1,17 @@
 .metric {
-  min-height: 12rem;
-  display: grid;
-  align-content: space-between;
-  border: 0.1rem solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--panel);
-  padding: 1.6rem;
-  backdrop-filter: blur(0.8rem);
+	display: grid;
+	align-content: space-between;
 }
 
 .label {
-  color: var(--muted);
+	color: var(--muted);
 }
 
 .value {
-  margin-top: 1rem;
+	margin-top: 1rem;
 }
 
 .note {
-  color: var(--muted);
-  margin-top: 0.8rem;
+	color: var(--muted);
+	margin-top: 0.8rem;
 }

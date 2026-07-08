@@ -2,11 +2,6 @@
 	position: sticky;
 	top: 2rem;
 	align-self: start;
-	padding: 1.6rem;
-	border: 0.1rem solid var(--border-subtle);
-	border-radius: var(--radius-md);
-	background: var(--panel);
-	backdrop-filter: blur(0.8rem);
 }
 
 .heading {

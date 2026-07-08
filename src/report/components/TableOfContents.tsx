@@ -11,7 +11,7 @@ export function TableOfContents({ sections, urlRows }: TableOfContentsProps) {
 	const tocSections = getVisibleTocSections(sections, urlRows);
 
 	return (
-		<nav class={styles.toc} aria-label="Report sections">
+		<nav class={`card ${styles.toc}`} aria-label="Report sections">
 			<div class={`eyebrow-1 ${styles.heading}`}>Contents</div>
 			<ul class={styles.list}>
 				{tocSections.map((entry) => (

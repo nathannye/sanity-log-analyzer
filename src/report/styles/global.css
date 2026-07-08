@@ -59,6 +59,10 @@ pre {
 	backdrop-filter: blur(0.8rem);
 }
 
+.card--metric {
+	min-height: 12rem;
+}
+
 .copy-toast {
 	position: fixed;
 	bottom: 2.4rem;

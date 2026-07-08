@@ -31,7 +31,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 		<section class={styles.root} data-section="findings">
 			<div class={styles.cards}>
 				<article
-					class={`${styles.card} ${HEALTH_CLASS[summary.overallHealth]}`}
+					class={`card ${styles.statCard} ${HEALTH_CLASS[summary.overallHealth]}`}
 					data-health={summary.overallHealth}
 				>
 					<span class={styles.dot} aria-hidden="true" />
@@ -48,7 +48,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 					</div>
 				</article>
 
-				<article class={`${styles.card} ${styles.toneRed}`}>
+				<article class={`card ${styles.statCard} ${styles.toneRed}`}>
 					<span class={styles.dot} aria-hidden="true" />
 					<div class={styles.cardBody}>
 						<div class={`eyebrow-1 ${styles.cardLabel}`}>Critical</div>
@@ -59,7 +59,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 					</div>
 				</article>
 
-				<article class={`${styles.card} ${styles.toneYellow}`}>
+				<article class={`card ${styles.statCard} ${styles.toneYellow}`}>
 					<span class={styles.dot} aria-hidden="true" />
 					<div class={styles.cardBody}>
 						<div class={`eyebrow-1 ${styles.cardLabel}`}>Warnings</div>
@@ -70,7 +70,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 					</div>
 				</article>
 
-				<article class={`${styles.card} ${styles.toneGreen}`}>
+				<article class={`card ${styles.statCard} ${styles.toneGreen}`}>
 					<span class={styles.dot} aria-hidden="true" />
 					<div class={styles.cardBody}>
 						<div class={`eyebrow-1 ${styles.cardLabel}`}>Passed</div>
@@ -82,7 +82,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 				</article>
 
 				{summary.estimatedSavingsBytes !== undefined ? (
-					<article class={styles.card}>
+					<article class={`card ${styles.statCard}`}>
 						<div class={styles.cardBody}>
 							<div class={`eyebrow-1 ${styles.cardLabel}`}>Est. savings</div>
 							<div class={`display-1 ${styles.cardValue}`}>
@@ -99,7 +99,7 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 			<div class={styles.opportunities}>
 				<div class={`eyebrow-1 ${styles.sectionTitle}`}>Top opportunities</div>
 				{summary.topOpportunities.length === 0 ? (
-					<p class={`body-1 ${styles.empty}`}>
+					<p class={`body-1 card ${styles.empty}`}>
 						No optimization opportunities detected for this view.
 					</p>
 				) : (
