@@ -117,36 +117,36 @@ export function FindingsSummary({ summary }: FindingsSummaryProps) {
 				</div>
 			) : null}
 
-			{metricCards.length > 0 ? (
+			{/* {metricCards.length > 0 ? (
 				<div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
 					{metricCards}
 				</div>
-			) : null}
+			) : null} */}
 
-		<div class="grid grid-cols-2 lg:grid-cols-4 gap-x-24 gap-y-48">
-			<FindingsGroup
-				title="Critical"
-				items={summary.critical.map((item) => item.summary)}
-				emptyMessage="No critical issues detected."
-				tone="red"
-			/>
+			<div class="grid grid-cols-2 lg:grid-cols-4 gap-x-24 gap-y-48">
+				<FindingsGroup
+					title="Critical"
+					items={summary.critical.map((item) => item.summary)}
+					emptyMessage="No critical issues detected."
+					tone="red"
+				/>
 
-			<FindingsGroup
-				title="Warnings"
-				items={summary.warnings.map((item) => item.summary)}
-				tone="yellow"
-			/>
+				<FindingsGroup
+					title="Warnings"
+					items={summary.warnings.map((item) => item.summary)}
+					tone="yellow"
+				/>
 
-			<FindingsGroup
-				title="Observations"
-				items={summary.observations.map((item) => item.summary)}
-			/>
+				<FindingsGroup
+					title="Observations"
+					items={summary.observations.map((item) => item.summary)}
+				/>
 
-			<FindingsGroup
-				title="No action needed"
-				items={summary.healthy.map((item) => item.summary)}
-				tone="green"
-			/>
+				<FindingsGroup
+					title="No action needed"
+					items={summary.healthy.map((item) => item.summary)}
+					tone="green"
+				/>
 			</div>
 		</section>
 	);
