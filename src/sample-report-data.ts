@@ -11,15 +11,6 @@ export const SAMPLE_REPORT: ReportData = {
 		title: "Sanity Request Log Report",
 		topN: 50,
 		histogramBuckets: [0, 1024, Infinity],
-		palette: [
-			"#0ea5e9",
-			"#22c55e",
-			"#f59e0b",
-			"#ef4444",
-			"#a855f7",
-			"#14b8a6",
-			"#f97316",
-		],
 		sections: {
 			domain: true,
 			endpoint: true,
@@ -47,6 +38,7 @@ export const SAMPLE_REPORT: ReportData = {
 		byEndpoint: [
 			{ label: "listen", requests: 1, responseBytes: 200 },
 			{ label: "query", requests: 1, responseBytes: 75 },
+			{ label: "assets", requests: 1, responseBytes: 35 },
 		],
 		byDate: [{ label: "Sun Jun 14, 2026", requests: 9, responseBytes: 1435 }],
 		byHour: [
@@ -148,7 +140,12 @@ export const SAMPLE_REPORT: ReportData = {
 		studio: { requests: 0, responseBytes: 0, requestBytes: 0 },
 		nonStudio: { requests: 8, responseBytes: 1360, requestBytes: 300 },
 		byDomain: [{ label: "api", requests: 8, responseBytes: 1360 }],
-		byEndpoint: [{ label: "listen", requests: 8, responseBytes: 1360 }],
+		byEndpoint: [
+			{ label: "images", requests: 6, responseBytes: 1100 },
+			{ label: "listen", requests: 1, responseBytes: 150 },
+			{ label: "query", requests: 1, responseBytes: 75 },
+			{ label: "assets", requests: 1, responseBytes: 35 },
+		],
 		byDate: [{ label: "Sun Jun 14, 2026", requests: 8, responseBytes: 1360 }],
 		byHour: [{ label: "00:00", requests: 8, responseBytes: 1360 }],
 		byUrl: [

@@ -8,6 +8,7 @@ import { CountBarChart } from "./CountBarChart.js";
 import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
 import { Donut } from "./Donut.js";
+import { EndpointBreakdown } from "./EndpointBreakdown.js";
 import { FindingsSummary } from "./FindingsSummary.js";
 import { Metric } from "./Metric.js";
 import { RefererDataTable } from "./RefererDataTable.js";
@@ -87,16 +88,15 @@ export function ViewSection({
 								/>
 							</section>
 						) : null}
-						{sections.endpoint ? (
-							<section class="scroll-mt-20" data-section="endpoint">
-								<BarList
-									title="Top endpoints"
-									rows={view.byEndpoint}
-									accent={colorVar("green")}
-								/>
-							</section>
-						) : null}
 					</div>
+					{sections.endpoint ? (
+						<section class="scroll-mt-20" data-section="endpoint">
+							<EndpointBreakdown
+								title="Top endpoints"
+								rows={view.byEndpoint}
+							/>
+						</section>
+					) : null}
 					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.date ? (
 							<section class="scroll-mt-20" data-section="date">

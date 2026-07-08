@@ -10,7 +10,7 @@ test("renderReportHtml produces a self-contained html report", () => {
 	assert.ok(html.includes('id="report-data"'));
 	assert.ok(html.includes("Top domains"));
 	assert.ok(html.includes("<style>"));
-	assert.ok(!html.includes("<details"));
+	assert.ok(html.includes("<details"));
 });
 
 test("renderReportHtml includes TOC links for enabled sections", () => {
@@ -99,6 +99,12 @@ test("renderReportHtml includes markdown download payload and scripts", () => {
 	assert.ok(html.includes("All requests"));
 	assert.ok(html.includes("window.__showReportToast"));
 	assert.ok(html.includes('__showReportToast("Downloaded")'));
+});
+
+test("renderReportHtml includes endpoint donut breakdown", () => {
+	const html = renderReportHtml(SAMPLE_REPORT);
+	assert.ok(html.includes('data-section="endpoint"'));
+	assert.ok(html.includes("Show &lt; 5%"));
 });
 
 test("renderReportHtml includes sortable table headers and script", () => {

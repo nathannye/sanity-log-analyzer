@@ -34,6 +34,7 @@ export const SAMPLE_REPORT = {
         byEndpoint: [
             { label: "listen", requests: 1, responseBytes: 200 },
             { label: "query", requests: 1, responseBytes: 75 },
+            { label: "assets", requests: 1, responseBytes: 35 },
         ],
         byDate: [{ label: "Sun Jun 14, 2026", requests: 9, responseBytes: 1435 }],
         byHour: [
@@ -133,7 +134,12 @@ export const SAMPLE_REPORT = {
         studio: { requests: 0, responseBytes: 0, requestBytes: 0 },
         nonStudio: { requests: 8, responseBytes: 1360, requestBytes: 300 },
         byDomain: [{ label: "api", requests: 8, responseBytes: 1360 }],
-        byEndpoint: [{ label: "listen", requests: 8, responseBytes: 1360 }],
+        byEndpoint: [
+            { label: "images", requests: 6, responseBytes: 1100 },
+            { label: "listen", requests: 1, responseBytes: 150 },
+            { label: "query", requests: 1, responseBytes: 75 },
+            { label: "assets", requests: 1, responseBytes: 35 },
+        ],
         byDate: [{ label: "Sun Jun 14, 2026", requests: 8, responseBytes: 1360 }],
         byHour: [{ label: "00:00", requests: 8, responseBytes: 1360 }],
         byUrl: [

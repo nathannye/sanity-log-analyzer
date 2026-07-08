@@ -187,6 +187,38 @@ pre {
 	backdrop-filter: blur(1.2rem);
 }
 
+.endpoint-minor-details {
+	border-top: 0.1rem solid rgba(255, 255, 255, 0.07);
+}
+
+.endpoint-minor-summary {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 10rem 8rem;
+	align-items: center;
+	gap: 1.6rem;
+	padding: 1rem 1.2rem;
+	cursor: pointer;
+	list-style: none;
+}
+
+.endpoint-minor-summary::-webkit-details-marker {
+	display: none;
+}
+
+.endpoint-minor-summary::before {
+	content: "▸";
+	margin-right: 0.4rem;
+	color: var(--color-muted);
+}
+
+.endpoint-minor-details[open] .endpoint-minor-summary::before {
+	content: "▾";
+}
+
+.endpoint-minor-body .data-table td {
+	background: rgba(255, 255, 255, 0.02);
+}
+
 .sort-header {
 	display: inline-flex;
 	align-items: center;
