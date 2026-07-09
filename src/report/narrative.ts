@@ -203,7 +203,7 @@ const INSIGHT_TEMPLATES: InsightTemplate[] = [
 		when: (ctx) =>
 			ctx.summary.critical.length === 0 &&
 			ctx.summary.warnings.length === 0,
-		render: () => "No major optimization targets stand out in this dataset.",
+		render: () => "No major optimization targets stand out in this dataset 👍.",
 		score: () => 20,
 	},
 ];
@@ -214,20 +214,20 @@ function renderSynthesis(ctx: NarrativeContext): string | null {
 	const health = ctx.summary.overallHealth;
 
 	if (health === "red" && primary?.id === "status-5xx") {
-		return "Server reliability should be addressed before bandwidth optimizations.";
+		return "Server reliability should be addressed before bandwidth optimizations 🚨. Keep an eye out for 5xx responses 👀.";
 	}
 
 	if (problems.length === 0) {
-		return "Overall this dataset looks healthy with no significant issues detected.";
+		return "This dataset looks healthy with no significant issues detected. Nice! 🥂";
 	}
 
 	if (primary) {
 		const target = PRIMARY_OPPORTUNITY_LABEL[primary.id];
 		if (target) {
 			if (health === "green") {
-				return `Overall this dataset shows a healthy API with ${target} being the primary optimization target.`;
+				return `This dataset shows a healthy API 🎉 with ${target} being the primary optimization target.`;
 			}
-			return `Overall this dataset is generally healthy, with ${target} as the primary optimization target.`;
+			return `This dataset is generally healthy 🎉, with ${target} as the primary optimization target.`;
 		}
 	}
 
