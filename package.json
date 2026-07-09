@@ -27,9 +27,9 @@
     "ua-parser-js": "^2.0.10"
   },
   "scripts": {
-    "build:core": "rm -rf dist && tsup && tsc -p tsconfig.render-types.json && rm -f dist/types.d.ts && npm run build:report && rm -f dist/report/render.css && find dist -name '*.map' -delete",
+    "build:core": "tsup && npm run build:report && tsc -p tsconfig.render-types.json",
     "build:report": "vite build",
-    "build:test-support": "rm -rf .test-dist && tsc -p tsconfig.test-support.json && mkdir -p .test-dist/report && cp dist/report/render.js .test-dist/report/",
+    "build:test-support": "tsc -p tsconfig.test-support.json && mkdir -p .test-dist/report && cp dist/report/render.js .test-dist/report/",
     "build": "npm run build:core",
     "prepublishOnly": "npm run build",
     "analyze": "npm run build && node dist/cli.js",

@@ -1,9 +1,10 @@
 node_modules/
+dist/
+.test-dist/
+tsconfig.report.tsbuildinfo
 
 output.html
 sample.ndjson
 sample.gz
 *.ndjson
 *.gz
-
-dist/

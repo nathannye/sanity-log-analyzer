@@ -3,14 +3,7 @@ import { escapeJsonForHtml } from "../format.js";
 import type { ReportData } from "../types.js";
 import { slugifyReportFilename } from "./report-filename.js";
 import { ReportApp } from "./ReportApp.js";
-import { copyButtonsScript } from "./scripts/copy-buttons.js";
-import { groqFlyoutScript } from "./scripts/groq-flyout.js";
-import { markdownDownloadScript } from "./scripts/markdown-download.js";
-import { tableSortScript } from "./scripts/table-sort.js";
-import { toastScript } from "./scripts/toast.js";
-import { tocNavScript } from "./scripts/toc-nav.js";
-import { urlTabsScript } from "./scripts/url-tabs.js";
-import { viewToggleScript } from "./scripts/view-toggle.js";
+import { reportScript } from "./scripts/collect-scripts.js";
 import { reportCss } from "./styles/collect-css.js";
 
 export function renderReportHtml(data: ReportData): string {
@@ -34,14 +27,7 @@ export function renderReportHtml(data: ReportData): string {
 ${body}
   <script type="application/json" id="report-data">${json}</script>
   <script type="application/json" id="report-markdown">${markdownPayload}</script>
-  <script>${toastScript}</script>
-  <script>${copyButtonsScript}</script>
-  <script>${viewToggleScript}</script>
-  <script>${markdownDownloadScript}</script>
-  <script>${urlTabsScript}</script>
-  <script>${tableSortScript}</script>
-  <script>${groqFlyoutScript}</script>
-  <script>${tocNavScript}</script>
+  <script>${reportScript}</script>
 </body>
 </html>`;
 }

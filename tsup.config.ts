@@ -9,6 +9,7 @@ export default defineConfig({
 	platform: "node",
 	target: "node22",
 	clean: true,
+	sourcemap: false,
 	splitting: false,
 	dts: {
 		entry: ["src/index.ts"],
