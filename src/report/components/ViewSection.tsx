@@ -181,7 +181,7 @@ export function ViewSection({
 					) : null}
 				</div>
 				<p class="opacity-50">
-					Check this project out on
+					Check this project out on {" "}
 					<a
 						class="underline"
 						href="https://github.com/nathannye/sanity-log-analyzer"
