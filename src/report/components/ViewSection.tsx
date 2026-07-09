@@ -97,26 +97,26 @@ export function ViewSection({
 							/>
 						</section>
 					) : null}
-				
-						{sections.date ? (
-							<section class="scroll-mt-20" data-section="date">
-								<BandwidthBarChart
-									title={getSectionLabel("date") ?? "Daily bandwidth"}
-									rows={view.byDate}
-									accent={colorVar("amber")}
-								/>
-							</section>
-						) : null}
-						{sections.hour ? (
-							<section class="scroll-mt-20" data-section="hour">
-								<BandwidthBarChart
-									title={getSectionLabel("hour") ?? "Hourly bandwidth"}
-									rows={view.byHour}
-									accent={colorVar("red")}
-								/>
-							</section>
-						) : null}
-	
+
+					{sections.date ? (
+						<section class="scroll-mt-20" data-section="date">
+							<BandwidthBarChart
+								title={getSectionLabel("date") ?? "Daily bandwidth"}
+								rows={view.byDate}
+								accent={colorVar("amber")}
+							/>
+						</section>
+					) : null}
+					{sections.hour ? (
+						<section class="scroll-mt-20" data-section="hour">
+							<BandwidthBarChart
+								title={getSectionLabel("hour") ?? "Hourly bandwidth"}
+								rows={view.byHour}
+								accent={colorVar("red")}
+							/>
+						</section>
+					) : null}
+
 					<div class="grid grid-cols-1 gap-16 lg:grid-cols-2">
 						{sections.status ? (
 							<section class="scroll-mt-20" data-section="status">
@@ -180,6 +180,16 @@ export function ViewSection({
 						</section>
 					) : null}
 				</div>
+				<p class="opacity-50">
+					Check this project out on
+					<a
+						class="underline"
+						href="https://github.com/nathannye/sanity-log-analyzer"
+					>
+						GitHub
+					</a>
+					.
+				</p>
 			</div>
 		</div>
 	);
