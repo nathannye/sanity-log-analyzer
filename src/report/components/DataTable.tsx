@@ -27,7 +27,7 @@ export function DataTable({
 	header,
 }: DataTableProps) {
 	return (
-		<section class="card">
+		<section class="card" data-module="table-sort copy-buttons">
 			<h3 class="heading-3">{title}</h3>
 			{header}
 			<div class="data-table-wrap">

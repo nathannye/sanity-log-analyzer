@@ -1,43 +1,84 @@
-export const tocNavScript = `(function(){
-function parseHash(hash){
-var raw=(hash||"").replace(/^#/,"");
-if(!raw)return{section:"",urlTab:null};
-if(raw.indexOf("urls/")===0)return{section:"urls",urlTab:raw.slice(5),full:raw};
-if(raw==="urls")return{section:"urls",urlTab:null,full:"urls"};
-return{section:raw,urlTab:null,full:raw};
+import type { ReportModuleInit } from "./module.js";
+
+interface ParsedHash {
+	section: string;
+	urlTab: string | null;
+	full: string;
 }
 
-function scrollToSection(section,fullHash){
-var target=document.querySelector('[data-report-view]:not([hidden]) [data-section="'+section+'"]');
-if(!target)return;
-target.scrollIntoView({behavior:"smooth",block:"start"});
-if(history.replaceState){
-history.replaceState(null,"",window.location.pathname+window.location.search+"#"+fullHash);
-}else{
-window.location.hash=fullHash;
-}
+declare global {
+	interface Window {
+		__activateUrlTab?: (tab?: string | null) => void;
+	}
 }
 
-function navigate(hash){
-var parsed=parseHash(hash);
-if(!parsed.section)return;
-scrollToSection(parsed.section,parsed.full);
-if(parsed.section==="urls"&&typeof window.__activateUrlTab==="function"){
-window.__activateUrlTab(parsed.urlTab);
-}
+function parseHash(hash: string): ParsedHash {
+	const raw = (hash || "").replace(/^#/, "");
+	if (!raw) return { section: "", urlTab: null, full: "" };
+	if (raw.startsWith("urls/")) {
+		return { section: "urls", urlTab: raw.slice(5), full: raw };
+	}
+	if (raw === "urls") {
+		return { section: "urls", urlTab: null, full: "urls" };
+	}
+	return { section: raw, urlTab: null, full: raw };
 }
 
-document.addEventListener("click",function(e){
-var link=e.target.closest("[data-toc-link]");
-if(!link)return;
-var slug=(link.getAttribute("href")||"").replace(/^#/,"");
-if(!slug)return;
-e.preventDefault();
-navigate("#"+slug);
-});
+function scrollToSection(node: HTMLElement, section: string, fullHash: string): void {
+	const target = node.querySelector<HTMLElement>(
+		`[data-report-view]:not([hidden]) [data-section="${section}"]`,
+	);
+	if (!target) return;
 
-var initialHash=window.location.hash;
-if(initialHash){
-requestAnimationFrame(function(){navigate(initialHash);});
+	target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+	if (history.replaceState) {
+		history.replaceState(
+			null,
+			"",
+			`${window.location.pathname}${window.location.search}#${fullHash}`,
+		);
+	} else {
+		window.location.hash = fullHash;
+	}
 }
-})();`;
+
+function navigate(node: HTMLElement, hash: string): void {
+	const parsed = parseHash(hash);
+	if (!parsed.section) return;
+
+	scrollToSection(node, parsed.section, parsed.full);
+
+	if (parsed.section === "urls") {
+		window.__activateUrlTab?.(parsed.urlTab);
+	}
+}
+
+export const initTocNav: ReportModuleInit = (node) => {
+	const onClick = (event: MouseEvent) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+
+		const link = target.closest<HTMLAnchorElement>("[data-toc-link]");
+		if (!link || !node.contains(link)) return;
+
+		const slug = (link.getAttribute("href") || "").replace(/^#/, "");
+		if (!slug) return;
+
+		event.preventDefault();
+		navigate(node, `#${slug}`);
+	};
+
+	node.addEventListener("click", onClick);
+
+	const initialHash = window.location.hash;
+	if (initialHash) {
+		requestAnimationFrame(() => {
+			navigate(node, initialHash);
+		});
+	}
+
+	return () => {
+		node.removeEventListener("click", onClick);
+	};
+};

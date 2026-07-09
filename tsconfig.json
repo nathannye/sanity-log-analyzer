@@ -3,6 +3,8 @@
 		"target": "ES2022",
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact",
 		"lib": ["ES2022"],
 		"types": ["node"],
 		"rootDir": "src",
@@ -14,7 +16,7 @@
 		"declaration": true,
 		"noEmit": true
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.ts", "src/report/vite-env.d.ts"],
 	"exclude": [
 		"node_modules",
 		"dist",
@@ -28,7 +30,6 @@
 		"src/report/scripts",
 		"src/report/highlight-groq.ts",
 		"src/report/sections.ts",
-		"src/report/vertical-bar-chart.ts",
-		"src/report/styles/collect-css.ts"
+		"src/report/vertical-bar-chart.ts"
 	]
 }

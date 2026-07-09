@@ -1,24 +1,47 @@
-export const viewToggleScript = `(function(){
-var STORAGE_KEY="sanity-log-report-show-studio";
-var checkbox=document.getElementById("show-studio-requests");
-var billableView=document.querySelector('[data-report-view="billable"]');
-var allView=document.querySelector('[data-report-view="all"]');
-if(!checkbox||!billableView||!allView)return;
+import type { ReportModuleInit } from "./module.js";
 
-function setView(showAll){
-billableView.hidden=showAll;
-allView.hidden=!showAll;
-try{sessionStorage.setItem(STORAGE_KEY,showAll?"1":"0");}catch(e){}
-}
+export const initViewToggle: ReportModuleInit = (node) => {
+	const checkbox = node.querySelector<HTMLInputElement>("#show-studio-requests");
+	const billableView = node.querySelector<HTMLElement>(
+		'[data-report-view="billable"]',
+	);
+	const allView = node.querySelector<HTMLElement>('[data-report-view="all"]');
 
-var saved=null;
-try{saved=sessionStorage.getItem(STORAGE_KEY);}catch(e){}
-if(saved==="1"){
-checkbox.checked=true;
-setView(true);
-}
+	if (!checkbox || !billableView || !allView) {
+		return;
+	}
 
-checkbox.addEventListener("change",function(){
-setView(checkbox.checked);
-});
-})();`;
+	const storageKey = "sanity-log-report-show-studio";
+
+	const setView = (showAll: boolean) => {
+		billableView.hidden = showAll;
+		allView.hidden = !showAll;
+		try {
+			sessionStorage.setItem(storageKey, showAll ? "1" : "0");
+		} catch {
+			// Ignore storage failures in private browsing or restricted contexts.
+		}
+	};
+
+	let saved: string | null = null;
+	try {
+		saved = sessionStorage.getItem(storageKey);
+	} catch {
+		// Ignore storage failures in private browsing or restricted contexts.
+	}
+
+	if (saved === "1") {
+		checkbox.checked = true;
+		setView(true);
+	}
+
+	const onChange = () => {
+		setView(checkbox.checked);
+	};
+
+	checkbox.addEventListener("change", onChange);
+
+	return () => {
+		checkbox.removeEventListener("change", onChange);
+	};
+};

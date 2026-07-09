@@ -1,29 +1,51 @@
-export const markdownDownloadScript = `(function(){
-var button=document.getElementById("download-markdown");
-var payloadEl=document.getElementById("report-markdown");
-if(!button||!payloadEl)return;
+import type { ReportModuleInit } from "./module.js";
 
-button.addEventListener("click",function(){
-var payload;
-try{payload=JSON.parse(payloadEl.textContent||"");}catch(e){return;}
-if(!payload||!payload.filenameBase)return;
+interface MarkdownPayload {
+	filenameBase?: string;
+	billable?: string;
+	all?: string;
+}
 
-var checkbox=document.getElementById("show-studio-requests");
-var view=checkbox&&checkbox.checked?"all":"billable";
-if(!checkbox)view="all";
+export const initMarkdownDownload: ReportModuleInit = (node) => {
+	const button = node.querySelector<HTMLButtonElement>("#download-markdown");
+	const doc = node.ownerDocument ?? document;
+	const payloadEl = doc.getElementById("report-markdown");
 
-var markdown=view==="all"?payload.all:payload.billable;
-if(!markdown)return;
+	if (!button || !payloadEl) {
+		return;
+	}
 
-var suffix=view==="all"?"_all":"_billable-only";
-var filename=payload.filenameBase+suffix+".md";
-var blob=new Blob([markdown],{type:"text/markdown;charset=utf-8"});
-var url=URL.createObjectURL(blob);
-var link=document.createElement("a");
-link.href=url;
-link.download=filename;
-link.click();
-URL.revokeObjectURL(url);
-window.__showReportToast("Downloaded");
-});
-})();`;
+	const onClick = () => {
+		let payload: MarkdownPayload | null = null;
+
+		try {
+			payload = JSON.parse(payloadEl.textContent || "") as MarkdownPayload;
+		} catch {
+			return;
+		}
+
+		if (!payload?.filenameBase) return;
+
+		const checkbox = node.querySelector<HTMLInputElement>("#show-studio-requests");
+		const view = checkbox && checkbox.checked ? "all" : "billable";
+		const markdown = view === "all" ? payload.all : payload.billable;
+		if (!markdown) return;
+
+		const suffix = view === "all" ? "_all" : "_billable-only";
+		const filename = `${payload.filenameBase}${suffix}.md`;
+		const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = filename;
+		link.click();
+		URL.revokeObjectURL(url);
+		window.__showReportToast?.("Downloaded");
+	};
+
+	button.addEventListener("click", onClick);
+
+	return () => {
+		button.removeEventListener("click", onClick);
+	};
+};

@@ -4,6 +4,7 @@
 		"noEmit": false,
 		"outDir": ".test-dist",
 		"rootDir": "src",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 		"declaration": false,
 		"declarationMap": false,
 		"sourceMap": false
@@ -14,7 +15,8 @@
 		"src/types.ts",
 		"src/format.ts",
 		"src/ranked-row.ts",
-		"src/report/**/*.ts"
+		"src/report/**/*.ts",
+		"src/report/vite-env.d.ts"
 	],
 	"exclude": [
 		"src/index.ts",
@@ -30,10 +32,8 @@
 		"src/report/highlight-groq.ts",
 		"src/report/sections.ts",
 		"src/report/vertical-bar-chart.ts",
-		"src/report/styles/collect-css.ts",
 		"src/report/utils/**",
 		"src/report/preview/**",
-		"src/report/fixtures/**",
-		"src/report/vite-env.d.ts"
+		"src/report/fixtures/**"
 	]
 }

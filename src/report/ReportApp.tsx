@@ -20,6 +20,7 @@ export function ReportApp({ data }: ReportAppProps) {
 		<main
 			class="mx-auto max-w-1600 px-20 pb-56 pt-32"
 			style={colorStyle}
+			data-module="toast view-toggle markdown-download toc-nav"
 		>
 			<Header data={data} />
 			<div class="grid grid-cols-1 items-start gap-24 lg:grid-cols-[22rem_minmax(0,1fr)]">

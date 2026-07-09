@@ -8,21 +8,15 @@ export default defineConfig({
 	build: {
 		sourcemap: false,
 		lib: {
-			entry: resolve(__dirname, "src/report/report-renderer.tsx"),
+			entry: {
+				runtime: resolve(__dirname, "src/report/runtime.ts"),
+			},
 			formats: ["es"],
-			fileName: "render",
+			cssFileName: "runtime",
+			fileName: (_format, entryName) => `${entryName}.js`,
 		},
 		outDir: "dist/report",
 		emptyOutDir: false,
 		cssCodeSplit: false,
-		rollupOptions: {
-			external: [
-				"groq-js",
-				"ua-parser-js",
-				"ua-parser-js/bot-detection",
-				"prismjs",
-				"@sanity/prism-groq",
-			],
-		},
 	},
 });

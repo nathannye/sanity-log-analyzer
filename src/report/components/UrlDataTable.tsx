@@ -46,7 +46,7 @@ export function UrlDataTable({
 	const showExternalLink = isImageTable || isFileTable;
 
 	return (
-		<div class="data-table-wrap">
+		<div class="data-table-wrap" data-module="table-sort copy-buttons groq-flyout">
 			<table class="body-1 data-table" data-sortable-table>
 				<thead>
 					<tr>

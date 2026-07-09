@@ -19,7 +19,17 @@
     "sanity-log-analyzer": "dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/cli.js",
+    "dist/format.d.ts",
+    "dist/units.d.ts",
+    "dist/types-*.d.ts",
+    "dist/report/**/*.d.ts",
+    "dist/report/render.js",
+    "dist/report/runtime.js",
+    "dist/report/runtime.css",
+    "README.md"
   ],
   "dependencies": {
     "groq-js": "^1.30.3",
@@ -27,7 +37,7 @@
     "ua-parser-js": "^2.0.10"
   },
   "scripts": {
-    "build:core": "tsup && npm run build:report && tsc -p tsconfig.render-types.json",
+    "build:core": "tsup && npm run build:report",
     "build:report": "vite build",
     "build:test-support": "tsc -p tsconfig.test-support.json && mkdir -p .test-dist/report && cp dist/report/render.js .test-dist/report/",
     "build": "npm run build:core",

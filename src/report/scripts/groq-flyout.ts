@@ -1,23 +1,43 @@
-export const groqFlyoutScript = `(function(){
-document.addEventListener("click",function(e){
-var target=e.target.closest("[data-groq-flyout-target]");
-if(target){
-e.preventDefault();
-var id=target.getAttribute("data-groq-flyout-target");
-if(!id)return;
-var dialog=document.getElementById(id);
-if(dialog&&typeof dialog.showModal==="function")dialog.showModal();
-return;
-}
-if(e.target.closest("[data-groq-flyout-close]")){
-var closeDialog=e.target.closest("dialog[data-groq-flyout]");
-if(closeDialog)closeDialog.close();
-}
-});
-document.addEventListener("click",function(e){
-var dialog=e.target;
-if(dialog&&dialog.tagName==="DIALOG"&&dialog.hasAttribute("data-groq-flyout")&&e.target===dialog){
-dialog.close();
-}
-});
-})();`;
+import type { ReportModuleInit } from "./module.js";
+
+export const initGroqFlyout: ReportModuleInit = (node) => {
+	const onClick = (event: MouseEvent) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+
+		const trigger = target.closest<HTMLElement>("[data-groq-flyout-target]");
+		if (trigger && node.contains(trigger)) {
+			event.preventDefault();
+			const id = trigger.getAttribute("data-groq-flyout-target");
+			if (!id) return;
+			const dialog = document.getElementById(id);
+			if (dialog && typeof (dialog as HTMLDialogElement).showModal === "function") {
+				(dialog as HTMLDialogElement).showModal();
+			}
+			return;
+		}
+
+		const closeTrigger = target.closest<HTMLElement>("[data-groq-flyout-close]");
+		if (closeTrigger && node.contains(closeTrigger)) {
+			const closeDialog = closeTrigger.closest("dialog[data-groq-flyout]");
+			if (closeDialog instanceof HTMLDialogElement) {
+				closeDialog.close();
+			}
+			return;
+		}
+
+		if (
+			target instanceof HTMLDialogElement &&
+			target.hasAttribute("data-groq-flyout") &&
+			event.target === target
+		) {
+			target.close();
+		}
+	};
+
+	node.addEventListener("click", onClick);
+
+	return () => {
+		node.removeEventListener("click", onClick);
+	};
+};

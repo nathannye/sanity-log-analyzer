@@ -25,6 +25,7 @@ export function UrlTabsSection({ rows, groqByUrl, idPrefix }: UrlTabsSectionProp
 			data-section="urls"
 			data-url-tabs
 			data-default-url-tab={activeTab}
+			data-module="url-tabs"
 		>
 			<h3 class="heading-3">{getSectionLabel("urls") ?? "Top URLs"}</h3>
 			<div

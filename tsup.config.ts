@@ -4,6 +4,7 @@ export default defineConfig({
 	entry: {
 		index: "src/index.ts",
 		cli: "src/cli.ts",
+		"report/render": "src/report/render.ts",
 	},
 	format: ["esm"],
 	platform: "node",
@@ -12,7 +13,7 @@ export default defineConfig({
 	sourcemap: false,
 	splitting: false,
 	dts: {
-		entry: ["src/index.ts"],
+		entry: ["src/index.ts", "src/report/render.ts"],
 	},
 	external: ["open", "ua-parser-js", "groq-js", "./report/render.js"],
 	esbuildOptions(options, context) {
