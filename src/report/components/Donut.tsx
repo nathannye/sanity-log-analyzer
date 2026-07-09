@@ -1,6 +1,5 @@
 import { formatBytes, formatPercentage } from "../../format.js";
 import { styleForShare, styleForSlices } from "../utils/styleForShare.js";
-import styles from "./Donut.module.css";
 
 export interface DonutSlice {
 	label: string;
@@ -63,7 +62,7 @@ function DonutChart({
 			}
 		>
 			<div
-				class={`${styles.donut} relative grid aspect-square w-full max-w-[24rem] place-items-center rounded-full p-22`}
+				class="donut relative grid aspect-square w-full max-w-[24rem] place-items-center rounded-full p-22"
 				style={styleForSlices(slices)}
 			>
 				<div class="body-1 relative z-1 grid justify-items-center gap-4 text-center">
@@ -140,7 +139,7 @@ export function Donut({
 			}
 		>
 			<div
-				class={`${styles.donut} relative grid aspect-square w-full place-items-center rounded-full p-22`}
+				class="donut relative grid aspect-square w-full place-items-center rounded-full p-22"
 				style={styleForShare(
 					primary.value,
 					secondary.value,

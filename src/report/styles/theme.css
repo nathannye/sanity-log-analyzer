@@ -2,6 +2,9 @@
 @import "./typography.css";
 @import "./utilities.css";
 @import "./prism-groq.css";
+@import "./donut.css";
+@import "./tooltip.css";
+@import "./vertical-bar-chart.css";
 
 @source "../**/*.{tsx,ts}";
 

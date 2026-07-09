@@ -3,7 +3,6 @@ import {
 	buildAxisTicks,
 	LABEL_AREA_REM,
 } from "../vertical-bar-chart.js";
-import styles from "./VerticalBarChart.module.css";
 
 export interface VerticalBarChartRow {
 	label: string;
@@ -74,12 +73,12 @@ export function VerticalBarChart({
 									return (
 										<div
 											key={row.label}
-											class={`${styles.barColumn} relative flex min-h-0 min-w-16 flex-1 flex-col items-stretch`}
+											class="barColumn relative flex min-h-0 min-w-16 flex-1 flex-col items-stretch"
 											data-tip={row.tip}
 										>
 											<div class="flex min-h-0 flex-1 items-end">
 												<div
-													class={`${styles.bar} w-full min-h-2 rounded-t-sm`}
+													class="bar w-full min-h-2 rounded-t-sm"
 													style={{
 														height: `${heightPct.toFixed(2)}%`,
 														background: accent,
