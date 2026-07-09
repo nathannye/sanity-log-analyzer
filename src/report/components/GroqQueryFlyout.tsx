@@ -34,7 +34,7 @@ export function GroqQueryFlyout({
 	return (
 		<dialog
 			id={id}
-			class="dialog w-full max-w-[min(72rem,calc(100vw-3.2rem))] border border-border-faint bg-panel p-0 text-text shadow-[0_1.6rem_4.8rem_rgba(0,0,0,0.45)] rounded-md"
+			class="dialog border border-border-faint bg-panel p-0 text-text shadow-[0_1.6rem_4.8rem_rgba(0,0,0,0.45)] rounded-md"
 			data-groq-flyout
 		>
 			<div class="px-16 pt-12 pb-16">
@@ -122,6 +122,7 @@ export function GroqQueryFlyout({
 					<a
 						href="https://www.sanity.io/docs/developer-guides/high-performance-groq"
 						target="_blank"
+						class="underline"
 						rel="noopener noreferrer"
 					>
 						how to optimize groq queries.

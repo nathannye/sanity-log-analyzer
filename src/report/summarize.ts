@@ -405,7 +405,7 @@ function buildHealthySignals(
 		context;
 
 	if (images.imageRows.length > 0 && images.unsafeFormatRows.length === 0) {
-		healthy.push({ summary: "All images use auto=format" });
+		healthy.push({ summary: "All images use the auto format" });
 	}
 
 	if (

@@ -103,6 +103,13 @@ pre {
 	background: rgba(14, 165, 233, 0.2);
 }
 
+.dialog {
+	width: min(72rem, calc(100vw - 3.2rem));
+	max-height: calc(100dvh - 3.2rem);
+	margin: auto;
+	overflow: auto;
+}
+
 .dialog::backdrop {
 	background: rgba(0, 0, 0, 0.55);
 	backdrop-filter: blur(0.2rem);

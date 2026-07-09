@@ -88,8 +88,7 @@ export function ViewSection({
 								/>
 							</section>
 						) : null}
-					</div>
-					{sections.endpoint ? (
+						{sections.endpoint ? (
 						<section class="scroll-mt-20" data-section="endpoint">
 							<EndpointBreakdown
 								title={getSectionLabel("endpoint") ?? "Top endpoints"}
@@ -97,6 +96,8 @@ export function ViewSection({
 							/>
 						</section>
 					) : null}
+					</div>
+
 
 					{sections.date ? (
 						<section class="scroll-mt-20" data-section="date">
