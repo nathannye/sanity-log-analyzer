@@ -30,10 +30,8 @@
 	--radius-sm: 0.7rem;
 	--radius-pill: 99.9rem;
 
-	--font-sans:
-		ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-		sans-serif;
-	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	--font-sans: Geist;
+	--font-mono: Geist Mono;
 }
 
 :root {
