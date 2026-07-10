@@ -15,7 +15,7 @@ export function styleForSlices(
 ): string {
   const total = slices.reduce((sum, slice) => sum + slice.value, 0);
   if (total <= 0 || slices.length === 0) {
-    return "background: var(--color-track);";
+    return "background: color-mix(in srgb, var(--color-primary) 8%, transparent);";
   }
 
   let current = 0;

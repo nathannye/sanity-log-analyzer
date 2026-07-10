@@ -15,11 +15,11 @@
 	width: max-content;
 	max-width: 24rem;
 	padding: 0.5rem 0.8rem;
-	border: 0.1rem solid var(--color-border-faint);
+	border: 0.1rem solid color-mix(in srgb, var(--color-primary) 12%, transparent);
 	border-radius: var(--radius-sm);
-	background: #18181b;
-	box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.4);
-	color: var(--color-text);
+	background: var(--color-panel);
+	box-shadow: 0 0.4rem 1.2rem color-mix(in srgb, var(--color-inverted) 40%, transparent);
+	color: var(--color-primary);
 	font-size: var(--text-size-xs);
 	font-weight: 500;
 	line-height: 1.4;
@@ -50,7 +50,7 @@
 	top: 100%;
 	left: 50%;
 	border: 0.4rem solid transparent;
-	border-top-color: #18181b;
+	border-top-color: var(--color-panel);
 	transform: translateX(-50%);
 }
 
@@ -60,7 +60,7 @@
 	bottom: 100%;
 	left: 50%;
 	border: 0.4rem solid transparent;
-	border-bottom-color: #18181b;
+	border-bottom-color: var(--color-panel);
 	transform: translateX(-50%);
 }
 

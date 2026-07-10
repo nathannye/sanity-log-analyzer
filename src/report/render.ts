@@ -43,6 +43,13 @@ export function renderReportHtml(data: ReportData): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(data.title)}</title>
+  <script>
+    try {
+      if (localStorage.getItem("sanity-log-parser-theme") === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    } catch (e) {}
+  </script>
   <style>${getReportCss()}</style>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

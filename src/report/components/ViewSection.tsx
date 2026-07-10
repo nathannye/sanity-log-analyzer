@@ -13,6 +13,7 @@ import { CountBarChart } from "./CountBarChart.js";
 import { Donut } from "./Donut.js";
 import { IssueCardList } from "./IssueCard.js";
 import { Metric } from "./Metric.js";
+import { SectionWithLabel } from "./SectionWithLabel.js";
 import { TrafficTabsSection } from "./TrafficTabsSection.js";
 import { UrlDataTable } from "./UrlDataTable.js";
 
@@ -38,12 +39,9 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 	return (
 		<div>
 			{data.summary.message ? (
-				<div class="mb-24">
-					<p class="heading-2 m-0 text-text">{data.summary.message}</p>
 					<p class="body-2 mt-8 m-0 text-muted">
 						{buildIssueCountLine(allIssues)}
 					</p>
-				</div>
 			) : null}
 			<section class="scroll-mt-20 mb-24" data-section="summary">
 				<div class="flex flex-wrap gap-16 [&>*]:min-w-[130px]">
@@ -128,10 +126,9 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				) : null}
 
 				{sections.images ? (
-					<section class="scroll-mt-20" data-section="images">
-						<div class="eyebrow-1 section-title mb-16">
-							{getSectionLabel("images") ?? "Images"}
-						</div>
+					<SectionWithLabel
+						title="images"
+						label={getSectionLabel("images") ?? "Images"}>
 						<IssueCardList issues={data.images.issues} />
 						<div class="card">
 							<UrlDataTable
@@ -140,14 +137,13 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 								idPrefix="images"
 							/>
 						</div>
-					</section>
+					</SectionWithLabel>
 				) : null}
 
 				{sections.files ? (
-					<section class="scroll-mt-20" data-section="files">
-						<div class="eyebrow-1 section-title mb-16">
-							{getSectionLabel("files") ?? "Files"}
-						</div>
+					<SectionWithLabel
+						title="files"
+						label={getSectionLabel("files") ?? "Files"}>
 						<IssueCardList issues={data.files.issues} />
 						<div class="card">
 							<UrlDataTable
@@ -156,24 +152,22 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 								idPrefix="files"
 							/>
 						</div>
-					</section>
+					</SectionWithLabel>
 				) : null}
 
 				{sections.queries ? (
-					<section class="scroll-mt-20" data-section="queries">
-						<div class="eyebrow-1 section-title mb-16">
-							{getSectionLabel("queries") ?? "Queries"}
-						</div>
+					<SectionWithLabel
+						title="queries"
+						label={getSectionLabel("queries") ?? "Queries"}>
 						<IssueCardList issues={data.queries.issues} />
 						<div class="card">
 							<UrlDataTable
 								rows={data.queries.entries}
-								showFlyout
-								groqByUrl={data.queries.groqByUrl}
+								variant="query"
 								idPrefix="queries"
 							/>
 						</div>
-					</section>
+					</SectionWithLabel>
 				) : null}
 
 				<TrafficTabsSection

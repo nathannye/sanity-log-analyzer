@@ -36,7 +36,7 @@ export function IssueCard({ issue, suggestion }: IssueCardProps) {
 				<span class="status-dot shrink-0" aria-hidden="true" />
 				<p class="eyebrow-1 m-0 text-muted">{severityLabel(issue.severity)}</p>
 			</div>
-			<p class="body-1 m-0 min-w-0 text-text">{issue.message}</p>
+			<p class="body-1 m-0 min-w-0 text-primary">{issue.message}</p>
 			{suggestionContent ? (
 				<p class="body-2 m-0 min-w-0 text-muted">{suggestionContent}</p>
 			) : null}

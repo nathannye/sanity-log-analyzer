@@ -11,9 +11,9 @@
 	z-index: 2;
 	padding: 0.4rem 0.8rem;
 	border-radius: var(--radius-sm);
-	border: 0.1rem solid var(--color-border-faint);
-	background: #18181b;
-	color: var(--color-text);
+	border: 0.1rem solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+	background: var(--color-panel);
+	color: var(--color-primary);
 	font-size: var(--text-size-xs);
 	font-variant-numeric: tabular-nums;
 	line-height: 1.4;

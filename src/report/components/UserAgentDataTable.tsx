@@ -65,19 +65,19 @@ function UserAgentSummary({ stats }: { stats: UserAgentAggregateStats }) {
 	return (
 		<div class="mt-12 flex flex-wrap gap-8">
 			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
-				<strong class="body-2 font-semibold text-text">Mac</strong>
+				<strong class="body-2 font-semibold text-primary">Mac</strong>
 				{formatPercentage(stats.macPct)}
 			</span>
 			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
-				<strong class="body-2 font-semibold text-text">Windows</strong>
+				<strong class="body-2 font-semibold text-primary">Windows</strong>
 				{formatPercentage(stats.windowsPct)}
 			</span>
 			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
-				<strong class="body-2 font-semibold text-text">Mobile</strong>
+				<strong class="body-2 font-semibold text-primary">Mobile</strong>
 				{formatPercentage(stats.mobilePct)}
 			</span>
 			<span class="pill items-baseline gap-4 py-4 pr-9 pl-4">
-				<strong class="body-2 font-semibold text-text">Desktop</strong>
+				<strong class="body-2 font-semibold text-primary">Desktop</strong>
 				{formatPercentage(stats.desktopPct)}
 			</span>
 		</div>

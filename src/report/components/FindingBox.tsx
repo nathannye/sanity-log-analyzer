@@ -18,10 +18,10 @@ export function FindingBox({ text, tone }: FindingBoxProps) {
 			{tone ? (
 				<div class="flex items-center gap-8">
 					<span class="status-dot shrink-0" aria-hidden="true" />
-					<p class="body-1 m-0 min-w-0 text-text">{text}</p>
+					<p class="body-1 m-0 min-w-0 text-primary">{text}</p>
 				</div>
 			) : (
-				<p class="body-1 m-0 min-w-0 text-text">{text}</p>
+				<p class="body-1 m-0 min-w-0 text-primary">{text}</p>
 			)}
 		</CardMetric>
 	);

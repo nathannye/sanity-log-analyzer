@@ -3,6 +3,7 @@ import { initGroqFlyout } from "./scripts/groq-flyout.js";
 import { initMarkdownDownload } from "./scripts/markdown-download.js";
 import type { ReportModuleCleanup, ReportModuleInit } from "./scripts/module.js";
 import { initTableSort } from "./scripts/table-sort.js";
+import { initThemeToggle } from "./scripts/theme-toggle.js";
 import { initTocNav } from "./scripts/toc-nav.js";
 import { initToast } from "./scripts/toast.js";
 import { initUrlTabs } from "./scripts/url-tabs.js";
@@ -12,6 +13,7 @@ const moduleRegistry: Record<string, ReportModuleInit> = {
 	"groq-flyout": initGroqFlyout,
 	"markdown-download": initMarkdownDownload,
 	"table-sort": initTableSort,
+	"theme-toggle": initThemeToggle,
 	"toc-nav": initTocNav,
 	toast: initToast,
 	"url-tabs": initUrlTabs,

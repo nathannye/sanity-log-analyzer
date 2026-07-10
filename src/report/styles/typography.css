@@ -1,12 +1,12 @@
 @utility heading-1 {
 	font-size: clamp(3.2rem, 4vw, 5.2rem);
-	line-height: 0.95;
-	font-weight: 800;
+	line-height: 1.09;
+	font-weight: 670;
 	letter-spacing: var(--tracking-tight);
 }
 
 @utility heading-2 {
-	font-size: 1.92rem;
+	font-size: clamp(2.4rem, 2.2vw, 4.2rem);
 	font-weight: 700;
 }
 
@@ -30,7 +30,7 @@
 	font-size: var(--text-size-xs);
 	letter-spacing: var(--tracking-wide);
 	text-transform: uppercase;
-	font-weight: 700;
+	font-weight: 560;
 }
 
 @utility body-1 {

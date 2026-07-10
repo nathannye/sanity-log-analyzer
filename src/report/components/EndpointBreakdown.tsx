@@ -23,11 +23,11 @@ function MinorEndpointsAccordion({
 		<div class="data-table-wrap mt-0 min-w-0 flex-1">
 			<details class="endpoint-minor-details">
 				<summary class="endpoint-minor-summary body-1">
-					<span class="min-w-0 truncate text-text">{minorTotals.label}</span>
-					<span class="num shrink-0 text-text">
+					<span class="min-w-0 truncate text-primary">{minorTotals.label}</span>
+					<span class="num shrink-0 text-primary">
 						{formatBytes(minorTotals.responseBytes)}
 					</span>
-					<span class="num shrink-0 text-text">
+					<span class="num shrink-0 text-primary">
 						{formatNumber(minorTotals.requests)}
 					</span>
 				</summary>

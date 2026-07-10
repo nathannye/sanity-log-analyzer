@@ -34,17 +34,17 @@ export function GroqQueryStatsView({ stats }: GroqQueryStatsViewProps) {
 		<dl class="m-0 grid gap-6">
 			{topEntries.map((key) => (
 				<div
-					class="flex items-baseline justify-between gap-12 border-t border-border-subtle pt-6 first:border-t-0 first:pt-0"
+					class="flex items-baseline justify-between gap-12 border-t border-primary/8 pt-6 first:border-t-0 first:pt-0"
 					key={key}
 				>
-					<dt class="body-2 m-0 text-text">{formatLabel(key)}</dt>
+					<dt class="body-2 m-0 text-primary">{formatLabel(key)}</dt>
 					<dd class="num m-0">{stats[key]}</dd>
 				</div>
 			))}
 			{functionEntries.length > 0 ? (
-				<div class="mt-4 grid gap-4 border-t border-border-subtle pt-8">
+				<div class="mt-4 grid gap-4 border-t border-primary/8 pt-8">
 					<div
-						class="font-semibold text-text"
+						class="font-semibold text-primary"
 						style={{ fontSize: "var(--text-size-xs)" }}
 					>
 						functionCalls

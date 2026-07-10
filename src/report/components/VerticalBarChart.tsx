@@ -57,7 +57,7 @@ export function VerticalBarChart({
 							{ticks.map((tick) => (
 								<div
 									key={tick}
-									class="pointer-events-none absolute right-0 left-0 h-0 border-t border-white/6"
+									class="pointer-events-none absolute right-0 left-0 h-0 border-t border-primary/6"
 									style={{
 										bottom: `${LABEL_AREA_REM + (tick / axisMax) * BAR_AREA_REM}rem`,
 									}}

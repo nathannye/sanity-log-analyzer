@@ -34,12 +34,12 @@ export function HorizontalBarList<T>({
 					return (
 						<div class="grid gap-6" key={label}>
 							<div class="flex items-baseline justify-between gap-16">
-								<span class="min-w-0 truncate text-text" title={label}>
+								<span class="min-w-0 truncate text-primary" title={label}>
 									{label}
 								</span>
 								<span class="num shrink-0">{formatValue(row)}</span>
 							</div>
-							<div class="h-10 w-full overflow-hidden rounded-pill bg-track">
+							<div class="h-10 w-full overflow-hidden rounded-pill bg-primary/8">
 								<div
 									class="h-full rounded-[inherit]"
 									style={{ width: `${pct.toFixed(2)}%`, background: accent }}

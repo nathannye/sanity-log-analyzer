@@ -34,7 +34,7 @@ export function GroqQueryFlyout({
 	return (
 		<dialog
 			id={id}
-			class="dialog border border-border-faint bg-panel p-0 text-text shadow-[0_1.6rem_4.8rem_rgba(0,0,0,0.45)] rounded-md"
+			class="dialog border border-primary/12 bg-panel p-0 text-primary shadow-[0_1.6rem_4.8rem_color-mix(in_srgb,var(--color-inverted)_45%,transparent)] rounded-md"
 			data-groq-flyout
 		>
 			<div class="px-16 pt-12 pb-16">
@@ -60,7 +60,7 @@ export function GroqQueryFlyout({
 				<div>
 					<div class="eyebrow-1 mb-8 text-muted">Usage</div>
 					<dl class="m-0 grid grid-cols-3 gap-8">
-						<div class="m-0 rounded-sm border border-border-subtle bg-black/20 px-12 py-10">
+						<div class="m-0 rounded-sm border border-primary/8 bg-primary/5 px-12 py-10">
 							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
 								Bandwidth
 							</dt>
@@ -68,7 +68,7 @@ export function GroqQueryFlyout({
 								{formatBytes(responseBytes)}
 							</dd>
 						</div>
-						<div class="m-0 rounded-sm border border-border-subtle bg-black/20 px-12 py-10">
+						<div class="m-0 rounded-sm border border-primary/8 bg-primary/5 px-12 py-10">
 							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
 								Requests
 							</dt>
@@ -76,7 +76,7 @@ export function GroqQueryFlyout({
 								{formatNumber(requests)}
 							</dd>
 						</div>
-						<div class="m-0 rounded-sm border border-border-subtle bg-black/20 px-12 py-10">
+						<div class="m-0 rounded-sm border border-primary/8 bg-primary/5 px-12 py-10">
 							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
 								Avg / req
 							</dt>
@@ -91,9 +91,9 @@ export function GroqQueryFlyout({
 						This query {GROQ_SPREAD_WARNING}.
 					</p>
 				) : null}
-				<div class="mt-16 border-t border-border-subtle pt-16">
+				<div class="mt-16 border-t border-primary/8 pt-16">
 					<div class="eyebrow-1 mb-8 text-muted">Query</div>
-					<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-border-subtle bg-black/35 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
+					<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-primary/8 bg-primary/8 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
 						<code
 							class="language-groq"
 							dangerouslySetInnerHTML={{ __html: highlightedQuery }}
@@ -101,14 +101,14 @@ export function GroqQueryFlyout({
 					</pre>
 				</div>
 				{formattedParams ? (
-					<div class="mt-16 border-t border-border-subtle pt-16">
+					<div class="mt-16 border-t border-primary/8 pt-16">
 						<div class="eyebrow-1 mb-8 text-muted">Params</div>
-						<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-border-subtle bg-black/35 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
+						<pre class="body-2 m-0 max-h-240 overflow-auto rounded-sm border border-primary/8 bg-primary/8 p-12 font-mono leading-[1.5] break-words whitespace-pre-wrap">
 							<code>{formattedParams}</code>
 						</pre>
 					</div>
 				) : null}
-				<div class="mt-16 border-t border-border-subtle pt-16">
+				<div class="mt-16 border-t border-primary/8 pt-16">
 					<div class="eyebrow-1 mb-8 text-muted">Structure</div>
 					{stats ? (
 						<GroqQueryStatsView stats={stats} />

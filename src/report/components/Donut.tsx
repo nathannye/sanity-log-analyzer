@@ -47,7 +47,7 @@ function DonutLegend({
 						style={{ background: slice.color }}
 					/>
 					{slice.label}{" "}
-					<strong class="text-text">{formatValue(slice.value)}</strong>
+					<strong class="text-primary">{formatValue(slice.value)}</strong>
 					<span class="num"> • {formatPercentage(slice.share)}</span>
 				</div>
 			))}
@@ -59,7 +59,7 @@ function DonutLegend({
 					{minorSlices.map((slice) => (
 						<div key={slice.label}>
 							{slice.label}{" "}
-							<strong class="text-text">{formatValue(slice.value)}</strong>
+							<strong class="text-primary">{formatValue(slice.value)}</strong>
 							<span class="num"> • {formatPercentage(slice.share)}</span>
 						</div>
 					))}
@@ -132,7 +132,7 @@ export function Donut({
 		const total = chartTotal + minorTotal;
 		const coloredSlices: ColoredDonutSlice[] = chartSlices.map((slice) => ({
 			...slice,
-			color: slice.color ?? "var(--color-track)",
+			color: slice.color ?? "color-mix(in srgb, var(--color-primary) 8%, transparent)",
 			share: total > 0 ? (slice.value / total) * 100 : 0,
 		}));
 		const minorWithShare = minorSlices.map((slice) => ({
