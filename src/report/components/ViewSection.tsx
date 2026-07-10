@@ -108,14 +108,14 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 						title="images"
 						label={getSectionLabel("images") ?? "Images"}
 					>
-						<IssueCardList issues={data.images.issues} />
-						<div class="card">
-							<UrlDataTable
+						{
+							data.images.entries.length > 0 && <IssueCardList issues={data.images.issues} />		
+						}
+						<UrlDataTable
 								rows={data.images.entries}
 								variant="image"
 								idPrefix="images"
 							/>
-						</div>
 					</SectionWithLabel>
 				) : null}
 
@@ -124,14 +124,14 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 						title="files"
 						label={getSectionLabel("files") ?? "Files"}
 					>
-						<IssueCardList issues={data.files.issues} />
-						<div class="card">
+						{
+							data.files.entries.length > 0 && <IssueCardList issues={data.files.issues} />		
+						}
 							<UrlDataTable
 								rows={data.files.entries}
 								variant="file"
 								idPrefix="files"
 							/>
-						</div>
 					</SectionWithLabel>
 				) : null}
 
@@ -140,14 +140,14 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 						title="queries"
 						label={getSectionLabel("queries") ?? "Queries"}
 					>
-						<IssueCardList issues={data.queries.issues} />
-						<div class="card">
+						{
+							data.queries.entries.length > 0 && <IssueCardList issues={data.queries.issues} />		
+						}
 							<UrlDataTable
 								rows={data.queries.entries}
 								variant="query"
 								idPrefix="queries"
 							/>
-						</div>
 					</SectionWithLabel>
 				) : null}
 

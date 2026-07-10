@@ -48,7 +48,7 @@ export function UrlDataTable({
 	idPrefix,
 }: UrlDataTableProps) {
 	if (rows.length === 0) {
-		return <p class="empty body-2 py-12">No URLs in this category.</p>;
+		return <p class="empty body-2 py-12">No data in this category.</p>;
 	}
 
 	const isImageTable = variant === "image";
