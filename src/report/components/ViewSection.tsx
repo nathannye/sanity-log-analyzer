@@ -1,13 +1,13 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
-import type { ReportSections, ReportView } from "../../types.js";
+import type { CountRow, ReportSections, ReportView } from "../../types.js";
 import { getSectionLabel } from "../sections.js";
-import { colorVar } from "../styles/colors.js";
+import { colorVar, PALETTE_COLOR_NAMES } from "../styles/colors.js";
+import { ENDPOINT_SHARE_THRESHOLD } from "../thresholds.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { BarList } from "./BarList.js";
 import { CountBarChart } from "./CountBarChart.js";
-import { CountBars } from "./CountBars.js";
 import { DataTable } from "./DataTable.js";
-import { Donut } from "./Donut.js";
+import { Donut, type DonutSlice } from "./Donut.js";
 import { EndpointBreakdown } from "./EndpointBreakdown.js";
 import { FindingsSummary } from "./FindingsSummary.js";
 import { Metric } from "./Metric.js";
@@ -22,6 +22,36 @@ interface ViewSectionProps {
 	hidden?: boolean;
 }
 
+const HISTOGRAM_SHARE_THRESHOLD = ENDPOINT_SHARE_THRESHOLD;
+const HISTOGRAM_MINOR_HEADER = `<${Math.round(HISTOGRAM_SHARE_THRESHOLD * 100)}%`;
+
+function splitHistogramSlices(rows: CountRow[]): {
+	major: DonutSlice[];
+	minor: DonutSlice[];
+} {
+	const active = rows.filter((row) => row.count > 0);
+	const total = active.reduce((sum, row) => sum + row.count, 0);
+	const major: DonutSlice[] = [];
+	const minor: DonutSlice[] = [];
+
+	for (const row of active) {
+		const share = total > 0 ? row.count / total : 0;
+		if (share < HISTOGRAM_SHARE_THRESHOLD) {
+			minor.push({ label: row.label, value: row.count });
+			continue;
+		}
+		const colorName =
+			PALETTE_COLOR_NAMES[major.length % PALETTE_COLOR_NAMES.length] ?? "blue";
+		major.push({
+			label: row.label,
+			value: row.count,
+			color: colorVar(colorName),
+		});
+	}
+
+	return { major, minor };
+}
+
 export function ViewSection({
 	view,
 	sections,
@@ -33,6 +63,7 @@ export function ViewSection({
 			? `${formatReadableDate(view.firstTimestamp)} → ${formatReadableDate(view.lastTimestamp)}`
 			: "No timestamps found";
 	const findingsSummary = view.summary;
+	const histogramSlices = splitHistogramSlices(view.responseSizeHistogram);
 
 	return (
 		<div data-report-view={viewKey} hidden={hidden || undefined}>
@@ -130,12 +161,15 @@ export function ViewSection({
 						) : null}
 						{sections.histogram ? (
 							<section class="scroll-mt-20" data-section="histogram">
-								<CountBars
+								<Donut
 									title={
 										getSectionLabel("histogram") ?? "Response size buckets"
 									}
-									rows={view.responseSizeHistogram}
-									accent={colorVar("teal")}
+									slices={histogramSlices.major}
+									minorSlices={histogramSlices.minor}
+									minorHeader={HISTOGRAM_MINOR_HEADER}
+									formatValue={formatNumber}
+									centerNote="requests"
 								/>
 							</section>
 						) : null}
