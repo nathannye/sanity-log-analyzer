@@ -23,7 +23,7 @@ export const REPORT_SECTIONS: ReportSectionDefinition[] = [
 	},
 	{ slug: "images", label: "Images", configKey: "images" },
 	{ slug: "files", label: "Files", configKey: "files" },
-	{ slug: "queries", label: "Queries", configKey: "queries" },
+	{ slug: "queries", label: "GROQ Queries", configKey: "queries" },
 	{ slug: "traffic", label: "Traffic sources" },
 ];
 

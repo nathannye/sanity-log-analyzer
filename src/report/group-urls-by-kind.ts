@@ -6,7 +6,7 @@ export type UrlTab = "image" | "file" | "query" | "other";
 export const URL_TABS: Array<{ id: UrlTab; label: string }> = [
 	{ id: "image", label: "Images" },
 	{ id: "file", label: "Files" },
-	{ id: "query", label: "Queries" },
+	{ id: "query", label: "GROQ Queries" },
 	{ id: "other", label: "Other" },
 ];
 

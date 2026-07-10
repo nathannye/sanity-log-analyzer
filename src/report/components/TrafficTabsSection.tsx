@@ -35,7 +35,7 @@ export function TrafficTabsSection({
 			data-default-url-tab={activeTab}
 			data-module="url-tabs"
 		>
-			<div class="eyebrow-1 section-title mb-12">Traffic sources</div>
+			<div class="heading-2 mb-12">Traffic sources</div>
 			<div
 				class="mb-12 flex flex-wrap gap-6"
 				role="tablist"
@@ -64,7 +64,6 @@ export function TrafficTabsSection({
 					hidden={activeTab !== "referrers" || undefined}
 				>
 					<RefererDataTable
-						title="Top referrers"
 						rows={data.referrers.entries}
 					/>
 				</div>
