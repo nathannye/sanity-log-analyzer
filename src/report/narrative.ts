@@ -37,6 +37,7 @@ const PRIMARY_OPPORTUNITY_LABEL: Partial<Record<FindingId, string>> = {
 	"image-format": "image CDN settings",
 	"image-quality": "image quality settings",
 	"groq-spread": "GROQ query efficiency",
+	"groq-perf": "GROQ query performance",
 	"mp4-transfer": "video delivery format",
 	"status-5xx": "server reliability",
 	"status-4xx": "client request errors",
@@ -150,7 +151,7 @@ const INSIGHT_TEMPLATES: InsightTemplate[] = [
 			if (primary.id === "image-width") {
 				return "Image dimensions appear to be the primary optimization opportunity.";
 			}
-			if (primary.id === "groq-spread") {
+			if (primary.id === "groq-spread" || primary.id === "groq-perf") {
 				return "GROQ query shape appears to be the main bandwidth driver.";
 			}
 			if (primary.id === "image-format" || primary.id === "image-quality") {

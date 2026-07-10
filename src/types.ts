@@ -7,6 +7,13 @@ import type { ReportSummary } from "./report/summarize.js";
 
 export type { GroqQueryStats };
 
+export interface GroqRowMetrics {
+	projections: number;
+	arrayTraversals: number;
+	dereferences: number;
+	issues: string[];
+}
+
 export interface GroqUrlDetails {
 	query: string;
 	params: Record<string, unknown> | null;
@@ -128,6 +135,7 @@ export interface AggregationSummary {
 
 export interface RankedRow extends Breakdown {
   label: string;
+  groq?: GroqRowMetrics;
 }
 
 export interface CountRow {

@@ -10,6 +10,7 @@ const TOP_LEVEL_KEYS: Array<keyof Omit<GroqQueryStats, "functionCalls">> = [
 	"subqueries",
 	"spreads",
 	"arrayTraversals",
+	"filters",
 ];
 
 function formatLabel(key: string): string {

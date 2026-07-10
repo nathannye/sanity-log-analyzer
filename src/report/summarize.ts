@@ -7,14 +7,19 @@ import {
 } from "../format.js";
 import { KB } from "../units.js";
 import type { RankedRow, ReportViewInput, TopContributors } from "../types.js";
-import { hasGroqSpreadOperator } from "./analyze-groq.js";
+import {
+	GROQ_ISSUE_DEEP_SLICE,
+	GROQ_ISSUE_DEREF_IN_FILTER,
+	GROQ_ISSUE_NON_LITERAL_COMPARE,
+	GROQ_ISSUE_REPEATED_DEREF,
+	GROQ_ISSUE_SPREAD,
+} from "./analyze-groq.js";
 import { isMp4Url } from "./classify-url.js";
 import {
 	dominantCountRow,
 	dominantRankedRow,
 	dominantSegment,
 } from "./distribution.js";
-import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import { buildAtAGlance, type ReportInsight } from "./narrative.js";
 import {
@@ -40,10 +45,19 @@ import type { Tone } from "./components/tone.js";
 
 const REASONABLE_AVG_IMAGE_BYTES = 400 * KB;
 
+const GROQ_PERF_ISSUES = new Set([
+	GROQ_ISSUE_DEREF_IN_FILTER,
+	GROQ_ISSUE_REPEATED_DEREF,
+	GROQ_ISSUE_DEEP_SLICE,
+	GROQ_ISSUE_NON_LITERAL_COMPARE,
+]);
+
+
 export type HealthStatus = Tone;
 
 export type FindingId =
 	| "groq-spread"
+	| "groq-perf"
 	| "mp4-transfer"
 	| "image-width"
 	| "image-format"
@@ -174,14 +188,20 @@ function analyzeImages(rows: RankedRow[]): ImageAnalysis {
 	};
 }
 
+function rowHasGroqIssue(row: RankedRow, issue: string): boolean {
+	return row.groq?.issues.includes(issue) ?? false;
+}
+
 function getQuerySpreadRows(rows: RankedRow[]): RankedRow[] {
-	return groupUrlsByKind(rows).query.filter((row) => {
-		const query = extractGroqQuery(row.label);
-		const params = query ? extractGroqParams(row.label) : null;
-		return (
-			query !== null && hasGroqSpreadOperator(query, params ?? undefined)
-		);
-	});
+	return groupUrlsByKind(rows).query.filter((row) =>
+		rowHasGroqIssue(row, GROQ_ISSUE_SPREAD),
+	);
+}
+
+function getQueryPerfRows(rows: RankedRow[]): RankedRow[] {
+	return groupUrlsByKind(rows).query.filter((row) =>
+		(row.groq?.issues ?? []).some((issue) => GROQ_PERF_ISSUES.has(issue)),
+	);
 }
 
 function getMp4Rows(rows: RankedRow[]): RankedRow[] {
@@ -229,6 +249,7 @@ function detectProblems(
 	warnings: ReportProblem[],
 ): {
 	querySpreadRows: RankedRow[];
+	queryPerfRows: RankedRow[];
 	mp4Rows: RankedRow[];
 	images: ImageAnalysis;
 	serverErrorCount: number;
@@ -244,6 +265,22 @@ function detectProblems(
 			summary: `${formatCountLabel(querySpreadRows.length, "query")} ${querySpreadRows.length === 1 ? "uses" : "use"} the spread operator {...}`,
 			suggestedFix:
 				"Project only needed fields instead of using the {...} spread operator",
+			requests: totals.requests,
+			responseBytes: totals.responseBytes,
+		};
+		pushProblem(severity === "critical" ? critical : warnings, problem);
+	}
+
+	const queryPerfRows = getQueryPerfRows(view.byUrl);
+	if (queryPerfRows.length > 0) {
+		const totals = sumRows(queryPerfRows);
+		const severity = severityForIssue(totals, view);
+		const problem: ReportProblem = {
+			id: "groq-perf",
+			severity,
+			summary: `${formatCountLabel(queryPerfRows.length, "query")} ${queryPerfRows.length === 1 ? "has" : "have"} GROQ performance anti-patterns`,
+			suggestedFix:
+				"Avoid joins in filters, repeated reference resolves, deep slices, and non-literal field comparisons",
 			requests: totals.requests,
 			responseBytes: totals.responseBytes,
 		};
@@ -343,6 +380,7 @@ function detectProblems(
 
 	return {
 		querySpreadRows,
+		queryPerfRows,
 		mp4Rows,
 		images,
 		serverErrorCount,
@@ -401,7 +439,7 @@ function buildHealthySignals(
 	context: ReturnType<typeof detectProblems>,
 ): ReportHealthySignal[] {
 	const healthy: ReportHealthySignal[] = [];
-	const { querySpreadRows, mp4Rows, images, serverErrorCount, clientErrorCount } =
+	const { querySpreadRows, queryPerfRows, mp4Rows, images, serverErrorCount, clientErrorCount } =
 		context;
 
 	if (images.imageRows.length > 0 && images.unsafeFormatRows.length === 0) {
@@ -440,6 +478,10 @@ function buildHealthySignals(
 
 	if (view.byUrlKind.query.requests > 0 && querySpreadRows.length === 0) {
 		healthy.push({ summary: "No GROQ spread queries detected" });
+	}
+
+	if (view.byUrlKind.query.requests > 0 && queryPerfRows.length === 0) {
+		healthy.push({ summary: "No GROQ performance anti-patterns detected" });
 	}
 
 	if (images.imageRows.length > 0 && images.wideRows.length === 0) {

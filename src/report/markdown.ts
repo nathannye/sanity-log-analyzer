@@ -14,7 +14,6 @@ import type {
 	ReportView,
 } from "../types.js";
 import { isMp4Url } from "./classify-url.js";
-import { GROQ_SPREAD_WARNING } from "./groq-constants.js";
 import { groupUrlsByKind } from "./group-urls-by-kind.js";
 import {
 	hasImageFormatError,
@@ -253,15 +252,11 @@ function imageUrlTable(rows: RankedRow[]): string {
 	return lines.join("\n");
 }
 
-function queryUrlTable(
-	rows: RankedRow[],
-	groqByUrl: ReportView["groqByUrl"],
-): string {
+function queryUrlTable(rows: RankedRow[]): string {
 	return rankedUrlSubtable("Queries", rows, (row) => {
-		const groqDetails = groqByUrl[row.label];
-		return groqDetails?.hasSpreadOperator
-			? `${row.label} (${GROQ_SPREAD_WARNING})`
-			: row.label;
+		const issues = row.groq?.issues ?? [];
+		if (issues.length === 0) return row.label;
+		return `${row.label} (${issues.join("; ")})`;
 	});
 }
 
@@ -282,7 +277,7 @@ function urlSectionsMarkdown(view: ReportView): string {
 		parts.push(fileUrlTable(groups.file));
 	}
 	if (groups.query.length > 0) {
-		parts.push(queryUrlTable(groups.query, view.groqByUrl));
+		parts.push(queryUrlTable(groups.query));
 	}
 	if (groups.other.length > 0) {
 		parts.push(urlRankedTable("Other", groups.other));

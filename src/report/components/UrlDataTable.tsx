@@ -2,7 +2,10 @@ import { formatNullableMetric } from "../../format.js";
 import { rankedRowSortAttrs } from "../../ranked-row.js";
 import type { GroqUrlDetails, RankedRow } from "../../types.js";
 import { isMp4Url } from "../classify-url.js";
-import { GROQ_SPREAD_WARNING } from "../groq-constants.js";
+import {
+	GROQ_ISSUE_SPREAD,
+	GROQ_SPREAD_WARNING,
+} from "../groq-constants.js";
 import {
 	hasImageFormatError,
 	hasImageQualityError,
@@ -30,6 +33,13 @@ interface UrlDataTableProps {
 	idPrefix: string;
 }
 
+function groqIssueTooltip(issue: string): string {
+	if (issue === GROQ_ISSUE_SPREAD) {
+		return `This query ${GROQ_SPREAD_WARNING}.`;
+	}
+	return issue;
+}
+
 export function UrlDataTable({
 	rows,
 	showFlyout = false,
@@ -43,6 +53,7 @@ export function UrlDataTable({
 
 	const isImageTable = variant === "image";
 	const isFileTable = variant === "file";
+	const isQueryTable = showFlyout;
 	const showExternalLink = isImageTable || isFileTable;
 
 	return (
@@ -76,6 +87,28 @@ export function UrlDataTable({
 								/>
 							</>
 						) : null}
+						{isQueryTable ? (
+							<>
+								<SortableTableHeader
+									label="Projections"
+									sortKey="projections"
+									sortType="number"
+									className="num"
+								/>
+								<SortableTableHeader
+									label="Array traversals"
+									sortKey="arrayTraversals"
+									sortType="number"
+									className="num"
+								/>
+								<SortableTableHeader
+									label="Derefs"
+									sortKey="dereferences"
+									sortType="number"
+									className="num"
+								/>
+							</>
+						) : null}
 						<SortableTableHeader
 							label="Bandwidth"
 							sortKey="bandwidth"
@@ -98,7 +131,9 @@ export function UrlDataTable({
 				</thead>
 				<tbody>
 					{rows.map((row, index) => {
-						const groqDetails = showFlyout ? groqByUrl[row.label] : undefined;
+						const groqDetails = isQueryTable
+							? groqByUrl[row.label]
+							: undefined;
 						const flyoutId = groqDetails
 							? `${idPrefix}-flyout-${index}`
 							: undefined;
@@ -111,6 +146,8 @@ export function UrlDataTable({
 						const displayLabel = isImageTable
 							? (imageDetails?.id ?? row.label)
 							: row.label;
+						const groqMetrics = row.groq;
+						const groqIssues = groqMetrics?.issues ?? [];
 
 						return (
 							<tr
@@ -130,6 +167,19 @@ export function UrlDataTable({
 											),
 											"data-sort-format": encodeSortValue(
 												imageDetails?.format ?? null,
+											),
+										}
+									: {})}
+								{...(isQueryTable
+									? {
+											"data-sort-projections": encodeSortValue(
+												groqMetrics?.projections ?? null,
+											),
+											"data-sort-arrayTraversals": encodeSortValue(
+												groqMetrics?.arrayTraversals ?? null,
+											),
+											"data-sort-dereferences": encodeSortValue(
+												groqMetrics?.dereferences ?? null,
 											),
 										}
 									: {})}
@@ -156,15 +206,16 @@ export function UrlDataTable({
 														</span>
 													</Tooltip>
 												) : null}
-												{groqDetails?.hasSpreadOperator ? (
+												{groqIssues.map((issue) => (
 													<Tooltip
-														content={`This query ${GROQ_SPREAD_WARNING}.`}
+														key={issue}
+														content={groqIssueTooltip(issue)}
 													>
 														<span class="icon-warning">
 															<WarningIcon />
 														</span>
 													</Tooltip>
-												) : null}
+												))}
 												{flyoutId ? (
 													<Button
 														variant="outline-pill-accent"
@@ -226,6 +277,21 @@ export function UrlDataTable({
 													</Tooltip>
 												) : null}
 											</div>
+										</td>
+									</>
+								) : null}
+								{isQueryTable ? (
+									<>
+										<td class="num">
+											{formatNullableMetric(groqMetrics?.projections ?? null)}
+										</td>
+										<td class="num">
+											{formatNullableMetric(
+												groqMetrics?.arrayTraversals ?? null,
+											)}
+										</td>
+										<td class="num">
+											{formatNullableMetric(groqMetrics?.dereferences ?? null)}
 										</td>
 									</>
 								) : null}

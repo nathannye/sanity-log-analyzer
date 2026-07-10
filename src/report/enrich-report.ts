@@ -6,10 +6,7 @@ import type {
 	ReportView,
 	ReportViewInput,
 } from "../types.js";
-import {
-	analyzeGroqQuery,
-	hasGroqSpreadOperator,
-} from "./analyze-groq.js";
+import { analyzeGroqQuery } from "./analyze-groq.js";
 import { formatGroqForDisplay } from "./format-groq.js";
 import { extractGroqParams, extractGroqQuery } from "./groq-query.js";
 import { highlightGroq } from "./highlight-groq.js";
@@ -31,40 +28,54 @@ function buildUserAgentByLabel(
 	return byLabel;
 }
 
-function buildGroqByUrl(rows: RankedRow[]): Record<string, GroqUrlDetails> {
-	const byUrl: Record<string, GroqUrlDetails> = {};
-
-	for (const row of rows) {
+function enrichUrlRows(rows: RankedRow[]): {
+	rows: RankedRow[];
+	groqByUrl: Record<string, GroqUrlDetails>;
+} {
+	const groqByUrl: Record<string, GroqUrlDetails> = {};
+	const enrichedRows = rows.map((row) => {
 		const query = extractGroqQuery(row.label);
-		if (!query) continue;
+		if (!query) return row;
 
 		const params = extractGroqParams(row.label);
 		const formattedQuery = formatGroqForDisplay(query);
-		const stats = analyzeGroqQuery(formattedQuery, params ?? undefined);
+		const analysis = analyzeGroqQuery(formattedQuery, params ?? undefined);
+		const stats = analysis?.stats ?? null;
+		const hasSpreadOperator = (stats?.spreads ?? 0) > 0;
 
-		byUrl[row.label] = {
+		groqByUrl[row.label] = {
 			query,
 			params,
 			formattedQuery,
 			highlightedQuery: highlightGroq(formattedQuery),
 			stats,
-			hasSpreadOperator: hasGroqSpreadOperator(
-				formattedQuery,
-				params ?? undefined,
-			),
+			hasSpreadOperator,
 		};
-	}
 
-	return byUrl;
+		return {
+			...row,
+			groq: {
+				projections: stats?.projections ?? 0,
+				arrayTraversals: stats?.arrayTraversals ?? 0,
+				dereferences: stats?.dereferences ?? 0,
+				issues: analysis?.issues ?? [],
+			},
+		};
+	});
+
+	return { rows: enrichedRows, groqByUrl };
 }
 
 export function enrichReportView(view: ReportViewInput): ReportView {
+	const { rows: byUrl, groqByUrl } = enrichUrlRows(view.byUrl);
+	const withUrls: ReportViewInput = { ...view, byUrl };
+
 	return {
-		...view,
-		summary: buildReportSummary(view),
+		...withUrls,
+		summary: buildReportSummary(withUrls),
 		userAgentByLabel: buildUserAgentByLabel(view.byUserAgent),
 		userAgentStats: aggregateUserAgentStats(view.byUserAgent),
-		groqByUrl: buildGroqByUrl(view.byUrl),
+		groqByUrl,
 	};
 }
 
