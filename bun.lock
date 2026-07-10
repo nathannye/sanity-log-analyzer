@@ -5,6 +5,7 @@
     "": {
       "name": "sanity-log-analyzer",
       "dependencies": {
+        "classix": "^2.2.16",
         "groq-js": "^1.30.3",
         "open": "^10.1.0",
         "ua-parser-js": "^2.0.10",
@@ -314,6 +315,8 @@
     "caniuse-lite": ["caniuse-lite@1.0.30001803", "", {}, "sha512-g/uHREV2ZpK9qMalCsWaxmA6ol+DX8GYhuf3T40RKoP+oL7vhRJh8LNt73PCjpnR6l14FzfPrB5Yux4PKm2meg=="],
 
     "chokidar": ["chokidar@4.0.3", "", { "dependencies": { "readdirp": "^4.0.1" } }, "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA=="],
+
+    "classix": ["classix@2.2.16", "", {}, "sha512-p2MHCGo6+xB6VYj/Lh+UfX9cnin+z8d2lLPqVcyNqHuIP0fUkufE9riIt57Jn1NwHkgiMGB7hNU9rvqPee/vCw=="],
 
     "commander": ["commander@4.1.1", "", {}, "sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA=="],
 

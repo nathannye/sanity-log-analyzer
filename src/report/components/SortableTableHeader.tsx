@@ -1,3 +1,4 @@
+import cx from "classix";
 import { SortIcon } from "./icons.js";
 
 export type SortColumnType = "string" | "number";
@@ -16,7 +17,7 @@ export function SortableTableHeader({
 	className,
 }: SortableTableHeaderProps) {
 	return (
-		<th class={className}>
+		<th class={cx("bg-[black]", className)}>
 			<button
 				type="button"
 				class="sort-header uppercase cursor-pointer eyebrow-1"

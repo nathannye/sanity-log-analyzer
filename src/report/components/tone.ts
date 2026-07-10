@@ -6,10 +6,7 @@ export const TONE_CLASS: Record<Tone, string> = {
 	yellow: "tone-yellow",
 };
 
-export function toneClasses(baseClasses: string[], tone?: Tone): string {
-	const classes = [...baseClasses];
-	if (tone) {
-		classes.push(TONE_CLASS[tone]);
-	}
-	return classes.join(" ");
+export function toneClasses(tone?: Tone | undefined): string {
+
+	return tone ? TONE_CLASS[tone] : "";
 }

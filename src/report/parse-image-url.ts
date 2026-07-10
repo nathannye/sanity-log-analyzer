@@ -1,5 +1,5 @@
 export const MAX_IMAGE_WIDTH = 2000;
-export const MAX_IMAGE_QUALITY = 87;
+export const MAX_IMAGE_QUALITY = 85;
 export const PREFERRED_IMAGE_FORMAT = "auto";
 
 function getExtension(filename: string): string {

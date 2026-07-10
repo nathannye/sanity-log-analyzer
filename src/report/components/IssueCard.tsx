@@ -3,6 +3,7 @@ import type { IssueSeverity, ReportIssue } from "../../types.js";
 import { CardMetric } from "./CardMetric.js";
 import type { Tone } from "./tone.js";
 import { toneClasses } from "./tone.js";
+import cx from "classix";
 
 function severityTone(severity: IssueSeverity): Tone {
 	if (severity === "critical") return "red";
@@ -27,9 +28,9 @@ export function IssueCard({ issue, suggestion }: IssueCardProps) {
 
 	return (
 		<CardMetric
-			className={toneClasses(
-				["grid", "min-h-0", "content-start", "gap-8"],
-				tone,
+			className={cx(
+				"grid min-h-0 content-start gap-8",
+				toneClasses(tone)
 			)}
 		>
 			<div class="flex items-center gap-8">

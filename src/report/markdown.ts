@@ -245,6 +245,7 @@ function renderSummary(data: ReportData): string {
 		`- Studio requests: ${formatPercentage(data.summary.studioRequestPercent)}`,
 		`- CDN delivery: ${formatPercentage(data.summary.cdnDeliveryPercent)}`,
 		"",
+		renderIssues("Traffic mix", data.summary.issues),
 	].join("\n");
 }
 

@@ -32,6 +32,7 @@
     "README.md"
   ],
   "dependencies": {
+    "classix": "^2.2.16",
     "groq-js": "^1.30.3",
     "open": "^10.1.0",
     "ua-parser-js": "^2.0.10"

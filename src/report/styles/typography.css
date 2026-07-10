@@ -7,7 +7,7 @@
 
 @utility heading-2 {
 	font-size: clamp(2.4rem, 4.5vw, 7.8rem);
-	font-weight: 700;
+	font-weight: 620;
 	letter-spacing: var(--tracking-tight);
 }
 

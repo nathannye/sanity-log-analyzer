@@ -21,6 +21,7 @@ import {
 	buildQueryIssues,
 	buildResponseStatusIssues,
 	buildSummaryMessage,
+	buildTrafficIssues,
 } from "./summarize.js";
 
 function buildUserAgentByLabel(
@@ -84,8 +85,10 @@ export function enrichReportData(data: ReportDataInput): ReportData {
 	const responseIssues = buildResponseStatusIssues(
 		data.responseStatuses.entries,
 	);
+	const trafficIssues = buildTrafficIssues(data.summary);
 
 	const allIssues: ReportIssue[] = [
+		...trafficIssues,
 		...imagesIssues,
 		...filesIssues,
 		...queriesIssues,
@@ -108,6 +111,7 @@ export function enrichReportData(data: ReportDataInput): ReportData {
 			cdnDeliveryPercent: data.summary.cdnDeliveryPercent,
 			studioBandwidth: data.summary.studioBandwidth,
 			cdnBandwidth: data.summary.cdnBandwidth,
+			issues: trafficIssues,
 		},
 		images: {
 			entries: data.images.entries,

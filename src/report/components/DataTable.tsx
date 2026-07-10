@@ -1,5 +1,5 @@
 import type { ComponentChildren } from "preact";
-import { avgBytesPerRequest, rankedRowSortAttrs } from "../../ranked-row.js";
+import { rankedRowSortAttrs } from "../../ranked-row.js";
 import type { RankedRow } from "../../types.js";
 import { LabelActions } from "./LabelActions.js";
 import {
@@ -30,7 +30,7 @@ export function DataTable({
 		<section data-module="table-sort copy-buttons">
 			<h3 class="heading-3">{title}</h3>
 			{header}
-			<div>
+			<div class="data-table-wrap">
 				<table class="body-1 data-table" data-sortable-table>
 					<thead class="bg-[black] rounded-md overflow-hidden">
 						<tr>
@@ -59,38 +59,39 @@ export function DataTable({
 							/>
 						</tr>
 					</thead>
-					<tbody>
-						{rows.map((row, index) => (
-							<tr
-								key={row.label}
-								data-row-index={index}
-								{...rankedRowSortAttrs(row)}
-							>
-								<td
-									class="max-w-520"
-									title={renderLabel ? undefined : row.label}
+		
+						<tbody >
+							{rows.map((row, index) => (
+								<tr
+									key={row.label}
+									data-row-index={index}
+									{...rankedRowSortAttrs(row)}
 								>
-									{renderLabel ? (
-										renderLabel(row)
-									) : hasCopyButton ? (
-										<LabelActions
-											value={row.label}
-											copyToast={copyToastMessage}
-											adornments={labelAdornment?.(row)}
-										>
-											<span class="min-w-0 flex-1 truncate">{row.label}</span>
-										</LabelActions>
-									) : (
-										<div class="flex min-w-0 items-center gap-6">
-											<span class="min-w-0 flex-1 truncate">{row.label}</span>
-											{labelAdornment ? labelAdornment(row) : null}
-										</div>
-									)}
-								</td>
-								<RankedRowMetricCells row={row} />
-							</tr>
-						))}
-					</tbody>
+									<td
+										class="max-w-520"
+										title={renderLabel ? undefined : row.label}
+									>
+										{renderLabel ? (
+											renderLabel(row)
+										) : hasCopyButton ? (
+											<LabelActions
+												value={row.label}
+												copyToast={copyToastMessage}
+												adornments={labelAdornment?.(row)}
+											>
+												<span class="min-w-0 flex-1 truncate">{row.label}</span>
+											</LabelActions>
+										) : (
+											<div class="flex min-w-0 items-center gap-6">
+												<span class="min-w-0 flex-1 truncate">{row.label}</span>
+												{labelAdornment ? labelAdornment(row) : null}
+											</div>
+										)}
+									</td>
+									<RankedRowMetricCells row={row} />
+								</tr>
+							))}
+						</tbody>
 				</table>
 			</div>
 		</section>

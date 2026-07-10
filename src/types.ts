@@ -16,7 +16,9 @@ export type FindingId =
 	| "image-format"
 	| "image-quality"
 	| "status-5xx"
-	| "status-4xx";
+	| "status-4xx"
+	| "studio-traffic"
+	| "cdn-delivery";
 
 export interface ReportIssue {
 	id: FindingId;
@@ -58,6 +60,7 @@ export interface ReportSummaryBlock {
 	studioRequestPercent: number;
 	studioBandwidth: number;
 	cdnBandwidth: number;
+	issues: ReportIssue[];
 }
 
 export interface GroqRowMetrics {
@@ -88,7 +91,7 @@ export type ReportDataInput = Omit<
 	| "dailyBandwidth"
 	| "userAgents"
 > & {
-	summary: Omit<ReportSummaryBlock, "message">;
+	summary: Omit<ReportSummaryBlock, "message" | "issues">;
 	images: Omit<RankedReportSection, "issues"> & { issues?: ReportIssue[] };
 	files: Omit<RankedReportSection, "issues"> & { issues?: ReportIssue[] };
 	queries: Omit<QueriesSection, "issues" | "groqByUrl"> & {

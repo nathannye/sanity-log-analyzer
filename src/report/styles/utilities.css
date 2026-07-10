@@ -52,7 +52,7 @@
 	border: 0.1rem solid color-mix(in srgb, var(--color-primary) 12%, transparent);
 	border-radius: var(--radius-pill);
 	background: rgba(239, 68, 68, 0.12);
-	color: var(--color-red, #ef4444);
+	color: var(--color-red);
 	font-size: var(--text-size-xs);
 	font-weight: 600;
 	white-space: nowrap;
@@ -94,7 +94,7 @@
 @utility icon-error {
 	display: inline-flex;
 	flex-shrink: 0;
-	color: var(--color-red, #ef4444);
+	color: var(--color-red);
 
 	& > svg {
 		width: 1.4rem;

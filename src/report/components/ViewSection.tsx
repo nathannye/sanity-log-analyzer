@@ -2,18 +2,19 @@ import {
 	formatBytes,
 	formatNumber,
 	formatPercentage,
-	formatReadableDate,
 } from "../../format.js";
 import type { ReportData, ReportSections } from "../../types.js";
 import { getSectionLabel } from "../sections.js";
 import { colorVar } from "../styles/colors.js";
-import { buildIssueCountLine } from "../summarize.js";
+import {
+	CDN_DELIVERY_WARN_PERCENT,
+	STUDIO_REQUEST_WARN_PERCENT,
+} from "../thresholds.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { CountBarChart } from "./CountBarChart.js";
-import { Donut } from "./Donut.js";
 import { IssueCardList } from "./IssueCard.js";
-import { Metric } from "./Metric.js";
 import { SectionWithLabel } from "./SectionWithLabel.js";
+import { StatCard } from "./StatCard.js";
 import { TrafficTabsSection } from "./TrafficTabsSection.js";
 import { UrlDataTable } from "./UrlDataTable.js";
 
@@ -23,61 +24,38 @@ interface ViewSectionProps {
 }
 
 export function ViewSection({ data, sections }: ViewSectionProps) {
-	const summaryNote =
-		data.dateStart && data.dateEnd
-			? `${formatReadableDate(data.dateStart)} → ${formatReadableDate(data.dateEnd)}`
-			: "No timestamps found";
-	const allIssues = [
-		...data.images.issues,
-		...data.files.issues,
-		...data.queries.issues,
-		...data.responseStatuses.issues,
-		...data.hourlyBandwidth.issues,
-		...data.dailyBandwidth.issues,
-	];
-
 	return (
 		<div>
-			{data.summary.message ? (
-					<p class="body-2 mt-8 m-0 text-muted">
-						{buildIssueCountLine(allIssues)}
-					</p>
-			) : null}
 			<section class="scroll-mt-20 mb-24" data-section="summary">
-				<div class="flex flex-wrap gap-16 [&>*]:min-w-[130px]">
-					<Metric
+				<div class="flex items-center mb-20 gap-16 [&>*]:min-w-[130px]">
+					<StatCard
 						label="Requests"
 						value={formatNumber(data.summary.requestCount)}
-						note={summaryNote}
 					/>
-					<Metric
+					<StatCard
 						label="Bandwidth"
 						value={formatBytes(data.summary.bandwidth)}
-						note="Response size total"
 					/>
-					<Metric
+					<StatCard
 						label="Studio"
 						value={formatPercentage(data.summary.studioRequestPercent)}
-						note={`${formatBytes(data.summary.studioBandwidth)} bandwidth`}
+						tone={
+							data.summary.studioRequestPercent > STUDIO_REQUEST_WARN_PERCENT
+								? "red"
+								: undefined
+						}
 					/>
-					<Metric
-						label="CDN delivery"
+					<StatCard
+						label="CDN Delivery"
 						value={formatPercentage(data.summary.cdnDeliveryPercent)}
-						note={`${formatBytes(data.summary.cdnBandwidth)} bandwidth`}
-					/>
-					<Donut
-						title="Studio vs CDN"
-						primary={{
-							label: "Studio",
-							value: data.summary.studioBandwidth,
-						}}
-						secondary={{
-							label: "CDN",
-							value: data.summary.cdnBandwidth,
-						}}
-						colors={{ primary: colorVar("blue"), secondary: colorVar("green") }}
+						tone={
+							data.summary.cdnDeliveryPercent < CDN_DELIVERY_WARN_PERCENT
+								? "red"
+								: undefined
+						}
 					/>
 				</div>
+				<IssueCardList issues={data.summary.issues} />
 			</section>
 
 			<div class="mb-24 flex flex-col gap-16">
@@ -128,7 +106,8 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				{sections.images ? (
 					<SectionWithLabel
 						title="images"
-						label={getSectionLabel("images") ?? "Images"}>
+						label={getSectionLabel("images") ?? "Images"}
+					>
 						<IssueCardList issues={data.images.issues} />
 						<div class="card">
 							<UrlDataTable
@@ -143,7 +122,8 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				{sections.files ? (
 					<SectionWithLabel
 						title="files"
-						label={getSectionLabel("files") ?? "Files"}>
+						label={getSectionLabel("files") ?? "Files"}
+					>
 						<IssueCardList issues={data.files.issues} />
 						<div class="card">
 							<UrlDataTable
@@ -158,7 +138,8 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				{sections.queries ? (
 					<SectionWithLabel
 						title="queries"
-						label={getSectionLabel("queries") ?? "Queries"}>
+						label={getSectionLabel("queries") ?? "Queries"}
+					>
 						<IssueCardList issues={data.queries.issues} />
 						<div class="card">
 							<UrlDataTable

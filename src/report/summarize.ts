@@ -1,4 +1,4 @@
-import { formatCountLabel, formatNumber, pluralize } from "../format.js";
+import { formatCountLabel, formatNumber, formatPercentage, pluralize } from "../format.js";
 import type {
 	CountRow,
 	FindingId,
@@ -23,11 +23,13 @@ import {
 	parseImageUrl,
 } from "./parse-image-url.js";
 import {
+	CDN_DELIVERY_WARN_PERCENT,
 	CRITICAL_BYTES_THRESHOLD,
 	CRITICAL_REQUESTS_THRESHOLD,
 	CRITICAL_SHARE_THRESHOLD,
 	CRITICAL_TOTAL_BYTES_THRESHOLD,
 	CRITICAL_TOTAL_REQUESTS_THRESHOLD,
+	STUDIO_REQUEST_WARN_PERCENT,
 } from "./thresholds.js";
 
 const GROQ_PERF_ISSUES = new Set([
@@ -301,6 +303,36 @@ export function buildResponseStatusIssues(
 	];
 }
 
+export function buildTrafficIssues(summary: {
+	studioRequestPercent: number;
+	cdnDeliveryPercent: number;
+}): ReportIssue[] {
+	const studioFailing =
+		summary.studioRequestPercent > STUDIO_REQUEST_WARN_PERCENT;
+	const cdnFailing = summary.cdnDeliveryPercent < CDN_DELIVERY_WARN_PERCENT;
+
+	return [
+		{
+			id: "studio-traffic",
+			severity: studioFailing ? "warn" : "passed",
+			message: studioFailing
+				? `Studio accounts for ${formatPercentage(summary.studioRequestPercent)} of requests`
+				: `Studio traffic is at or below ${STUDIO_REQUEST_WARN_PERCENT}% of requests`,
+			suggestion:
+				"Reduce Studio/preview traffic in production if possible.",
+		},
+		{
+			id: "cdn-delivery",
+			severity: cdnFailing ? "warn" : "passed",
+			message: cdnFailing
+				? `CDN delivery is only ${formatPercentage(summary.cdnDeliveryPercent)} of requests`
+				: `CDN delivery is at or above ${CDN_DELIVERY_WARN_PERCENT}% of requests`,
+			suggestion:
+				"Shift more traffic to CDN-backed delivery and keep Studio/API-origin traffic out of the hot path",
+		},
+	];
+}
+
 export function worstSeverity(
 	issues: ReportIssue[],
 ): IssueSeverity | "passed" {
@@ -318,9 +350,11 @@ const PRIMARY_OPPORTUNITY_LABEL: Partial<Record<FindingId, string>> = {
 	"mp4-transfer": "video delivery format",
 	"status-5xx": "server reliability",
 	"status-4xx": "client request errors",
+	"studio-traffic": "studio traffic share",
+	"cdn-delivery": "CDN delivery share",
 };
 
-type IssueCategory = "asset" | "query" | "response";
+type IssueCategory = "asset" | "query" | "response" | "traffic";
 
 const ISSUE_CATEGORY: Record<FindingId, IssueCategory> = {
 	"image-width": "asset",
@@ -331,9 +365,11 @@ const ISSUE_CATEGORY: Record<FindingId, IssueCategory> = {
 	"groq-perf": "query",
 	"status-5xx": "response",
 	"status-4xx": "response",
+	"studio-traffic": "traffic",
+	"cdn-delivery": "traffic",
 };
 
-const CATEGORY_ORDER: IssueCategory[] = ["asset", "query", "response"];
+const CATEGORY_ORDER: IssueCategory[] = ["traffic", "asset", "query", "response"];
 
 function failingCategories(issues: ReportIssue[]): IssueCategory[] {
 	const present = new Set<IssueCategory>();
@@ -357,7 +393,7 @@ function formatCategoryList(categories: IssueCategory[]): string {
 
 function buildMixMessage(failing: ReportIssue[]): string {
 	const categories = failingCategories(failing);
-	return `This dataset has a mix of ${formatCategoryList(categories)}.`;
+	return `This dataset has a mix of ${formatCategoryList(categories)}. 🥺`;
 }
 
 function severityRank(severity: IssueSeverity): number {
