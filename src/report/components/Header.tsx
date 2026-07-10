@@ -1,5 +1,6 @@
 import { formatBytes, formatNumber, formatReadableDate } from "../../format.js";
 import type { ReportData } from "../../types.js";
+import { Donut } from "./Donut.js";
 import { StatCard } from "./StatCard.js";
 
 interface HeaderProps {
