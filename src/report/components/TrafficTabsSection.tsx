@@ -95,7 +95,6 @@ export function TrafficTabsSection({
 					hidden={activeTab !== "userAgents" || undefined}
 				>
 					<UserAgentDataTable
-						title="Top user agents"
 						rows={data.userAgents.entries}
 						userAgentByLabel={data.userAgents.userAgentByLabel}
 						userAgentStats={data.userAgents.userAgentStats}

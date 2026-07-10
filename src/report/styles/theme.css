@@ -180,8 +180,6 @@ pre {
 .data-table-wrap {
 	overflow: auto;
 	max-height: 42rem;
-	border-radius: var(--radius-sm);
-	border: 0.1rem solid color-mix(in srgb, var(--color-primary) 8%, transparent);
 	margin-top: 1.2rem;
 }
 
@@ -192,7 +190,7 @@ pre {
 
 .data-table th,
 .data-table td {
-	padding: 1rem 1.2rem;
+	padding: .8rem 1.2rem 2.7rem 1.2rem;
 	border-bottom: 0.1rem solid color-mix(in srgb, var(--color-primary) 7%, transparent);
 	text-align: left;
 	vertical-align: top;

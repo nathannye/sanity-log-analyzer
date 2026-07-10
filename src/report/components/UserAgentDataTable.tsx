@@ -94,7 +94,6 @@ export function UserAgentDataTable({
 		<DataTable
 			title={title}
 			rows={rows}
-			header={<UserAgentSummary stats={userAgentStats} />}
 			renderLabel={(row) => (
 				<UserAgentLabel
 					raw={row.label}
