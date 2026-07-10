@@ -19,13 +19,13 @@ export function SortableTableHeader({
 		<th class={className}>
 			<button
 				type="button"
-				class="sort-header"
+				class="sort-header uppercase cursor-pointer eyebrow-1"
 				data-sort-key={sortKey}
 				data-sort-type={sortType}
 				data-sort-direction="none"
 				aria-sort="none"
 			>
-				<span class="leading-[1.2]">{label}</span>
+				<span>{label}</span>
 				<span class="sort-icon">
 					<SortIcon />
 				</span>

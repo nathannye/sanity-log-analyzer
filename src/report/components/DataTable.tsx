@@ -27,12 +27,12 @@ export function DataTable({
 	header,
 }: DataTableProps) {
 	return (
-		<section class="card" data-module="table-sort copy-buttons">
+		<section data-module="table-sort copy-buttons">
 			<h3 class="heading-3">{title}</h3>
 			{header}
-			<div class="data-table-wrap">
+			<div>
 				<table class="body-1 data-table" data-sortable-table>
-					<thead>
+					<thead class="bg-[black] rounded-md overflow-hidden">
 						<tr>
 							<SortableTableHeader
 								label="Label"

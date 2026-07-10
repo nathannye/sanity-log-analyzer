@@ -22,6 +22,10 @@
 	--color-muted: #71717a;
 	--color-panel: rgba(255, 255, 255, 0.9);
 
+	--color-red: #EE2F5C;
+	--color-ylw: #EFDB6A;
+	--color-green: #50EC89;
+
 
 	--radius-lg: 2rem;
 	--radius-md: 1.2rem;
@@ -195,8 +199,6 @@ pre {
 	position: sticky;
 	top: 0;
 	z-index: 2;
-	background: color-mix(in srgb, var(--color-inverted) 96%, transparent);
-	color: var(--color-muted);
 	font-weight: 600;
 	backdrop-filter: blur(1.2rem);
 }
@@ -243,14 +245,6 @@ pre {
 	gap: 0.4rem;
 	margin: 0;
 	padding: 0;
-	border: none;
-	background: none;
-	color: inherit;
-	font: inherit;
-	font-weight: inherit;
-	cursor: pointer;
-	text-align: inherit;
-	border-radius: var(--radius-sm);
 }
 
 .sort-header:hover {
