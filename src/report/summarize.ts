@@ -309,19 +309,122 @@ export function worstSeverity(
 	return "passed";
 }
 
+const PRIMARY_OPPORTUNITY_LABEL: Partial<Record<FindingId, string>> = {
+	"image-width": "oversized image delivery",
+	"image-format": "image CDN settings",
+	"image-quality": "image quality settings",
+	"groq-spread": "GROQ query efficiency",
+	"groq-perf": "GROQ query performance",
+	"mp4-transfer": "video delivery format",
+	"status-5xx": "server reliability",
+	"status-4xx": "client request errors",
+};
+
+type IssueCategory = "asset" | "query" | "response";
+
+const ISSUE_CATEGORY: Record<FindingId, IssueCategory> = {
+	"image-width": "asset",
+	"image-format": "asset",
+	"image-quality": "asset",
+	"mp4-transfer": "asset",
+	"groq-spread": "query",
+	"groq-perf": "query",
+	"status-5xx": "response",
+	"status-4xx": "response",
+};
+
+const CATEGORY_ORDER: IssueCategory[] = ["asset", "query", "response"];
+
+function failingCategories(issues: ReportIssue[]): IssueCategory[] {
+	const present = new Set<IssueCategory>();
+	for (const issue of issues) {
+		if (issue.severity === "passed") continue;
+		present.add(ISSUE_CATEGORY[issue.id]);
+	}
+	return CATEGORY_ORDER.filter((category) => present.has(category));
+}
+
+function formatCategoryList(categories: IssueCategory[]): string {
+	if (categories.length === 0) return "issues";
+	if (categories.length === 1) return `${categories[0]} issues`;
+	if (categories.length === 2) {
+		return `${categories[0]} and ${categories[1]} issues`;
+	}
+	const head = categories.slice(0, -1).join(", ");
+	const last = categories[categories.length - 1];
+	return `${head}, and ${last} issues`;
+}
+
+function buildMixMessage(failing: ReportIssue[]): string {
+	const categories = failingCategories(failing);
+	return `This dataset has a mix of ${formatCategoryList(categories)}.`;
+}
+
+function severityRank(severity: IssueSeverity): number {
+	if (severity === "critical") return 2;
+	if (severity === "warn") return 1;
+	return 0;
+}
+
+export function primaryIssue(issues: ReportIssue[]): ReportIssue | null {
+	const failing = issues.filter((issue) => issue.severity !== "passed");
+	if (failing.length === 0) return null;
+
+	return failing.reduce((primary, issue) => {
+		const severityDelta =
+			severityRank(issue.severity) - severityRank(primary.severity);
+		if (severityDelta !== 0) {
+			return severityDelta > 0 ? issue : primary;
+		}
+
+		const primaryBytes = primary.responseBytes ?? 0;
+		const issueBytes = issue.responseBytes ?? 0;
+		if (issueBytes !== primaryBytes) {
+			return issueBytes > primaryBytes ? issue : primary;
+		}
+
+		return (issue.requests ?? 0) > (primary.requests ?? 0) ? issue : primary;
+	});
+}
+
+export function buildIssueCountLine(issues: ReportIssue[]): string {
+	const failing = issues.filter((issue) => issue.severity !== "passed");
+	if (failing.length === 0) return "✅ No issues detected";
+	return `🚨 ${formatNumber(failing.length)} ${pluralize(failing.length, "issue")} detected`;
+}
+
 export function buildSummaryMessage(issues: ReportIssue[]): string {
 	const failing = issues.filter((issue) => issue.severity !== "passed");
-	if (failing.length === 0) return "No issues detected";
-	const critical = failing.filter((i) => i.severity === "critical").length;
-	const warnings = failing.filter((i) => i.severity === "warn").length;
-	const parts: string[] = [];
-	if (critical > 0) {
-		parts.push(`${formatNumber(critical)} critical`);
+	const health = worstSeverity(issues);
+	const primary = primaryIssue(issues);
+	const categories = failingCategories(failing);
+
+	if (health === "passed" || failing.length === 0) {
+		return "This dataset looks healthy with no significant issues detected. Nice! 🥂";
 	}
-	if (warnings > 0) {
-		parts.push(`${formatNumber(warnings)} ${pluralize(warnings, "warning")}`);
+
+	if (health === "critical" && primary?.id === "status-5xx") {
+		return "Server reliability should be addressed before bandwidth optimizations 🚨. Keep an eye out for 5xx responses 👀.";
 	}
-	return `${parts.join(", ")} detected`;
+
+	if (categories.length > 1) {
+		return buildMixMessage(failing);
+	}
+
+	if (primary) {
+		const target = PRIMARY_OPPORTUNITY_LABEL[primary.id];
+		if (target) {
+			const hasCritical = failing.some(
+				(issue) => issue.severity === "critical",
+			);
+			if (!hasCritical) {
+				return `This dataset shows a healthy API 🎉 with ${target} being the primary optimization target.`;
+			}
+			return `This dataset is generally healthy 🎉, with ${target} as the primary optimization target.`;
+		}
+	}
+
+	return buildMixMessage(failing);
 }
 
 export function percentOf(part: number, total: number): number {

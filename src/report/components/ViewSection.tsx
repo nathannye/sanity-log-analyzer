@@ -7,6 +7,7 @@ import {
 import type { ReportData, ReportSections } from "../../types.js";
 import { getSectionLabel } from "../sections.js";
 import { colorVar } from "../styles/colors.js";
+import { buildIssueCountLine } from "../summarize.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { CountBarChart } from "./CountBarChart.js";
 import { Donut } from "./Donut.js";
@@ -25,13 +26,26 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 		data.dateStart && data.dateEnd
 			? `${formatReadableDate(data.dateStart)} → ${formatReadableDate(data.dateEnd)}`
 			: "No timestamps found";
+	const allIssues = [
+		...data.images.issues,
+		...data.files.issues,
+		...data.queries.issues,
+		...data.responseStatuses.issues,
+		...data.hourlyBandwidth.issues,
+		...data.dailyBandwidth.issues,
+	];
 
 	return (
 		<div>
+			{data.summary.message ? (
+				<div class="mb-24">
+					<p class="heading-2 m-0 text-text">{data.summary.message}</p>
+					<p class="body-2 mt-8 m-0 text-muted">
+						{buildIssueCountLine(allIssues)}
+					</p>
+				</div>
+			) : null}
 			<section class="scroll-mt-20 mb-24" data-section="summary">
-				{data.summary.message ? (
-					<p class="body-1 mb-16 text-text">{data.summary.message}</p>
-				) : null}
 				<div class="flex flex-wrap gap-16 [&>*]:min-w-[130px]">
 					<Metric
 						label="Requests"
