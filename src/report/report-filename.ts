@@ -1,5 +1,4 @@
 import type { ReportData } from "../types.js";
-import type { MarkdownView } from "./markdown.js";
 
 export function slugifyReportFilename(title: string): string {
 	const slug = title
@@ -12,11 +11,6 @@ export function slugifyReportFilename(title: string): string {
 	return slug || "report";
 }
 
-export function markdownReportFilename(
-	data: ReportData,
-	view: MarkdownView,
-): string {
-	const base = slugifyReportFilename(data.title);
-	const suffix = view === "billable" ? "_billable-only" : "_all";
-	return `${base}${suffix}.md`;
+export function markdownReportFilename(data: ReportData): string {
+	return `${slugifyReportFilename(data.title)}.md`;
 }

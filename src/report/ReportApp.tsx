@@ -11,47 +11,19 @@ interface ReportAppProps {
 
 export function ReportApp({ data }: ReportAppProps) {
 	const colorStyle = paletteColorVars();
-	const showBillableComparison = data.config.sections.billableComparison;
-	const tocUrlRows = showBillableComparison
-		? data.billable.byUrl
-		: data.all.byUrl;
 
 	return (
 		<main
 			class="mx-auto max-w-1600 px-20 pb-56 pt-32"
 			style={colorStyle}
-			data-module="toast view-toggle markdown-download toc-nav"
+			data-module="toast markdown-download toc-nav"
 		>
 			<Header data={data} />
 			<div class="grid grid-cols-1 items-start gap-24 lg:grid-cols-[22rem_minmax(0,1fr)]">
-				<TableOfContents
-					sections={data.config.sections}
-					urlRows={tocUrlRows}
-				/>
+				<TableOfContents sections={data.config.sections} />
 				<div class="min-w-0">
-					<ReportControls showToggle={showBillableComparison} />
-					{showBillableComparison ? (
-						<>
-							<ViewSection
-								view={data.billable}
-								sections={data.config.sections}
-								viewKey="billable"
-							/>
-							<ViewSection
-								view={data.all}
-								sections={data.config.sections}
-								viewKey="all"
-								hidden
-							/>
-						</>
-					) : (
-						<ViewSection
-							view={data.all}
-							sections={data.config.sections}
-							viewKey="all"
-						/>
-					)}
-					
+					<ReportControls />
+					<ViewSection data={data} sections={data.config.sections} />
 				</div>
 			</div>
 		</main>

@@ -17,14 +17,22 @@ export {
 	resolveReportConfig,
 } from "./config.js";
 export type {
+	CountReportSection,
+	FindingId,
+	IssueSeverity,
 	LogProgress,
 	PartialReportConfig,
+	QueriesSection,
+	RankedReportSection,
 	ReportConfig,
 	ReportData,
+	ReportEntriesOnly,
+	ReportIssue,
 	ReportSections,
-	ReportView,
+	ReportSummaryBlock,
+	UserAgentsSection,
 } from "./types.js";
-export type { GenerateMarkdownOptions, MarkdownView } from "./report/markdown.js";
+export type { GenerateMarkdownOptions } from "./report/markdown.js";
 export { markdownReportFilename } from "./report/markdown.js";
 export { enrichReportData } from "./report/enrich-report.js";
 
@@ -38,11 +46,7 @@ export async function analyzeLog(
 	options: AnalyzeLogOptions = {},
 ): Promise<ReportData> {
 	const config = resolveReportConfig(options.config);
-	const summary = await aggregateLogFile(
-		inputPath,
-		config.histogramBuckets,
-		options.onProgress,
-	);
+	const summary = await aggregateLogFile(inputPath, options.onProgress);
 	return buildReportData(summary, config, inputPath);
 }
 
@@ -57,10 +61,9 @@ export async function writeHtmlReport(
 
 export function generateMarkdown(
 	report: ReportData,
-	options?: GenerateMarkdownOptions,
+	_options?: GenerateMarkdownOptions,
 ): string {
-	const view = options?.view ?? "billable";
-	return report.markdown[view];
+	return report.markdown;
 }
 
 export async function writeMarkdownReport(

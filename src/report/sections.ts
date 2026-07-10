@@ -1,30 +1,9 @@
-import type { RankedRow, ReportSections } from "../types.js";
-import {
-	groupUrlsByKind,
-	visibleUrlTabs,
-	type UrlTab,
-} from "./group-urls-by-kind.js";
+import type { ReportSections } from "../types.js";
 
 export interface TocSection {
 	slug: string;
 	label: string;
 	children?: TocSection[];
-}
-
-const URL_TAB_SLUGS: Record<UrlTab, string> = {
-	image: "urls/image",
-	file: "urls/file",
-	query: "urls/query",
-	other: "urls/other",
-};
-
-function getUrlTabChildren(urlRows?: RankedRow[]): TocSection[] {
-	const tabs = visibleUrlTabs(groupUrlsByKind(urlRows ?? []));
-
-	return tabs.map((tab) => ({
-		slug: URL_TAB_SLUGS[tab.id],
-		label: tab.label,
-	}));
 }
 
 export interface ReportSectionDefinition {
@@ -34,39 +13,60 @@ export interface ReportSectionDefinition {
 }
 
 export const REPORT_SECTIONS: ReportSectionDefinition[] = [
-	{ slug: "findings", label: "Findings" },
 	{ slug: "summary", label: "Summary" },
-	{ slug: "domain", label: "Top domains", configKey: "domain" },
-	{ slug: "endpoint", label: "Top endpoints", configKey: "endpoint" },
-	{ slug: "date", label: "Daily bandwidth", configKey: "date" },
-	{ slug: "hour", label: "Hourly bandwidth", configKey: "hour" },
-	{ slug: "status", label: "Response codes", configKey: "status" },
-	{ slug: "histogram", label: "Response size buckets", configKey: "histogram" },
+	{ slug: "dailyBandwidth", label: "Daily bandwidth", configKey: "dailyBandwidth" },
+	{ slug: "hourlyBandwidth", label: "Hourly bandwidth", configKey: "hourlyBandwidth" },
 	{
-		slug: "urls",
-		label: "Top URLs",
-		configKey: "urls",
+		slug: "responseStatuses",
+		label: "Response codes",
+		configKey: "responseStatuses",
 	},
-	{ slug: "referers", label: "Top referers", configKey: "referers" },
-	{ slug: "userAgents", label: "Top user agents", configKey: "userAgents" },
-	{ slug: "ips", label: "Top IPs", configKey: "ips" },
+	{ slug: "images", label: "Images", configKey: "images" },
+	{ slug: "files", label: "Files", configKey: "files" },
+	{ slug: "queries", label: "Queries", configKey: "queries" },
+	{ slug: "traffic", label: "Traffic sources" },
 ];
 
 export function getSectionLabel(slug: string): string | undefined {
-	return REPORT_SECTIONS.find((section) => section.slug === slug)?.label;
+	const top = REPORT_SECTIONS.find((section) => section.slug === slug);
+	if (top) return top.label;
+
+	const trafficLabels: Record<string, string> = {
+		referrers: "Top referrers",
+		ips: "Top IPs",
+		userAgents: "Top user agents",
+		"traffic/referrers": "Top referrers",
+		"traffic/ips": "Top IPs",
+		"traffic/userAgents": "Top user agents",
+	};
+	return trafficLabels[slug];
 }
 
-const TOC_SECTIONS = REPORT_SECTIONS;
+export function getVisibleTocSections(sections: ReportSections): TocSection[] {
+	const result: TocSection[] = [];
 
-export function getVisibleTocSections(
-	sections: ReportSections,
-	urlRows?: RankedRow[],
-): TocSection[] {
-	return TOC_SECTIONS.filter(
-		(entry) => !entry.configKey || sections[entry.configKey],
-	).map(({ slug, label }) => ({
-		slug,
-		label,
-		children: slug === "urls" ? getUrlTabChildren(urlRows) : undefined,
-	}));
+	for (const entry of REPORT_SECTIONS) {
+		if (entry.slug === "traffic") {
+			const children: TocSection[] = [];
+			if (sections.referrers) {
+				children.push({ slug: "traffic/referrers", label: "Referrers" });
+			}
+			if (sections.ips) {
+				children.push({ slug: "traffic/ips", label: "IPs" });
+			}
+			if (sections.userAgents) {
+				children.push({ slug: "traffic/userAgents", label: "User agents" });
+			}
+			if (children.length > 0) {
+				result.push({ slug: "traffic", label: entry.label, children });
+			}
+			continue;
+		}
+
+		if (!entry.configKey || sections[entry.configKey]) {
+			result.push({ slug: entry.slug, label: entry.label });
+		}
+	}
+
+	return result;
 }

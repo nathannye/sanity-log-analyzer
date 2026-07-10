@@ -34,8 +34,7 @@ export function renderReportHtml(data: ReportData): string {
 	const json = escapeJsonForHtml(data);
 	const markdownPayload = escapeJsonForHtml({
 		filenameBase: slugifyReportFilename(data.title),
-		billable: data.markdown.billable,
-		all: data.markdown.all,
+		markdown: data.markdown,
 	});
 
 	return `<!DOCTYPE html>

@@ -1,14 +1,4 @@
 import type { CountRow, RankedRow } from "../types.js";
-import type { DistributionSegment } from "./summarize.js";
-
-export function dominantSegment(
-	segments: DistributionSegment[],
-): DistributionSegment | null {
-	if (segments.length === 0) return null;
-	return segments.reduce((largest, segment) =>
-		segment.bytes > largest.bytes ? segment : largest,
-	);
-}
 
 export function dominantRankedRow(
 	rows: RankedRow[],

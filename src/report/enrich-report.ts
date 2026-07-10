@@ -3,8 +3,7 @@ import type {
 	RankedRow,
 	ReportData,
 	ReportDataInput,
-	ReportView,
-	ReportViewInput,
+	ReportIssue,
 } from "../types.js";
 import { analyzeGroqQuery } from "./analyze-groq.js";
 import { formatGroqForDisplay } from "./format-groq.js";
@@ -16,7 +15,13 @@ import {
 	parseUserAgent,
 	type ParsedUserAgent,
 } from "./parse-user-agent.js";
-import { buildReportSummary } from "./summarize.js";
+import {
+	buildFileIssues,
+	buildImageIssues,
+	buildQueryIssues,
+	buildResponseStatusIssues,
+	buildSummaryMessage,
+} from "./summarize.js";
 
 function buildUserAgentByLabel(
 	rows: RankedRow[],
@@ -66,37 +71,81 @@ function enrichUrlRows(rows: RankedRow[]): {
 	return { rows: enrichedRows, groqByUrl };
 }
 
-export function enrichReportView(view: ReportViewInput): ReportView {
-	const { rows: byUrl, groqByUrl } = enrichUrlRows(view.byUrl);
-	const withUrls: ReportViewInput = { ...view, byUrl };
-
-	return {
-		...withUrls,
-		summary: buildReportSummary(withUrls),
-		userAgentByLabel: buildUserAgentByLabel(view.byUserAgent),
-		userAgentStats: aggregateUserAgentStats(view.byUserAgent),
-		groqByUrl,
-	};
-}
-
 export function enrichReportData(data: ReportDataInput): ReportData {
-	const all = enrichReportView(data.all);
-	const billable = enrichReportView(data.billable);
+	const { rows: queryEntries, groqByUrl } = enrichUrlRows(data.queries.entries);
+	const severityCtx = {
+		requestCount: data.summary.requestCount,
+		bandwidth: data.summary.bandwidth,
+	};
+
+	const imagesIssues = buildImageIssues(data.images.entries, severityCtx);
+	const filesIssues = buildFileIssues(data.files.entries, severityCtx);
+	const queriesIssues = buildQueryIssues(queryEntries, severityCtx);
+	const responseIssues = buildResponseStatusIssues(
+		data.responseStatuses.entries,
+	);
+
+	const allIssues: ReportIssue[] = [
+		...imagesIssues,
+		...filesIssues,
+		...queriesIssues,
+		...responseIssues,
+	];
+
 	const enriched: ReportData = {
-		...data,
-		all,
-		billable,
-		markdown: {
-			billable: "",
-			all: "",
+		title: data.title,
+		sourcePath: data.sourcePath,
+		generatedAt: data.generatedAt,
+		projectId: data.projectId,
+		dateStart: data.dateStart,
+		dateEnd: data.dateEnd,
+		config: data.config,
+		summary: {
+			message: buildSummaryMessage(allIssues),
+			bandwidth: data.summary.bandwidth,
+			requestCount: data.summary.requestCount,
+			studioRequestPercent: data.summary.studioRequestPercent,
+			cdnDeliveryPercent: data.summary.cdnDeliveryPercent,
+			studioBandwidth: data.summary.studioBandwidth,
+			cdnBandwidth: data.summary.cdnBandwidth,
 		},
+		images: {
+			entries: data.images.entries,
+			issues: imagesIssues,
+		},
+		files: {
+			entries: data.files.entries,
+			issues: filesIssues,
+		},
+		queries: {
+			entries: queryEntries,
+			issues: queriesIssues,
+			groqByUrl,
+		},
+		responseStatuses: {
+			entries: data.responseStatuses.entries,
+			issues: responseIssues,
+		},
+		hourlyBandwidth: {
+			entries: data.hourlyBandwidth.entries,
+			issues: data.hourlyBandwidth.issues ?? [],
+		},
+		dailyBandwidth: {
+			entries: data.dailyBandwidth.entries,
+			issues: data.dailyBandwidth.issues ?? [],
+		},
+		referrers: data.referrers,
+		ips: data.ips,
+		userAgents: {
+			entries: data.userAgents.entries,
+			userAgentByLabel: buildUserAgentByLabel(data.userAgents.entries),
+			userAgentStats: aggregateUserAgentStats(data.userAgents.entries),
+		},
+		markdown: "",
 	};
 
 	return {
 		...enriched,
-		markdown: {
-			billable: renderReportMarkdown(enriched, "billable"),
-			all: renderReportMarkdown(enriched, "all"),
-		},
+		markdown: renderReportMarkdown(enriched),
 	};
 }

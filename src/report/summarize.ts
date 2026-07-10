@@ -1,12 +1,11 @@
-import {
-	formatDistributionShare,
-	formatCountLabel,
-	formatNumber,
-	formatPeakHour,
-	pluralize,
-} from "../format.js";
-import { KB } from "../units.js";
-import type { RankedRow, ReportViewInput, TopContributors } from "../types.js";
+import { formatCountLabel, formatNumber, pluralize } from "../format.js";
+import type {
+	CountRow,
+	FindingId,
+	IssueSeverity,
+	RankedRow,
+	ReportIssue,
+} from "../types.js";
 import {
 	GROQ_ISSUE_DEEP_SLICE,
 	GROQ_ISSUE_DEREF_IN_FILTER,
@@ -16,13 +15,6 @@ import {
 } from "./analyze-groq.js";
 import { isMp4Url } from "./classify-url.js";
 import {
-	dominantCountRow,
-	dominantRankedRow,
-	dominantSegment,
-} from "./distribution.js";
-import { groupUrlsByKind } from "./group-urls-by-kind.js";
-import { buildAtAGlance, type ReportInsight } from "./narrative.js";
-import {
 	hasImageFormatError,
 	hasImageQualityError,
 	hasImageWidthError,
@@ -31,19 +23,12 @@ import {
 	parseImageUrl,
 } from "./parse-image-url.js";
 import {
-	CONCENTRATION_SHARE_THRESHOLD,
 	CRITICAL_BYTES_THRESHOLD,
 	CRITICAL_REQUESTS_THRESHOLD,
 	CRITICAL_SHARE_THRESHOLD,
 	CRITICAL_TOTAL_BYTES_THRESHOLD,
 	CRITICAL_TOTAL_REQUESTS_THRESHOLD,
-	DISTRIBUTION_DOMINANCE_THRESHOLD,
-	SPIKE_SHARE_THRESHOLD,
-	STUDIO_NEGLIGIBLE_SHARE_THRESHOLD,
 } from "./thresholds.js";
-import type { Tone } from "./components/tone.js";
-
-const REASONABLE_AVG_IMAGE_BYTES = 400 * KB;
 
 const GROQ_PERF_ISSUES = new Set([
 	GROQ_ISSUE_DEREF_IN_FILTER,
@@ -52,76 +37,16 @@ const GROQ_PERF_ISSUES = new Set([
 	GROQ_ISSUE_NON_LITERAL_COMPARE,
 ]);
 
-
-export type HealthStatus = Tone;
-
-export type FindingId =
-	| "groq-spread"
-	| "groq-perf"
-	| "mp4-transfer"
-	| "image-width"
-	| "image-format"
-	| "image-quality"
-	| "status-5xx"
-	| "status-4xx";
-
-export interface ReportProblem {
-	id: FindingId;
-	severity: "critical" | "warning";
-	summary: string;
-	suggestedFix?: string;
-	requests?: number;
-	responseBytes?: number;
-}
-
-export interface ReportObservation {
-	summary: string;
-}
-
-export interface ReportHealthySignal {
-	summary: string;
-}
-
-export interface DistributionSegment {
-	label: string;
-	bytes: number;
-	share: number;
-}
-
-export interface ReportSummary {
-	overallHealth: HealthStatus;
-	critical: ReportProblem[];
-	warnings: ReportProblem[];
-	observations: ReportObservation[];
-	healthy: ReportHealthySignal[];
-	atAGlance: ReportInsight[];
-	distribution: { totalBytes: number; segments: DistributionSegment[] };
-	topContributors: TopContributors;
-}
+export type { FindingId };
 
 interface IssueTotals {
 	requests: number;
 	responseBytes: number;
 }
 
-interface ImageAnalysis {
-	imageRows: Array<{
-		row: RankedRow;
-		parsed: ReturnType<typeof parseImageUrl>;
-	}>;
-	wideRows: Array<{
-		row: RankedRow;
-		parsed: ReturnType<typeof parseImageUrl>;
-	}>;
-	unsafeFormatRows: Array<{
-		row: RankedRow;
-		parsed: ReturnType<typeof parseImageUrl>;
-	}>;
-	qualityRows: Array<{
-		row: RankedRow;
-		parsed: ReturnType<typeof parseImageUrl>;
-	}>;
-	imageTotals: IssueTotals;
+interface SeverityContext {
+	requestCount: number;
+	bandwidth: number;
 }
 
 function sumRows(rows: RankedRow[]): IssueTotals {
@@ -135,57 +60,25 @@ function sumRows(rows: RankedRow[]): IssueTotals {
 	);
 }
 
-function isCriticalIssue(issue: IssueTotals, view: ReportViewInput): boolean {
+function isCriticalIssue(
+	issue: IssueTotals,
+	ctx: SeverityContext,
+): boolean {
 	return (
 		issue.responseBytes >= CRITICAL_BYTES_THRESHOLD ||
 		issue.requests >= CRITICAL_REQUESTS_THRESHOLD ||
-		(view.responseBytes >= CRITICAL_TOTAL_BYTES_THRESHOLD &&
-			issue.responseBytes / view.responseBytes >= CRITICAL_SHARE_THRESHOLD) ||
-		(view.requests >= CRITICAL_TOTAL_REQUESTS_THRESHOLD &&
-			issue.requests / view.requests >= CRITICAL_SHARE_THRESHOLD)
+		(ctx.bandwidth >= CRITICAL_TOTAL_BYTES_THRESHOLD &&
+			issue.responseBytes / ctx.bandwidth >= CRITICAL_SHARE_THRESHOLD) ||
+		(ctx.requestCount >= CRITICAL_TOTAL_REQUESTS_THRESHOLD &&
+			issue.requests / ctx.requestCount >= CRITICAL_SHARE_THRESHOLD)
 	);
 }
 
 function severityForIssue(
 	issue: IssueTotals,
-	view: ReportViewInput,
-): "critical" | "warning" {
-	return isCriticalIssue(issue, view) ? "critical" : "warning";
-}
-
-function pushProblem(
-	target: ReportProblem[],
-	problem: ReportProblem,
-): void {
-	target.push(problem);
-}
-
-function getImageRows(rows: RankedRow[]): ImageAnalysis["imageRows"] {
-	return groupUrlsByKind(rows).image.map((row) => ({
-		row,
-		parsed: parseImageUrl(row.label),
-	}));
-}
-
-function analyzeImages(rows: RankedRow[]): ImageAnalysis {
-	const imageRows = getImageRows(rows);
-	const wideRows = imageRows.filter(({ parsed }) =>
-		hasImageWidthError(parsed.width),
-	);
-	const unsafeFormatRows = imageRows.filter(({ parsed }) =>
-		hasImageFormatError(parsed.format),
-	);
-	const qualityRows = imageRows.filter(({ parsed }) =>
-		hasImageQualityError(parsed.quality, parsed.isSvg),
-	);
-
-	return {
-		imageRows,
-		wideRows,
-		unsafeFormatRows,
-		qualityRows,
-		imageTotals: sumRows(imageRows.map(({ row }) => row)),
-	};
+	ctx: SeverityContext,
+): "critical" | "warn" {
+	return isCriticalIssue(issue, ctx) ? "critical" : "warn";
 }
 
 function rowHasGroqIssue(row: RankedRow, issue: string): boolean {
@@ -193,339 +86,245 @@ function rowHasGroqIssue(row: RankedRow, issue: string): boolean {
 }
 
 function getQuerySpreadRows(rows: RankedRow[]): RankedRow[] {
-	return groupUrlsByKind(rows).query.filter((row) =>
-		rowHasGroqIssue(row, GROQ_ISSUE_SPREAD),
-	);
+	return rows.filter((row) => rowHasGroqIssue(row, GROQ_ISSUE_SPREAD));
 }
 
 function getQueryPerfRows(rows: RankedRow[]): RankedRow[] {
-	return groupUrlsByKind(rows).query.filter((row) =>
+	return rows.filter((row) =>
 		(row.groq?.issues ?? []).some((issue) => GROQ_PERF_ISSUES.has(issue)),
 	);
 }
 
 function getMp4Rows(rows: RankedRow[]): RankedRow[] {
-	return groupUrlsByKind(rows).file.filter((row) => isMp4Url(row.label));
+	return rows.filter((row) => isMp4Url(row.label));
 }
 
-function friendlyDomainLabel(domain: string): string {
-	const lower = domain.toLowerCase();
-	if (lower.includes("cdn.sanity.io") || lower === "cdn") return "CDN";
-	if (lower.includes("apicdn") || lower.includes("api.sanity.io")) {
-		return "API CDN";
-	}
-	return domain;
+interface ImageAnalysis {
+	wideRows: RankedRow[];
+	unsafeFormatRows: RankedRow[];
+	qualityRows: RankedRow[];
 }
 
-function healthFromCounts(critical: number, warning: number): HealthStatus {
-	if (critical > 0) return "red";
-	if (warning > 0) return "yellow";
-	return "green";
-}
-
-function buildDistribution(view: ReportViewInput): ReportSummary["distribution"] {
-	const segments: DistributionSegment[] = [
-		{ label: "Images", bytes: view.byUrlKind.image.responseBytes, share: 0 },
-		{ label: "Queries", bytes: view.byUrlKind.query.responseBytes, share: 0 },
-		{ label: "Files", bytes: view.byUrlKind.file.responseBytes, share: 0 },
-		{ label: "Other", bytes: view.byUrlKind.other.responseBytes, share: 0 },
-	]
-		.filter((segment) => segment.bytes > 0)
-		.map((segment) => ({
-			...segment,
-			share:
-				view.responseBytes > 0 ? segment.bytes / view.responseBytes : 0,
-		}));
+function analyzeImages(rows: RankedRow[]): ImageAnalysis {
+	const parsed = rows.map((row) => ({
+		row,
+		parsed: parseImageUrl(row.label),
+	}));
 
 	return {
-		totalBytes: view.responseBytes,
-		segments,
+		wideRows: parsed
+			.filter(({ parsed: p }) => hasImageWidthError(p.width))
+			.map(({ row }) => row),
+		unsafeFormatRows: parsed
+			.filter(({ parsed: p }) => hasImageFormatError(p.format))
+			.map(({ row }) => row),
+		qualityRows: parsed
+			.filter(({ parsed: p }) => hasImageQualityError(p.quality, p.isSvg))
+			.map(({ row }) => row),
 	};
 }
 
-function detectProblems(
-	view: ReportViewInput,
-	critical: ReportProblem[],
-	warnings: ReportProblem[],
-): {
-	querySpreadRows: RankedRow[];
-	queryPerfRows: RankedRow[];
-	mp4Rows: RankedRow[];
-	images: ImageAnalysis;
-	serverErrorCount: number;
-	clientErrorCount: number;
-} {
-	const querySpreadRows = getQuerySpreadRows(view.byUrl);
-	if (querySpreadRows.length > 0) {
-		const totals = sumRows(querySpreadRows);
-		const severity = severityForIssue(totals, view);
-		const problem: ReportProblem = {
-			id: "groq-spread",
-			severity,
-			summary: `${formatCountLabel(querySpreadRows.length, "query")} ${querySpreadRows.length === 1 ? "uses" : "use"} the spread operator {...}`,
-			suggestedFix:
-				"Project only needed fields instead of using the {...} spread operator",
-			requests: totals.requests,
-			responseBytes: totals.responseBytes,
+function failOrPass(options: {
+	id: FindingId;
+	failingRows: RankedRow[];
+	ctx: SeverityContext;
+	failMessage: (count: number) => string;
+	passMessage: string;
+	suggestion: string;
+}): ReportIssue {
+	const { id, failingRows, ctx, failMessage, passMessage, suggestion } =
+		options;
+
+	if (failingRows.length === 0) {
+		return {
+			id,
+			severity: "passed",
+			message: passMessage,
+			suggestion,
 		};
-		pushProblem(severity === "critical" ? critical : warnings, problem);
 	}
 
-	const queryPerfRows = getQueryPerfRows(view.byUrl);
-	if (queryPerfRows.length > 0) {
-		const totals = sumRows(queryPerfRows);
-		const severity = severityForIssue(totals, view);
-		const problem: ReportProblem = {
-			id: "groq-perf",
-			severity,
-			summary: `${formatCountLabel(queryPerfRows.length, "query")} ${queryPerfRows.length === 1 ? "has" : "have"} GROQ performance anti-patterns`,
-			suggestedFix:
-				"Avoid joins in filters, repeated reference resolves, deep slices, and non-literal field comparisons",
-			requests: totals.requests,
-			responseBytes: totals.responseBytes,
+	const totals = sumRows(failingRows);
+	return {
+		id,
+		severity: severityForIssue(totals, ctx),
+		message: failMessage(failingRows.length),
+		suggestion,
+		requests: totals.requests,
+		responseBytes: totals.responseBytes,
+	};
+}
+
+function statusIssue(options: {
+	id: FindingId;
+	count: number;
+	severity: IssueSeverity;
+	failMessage: (count: number) => string;
+	passMessage: string;
+	suggestion: string;
+}): ReportIssue {
+	const { id, count, severity, failMessage, passMessage, suggestion } =
+		options;
+
+	if (count === 0) {
+		return {
+			id,
+			severity: "passed",
+			message: passMessage,
+			suggestion,
 		};
-		pushProblem(severity === "critical" ? critical : warnings, problem);
 	}
 
-	const mp4Rows = getMp4Rows(view.byUrl);
-	if (mp4Rows.length > 0) {
-		const totals = sumRows(mp4Rows);
-		const severity = severityForIssue(totals, view);
-		const problem: ReportProblem = {
-			id: "mp4-transfer",
-			severity,
-			summary: `${formatCountLabel(mp4Rows.length, "MP4 URL", "MP4 URLs")} served as progressive MP4`,
-			suggestedFix:
-				"Serve video via HLS (or similar adaptive streaming) instead of progressive MP4",
-			requests: totals.requests,
-			responseBytes: totals.responseBytes,
-		};
-		pushProblem(severity === "critical" ? critical : warnings, problem);
-	}
+	return {
+		id,
+		severity,
+		message: failMessage(count),
+		suggestion,
+		requests: count,
+	};
+}
 
-	const images = analyzeImages(view.byUrl);
+export function buildImageIssues(
+	entries: RankedRow[],
+	ctx: SeverityContext,
+): ReportIssue[] {
+	const images = analyzeImages(entries);
 
-	if (images.wideRows.length > 0) {
-		const totals = sumRows(images.wideRows.map(({ row }) => row));
-		const severity = severityForIssue(totals, view);
-		const problem: ReportProblem = {
+	return [
+		failOrPass({
 			id: "image-width",
-			severity,
-			summary: `${formatCountLabel(images.wideRows.length, "image")} exceed ${MAX_IMAGE_WIDTH}px`,
-			suggestedFix: `Cap CDN width requests at ${MAX_IMAGE_WIDTH}px or below`,
-			requests: totals.requests,
-			responseBytes: totals.responseBytes,
-		};
-		pushProblem(severity === "critical" ? critical : warnings, problem);
-	}
-
-	if (images.unsafeFormatRows.length > 0) {
-		const totals = sumRows(images.unsafeFormatRows.map(({ row }) => row));
-		const severity = severityForIssue(totals, view);
-		const problem: ReportProblem = {
+			failingRows: images.wideRows,
+			ctx,
+			failMessage: (count) =>
+				`${formatCountLabel(count, "image")} exceed ${MAX_IMAGE_WIDTH}px`,
+			passMessage: `No images exceed ${MAX_IMAGE_WIDTH}px width`,
+			suggestion: `Cap CDN width requests at ${MAX_IMAGE_WIDTH}px or below`,
+		}),
+		failOrPass({
 			id: "image-format",
-			severity,
-			summary: `${formatCountLabel(images.unsafeFormatRows.length, "image")} missing format=auto`,
-			suggestedFix: 'Use auto=format (or fm/format="auto") for CDN image URLs',
-			requests: totals.requests,
-			responseBytes: totals.responseBytes,
-		};
-		pushProblem(severity === "critical" ? critical : warnings, problem);
-	}
-
-	if (images.qualityRows.length > 0) {
-		const totals = sumRows(images.qualityRows.map(({ row }) => row));
-		const severity = severityForIssue(totals, view);
-		const problem: ReportProblem = {
+			failingRows: images.unsafeFormatRows,
+			ctx,
+			failMessage: (count) =>
+				`${formatCountLabel(count, "image")} missing format=auto`,
+			passMessage: "All images use format=auto",
+			suggestion: 'Use auto=format (or fm/format="auto") for CDN image URLs',
+		}),
+		failOrPass({
 			id: "image-quality",
-			severity,
-			summary: `${formatCountLabel(images.qualityRows.length, "image")} with quality above ${MAX_IMAGE_QUALITY}`,
-			suggestedFix: `Keep image quality at ${MAX_IMAGE_QUALITY} or below for raster assets`,
-			requests: totals.requests,
-			responseBytes: totals.responseBytes,
-		};
-		pushProblem(severity === "critical" ? critical : warnings, problem);
-	}
+			failingRows: images.qualityRows,
+			ctx,
+			failMessage: (count) =>
+				`${formatCountLabel(count, "image")} with quality above ${MAX_IMAGE_QUALITY}`,
+			passMessage: `No images use quality above ${MAX_IMAGE_QUALITY}`,
+			suggestion: `Keep image quality at ${MAX_IMAGE_QUALITY} or below for raster assets`,
+		}),
+	];
+}
 
-	const serverErrorCount = view.byStatus
+export function buildFileIssues(
+	entries: RankedRow[],
+	ctx: SeverityContext,
+): ReportIssue[] {
+	return [
+		failOrPass({
+			id: "mp4-transfer",
+			failingRows: getMp4Rows(entries),
+			ctx,
+			failMessage: (count) =>
+				`${formatCountLabel(count, "MP4 URL", "MP4 URLs")} served as progressive MP4`,
+			passMessage: "No progressive MP4 downloads detected",
+			suggestion:
+				"Serve video via HLS (or similar adaptive streaming) instead of progressive MP4",
+		}),
+	];
+}
+
+export function buildQueryIssues(
+	entries: RankedRow[],
+	ctx: SeverityContext,
+): ReportIssue[] {
+	return [
+		failOrPass({
+			id: "groq-spread",
+			failingRows: getQuerySpreadRows(entries),
+			ctx,
+			failMessage: (count) =>
+				`${formatCountLabel(count, "query")} ${count === 1 ? "uses" : "use"} the spread operator {...}`,
+			passMessage: "No GROQ spread queries detected",
+			suggestion:
+				"Project only needed fields instead of using the {...} spread operator",
+		}),
+		failOrPass({
+			id: "groq-perf",
+			failingRows: getQueryPerfRows(entries),
+			ctx,
+			failMessage: (count) =>
+				`${formatCountLabel(count, "query")} ${count === 1 ? "has" : "have"} GROQ performance anti-patterns`,
+			passMessage: "No GROQ performance anti-patterns detected",
+			suggestion:
+				"Avoid joins in filters, repeated reference resolves, deep slices, and non-literal field comparisons",
+		}),
+	];
+}
+
+export function buildResponseStatusIssues(
+	entries: CountRow[],
+): ReportIssue[] {
+	const serverErrorCount = entries
 		.filter(({ label }) => Number(label) >= 500)
 		.reduce((sum, row) => sum + row.count, 0);
-	const clientErrorCount = view.byStatus
+	const clientErrorCount = entries
 		.filter(({ label }) => {
 			const status = Number(label);
 			return status >= 400 && status < 500;
 		})
 		.reduce((sum, row) => sum + row.count, 0);
 
-	if (serverErrorCount > 0) {
-		pushProblem(critical, {
+	return [
+		statusIssue({
 			id: "status-5xx",
+			count: serverErrorCount,
 			severity: "critical",
-			summary: `${formatCountLabel(serverErrorCount, "server error")}`,
-			suggestedFix: "Investigate failing API/CDN handlers returning 5xx",
-			requests: serverErrorCount,
-		});
-	}
-
-	if (clientErrorCount > 0) {
-		pushProblem(warnings, {
+			failMessage: (count) => formatCountLabel(count, "server error"),
+			passMessage: "No server errors detected",
+			suggestion: "Investigate failing API/CDN handlers returning 5xx",
+		}),
+		statusIssue({
 			id: "status-4xx",
-			severity: "warning",
-			summary: `${formatCountLabel(clientErrorCount, "client error")}`,
-			suggestedFix:
+			count: clientErrorCount,
+			severity: "warn",
+			failMessage: (count) => formatCountLabel(count, "client error"),
+			passMessage: "No client errors detected",
+			suggestion:
 				"Review missing assets and invalid client requests returning 4xx",
-			requests: clientErrorCount,
-		});
-	}
-
-	return {
-		querySpreadRows,
-		queryPerfRows,
-		mp4Rows,
-		images,
-		serverErrorCount,
-		clientErrorCount,
-	};
+		}),
+	];
 }
 
-function buildObservations(view: ReportViewInput): ReportObservation[] {
-	const observations: ReportObservation[] = [];
-
-	const distribution = buildDistribution(view);
-	const dominant = dominantSegment(distribution.segments);
-
-	if (
-		dominant &&
-		dominant.share >= DISTRIBUTION_DOMINANCE_THRESHOLD &&
-		view.responseBytes > 0
-	) {
-		observations.push({
-			summary: `${dominant.label} account for ${formatDistributionShare(dominant.share)} of bandwidth`,
-		});
-	}
-
-	const domainDominant = dominantRankedRow(view.byDomain, "responseBytes");
-	if (
-		domainDominant &&
-		domainDominant.share >= CONCENTRATION_SHARE_THRESHOLD
-	) {
-		observations.push({
-			summary: `${friendlyDomainLabel(domainDominant.label)} serves ${formatDistributionShare(domainDominant.share)} of traffic`,
-		});
-	}
-
-	const hourDominant = dominantRankedRow(view.byHour, "responseBytes");
-	if (hourDominant && hourDominant.share >= SPIKE_SHARE_THRESHOLD) {
-		observations.push({
-			summary: `Peak hour was ${formatPeakHour(hourDominant.label)}`,
-		});
-	}
-
-	const histogramDominant = dominantCountRow(view.responseSizeHistogram);
-	if (
-		histogramDominant &&
-		histogramDominant.share >= CONCENTRATION_SHARE_THRESHOLD
-	) {
-		observations.push({
-			summary: `${formatDistributionShare(histogramDominant.share)} of responses are ${histogramDominant.label}`,
-		});
-	}
-
-	return observations;
+export function worstSeverity(
+	issues: ReportIssue[],
+): IssueSeverity | "passed" {
+	if (issues.some((issue) => issue.severity === "critical")) return "critical";
+	if (issues.some((issue) => issue.severity === "warn")) return "warn";
+	return "passed";
 }
 
-function buildHealthySignals(
-	view: ReportViewInput,
-	context: ReturnType<typeof detectProblems>,
-): ReportHealthySignal[] {
-	const healthy: ReportHealthySignal[] = [];
-	const { querySpreadRows, queryPerfRows, mp4Rows, images, serverErrorCount, clientErrorCount } =
-		context;
-
-	if (images.imageRows.length > 0 && images.unsafeFormatRows.length === 0) {
-		healthy.push({ summary: "All images use the auto format" });
+export function buildSummaryMessage(issues: ReportIssue[]): string {
+	const failing = issues.filter((issue) => issue.severity !== "passed");
+	if (failing.length === 0) return "No issues detected";
+	const critical = failing.filter((i) => i.severity === "critical").length;
+	const warnings = failing.filter((i) => i.severity === "warn").length;
+	const parts: string[] = [];
+	if (critical > 0) {
+		parts.push(`${formatNumber(critical)} critical`);
 	}
-
-	if (
-		images.imageTotals.requests > 0 &&
-		images.imageTotals.responseBytes / images.imageTotals.requests <
-			REASONABLE_AVG_IMAGE_BYTES
-	) {
-		healthy.push({ summary: "Average image response size is reasonable" });
+	if (warnings > 0) {
+		parts.push(`${formatNumber(warnings)} ${pluralize(warnings, "warning")}`);
 	}
-
-	const hourDominant = dominantRankedRow(view.byHour, "responseBytes");
-	if (!hourDominant || hourDominant.share < SPIKE_SHARE_THRESHOLD) {
-		healthy.push({ summary: "No suspicious bandwidth spikes detected" });
-	}
-
-	if (
-		view.includesStudio &&
-		view.responseBytes > 0 &&
-		view.studio.responseBytes / view.responseBytes <
-			STUDIO_NEGLIGIBLE_SHARE_THRESHOLD
-	) {
-		healthy.push({ summary: "Studio traffic is negligible" });
-	}
-
-	if (serverErrorCount === 0) {
-		healthy.push({ summary: "No server errors detected" });
-	}
-
-	if (clientErrorCount === 0) {
-		healthy.push({ summary: "No client errors detected" });
-	}
-
-	if (view.byUrlKind.query.requests > 0 && querySpreadRows.length === 0) {
-		healthy.push({ summary: "No GROQ spread queries detected" });
-	}
-
-	if (view.byUrlKind.query.requests > 0 && queryPerfRows.length === 0) {
-		healthy.push({ summary: "No GROQ performance anti-patterns detected" });
-	}
-
-	if (images.imageRows.length > 0 && images.wideRows.length === 0) {
-		healthy.push({ summary: "No oversized image widths detected" });
-	}
-
-	if (images.imageRows.length > 0 && images.qualityRows.length === 0) {
-		healthy.push({ summary: "No unreasonably high image quality settings detected" });
-	}
-
-	if (view.byUrlKind.file.requests > 0 && mp4Rows.length === 0) {
-		healthy.push({ summary: "No progressive MP4 downloads detected" });
-	}
-
-	return healthy.slice(0, 8);
+	return `${parts.join(", ")} detected`;
 }
 
-export function buildReportSummary(view: ReportViewInput): ReportSummary {
-	const critical: ReportProblem[] = [];
-	const warnings: ReportProblem[] = [];
-	const detection = detectProblems(view, critical, warnings);
-	const distribution = buildDistribution(view);
-	const observations = buildObservations(view);
-	const healthy = buildHealthySignals(view, detection);
-
-	const partialSummary: ReportSummary = {
-		overallHealth: healthFromCounts(critical.length, warnings.length),
-		critical,
-		warnings,
-		observations,
-		healthy,
-		atAGlance: [],
-		distribution,
-		topContributors: view.topContributors,
-	};
-
-	return {
-		...partialSummary,
-		atAGlance: buildAtAGlance(view, partialSummary),
-	};
-}
-
-export function summaryHeadline(summary: ReportSummary): string {
-	const issueTotal = summary.critical.length + summary.warnings.length;
-	if (issueTotal === 0) return "✅ No issues detected";
-	return `🚨 ${formatNumber(issueTotal)} ${pluralize(issueTotal, "issue")} detected`;
+export function percentOf(part: number, total: number): number {
+	if (total <= 0) return 0;
+	return (part / total) * 100;
 }

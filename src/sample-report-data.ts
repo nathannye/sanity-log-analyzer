@@ -8,45 +8,34 @@ export const SAMPLE_REPORT: ReportData = enrichReportData({
 	title: "Sanity Request Log Report",
 	sourcePath: "sample.ndjson",
 	generatedAt: "2026-07-07T00:00:00.000Z",
+	projectId: "project",
+	dateStart: "2026-06-14T00:00:00.000Z",
+	dateEnd: "2026-06-14T01:00:00.000Z",
 	config: {
 		title: "Sanity Request Log Report",
 		topN: 50,
-		histogramBuckets: [0, 1024, Infinity],
 		sections: {
-			domain: true,
-			endpoint: true,
-			date: true,
-			hour: true,
-			status: true,
-			histogram: true,
-			urls: true,
-			referers: true,
+			images: true,
+			files: true,
+			queries: true,
+			responseStatuses: true,
+			hourlyBandwidth: true,
+			dailyBandwidth: true,
+			referrers: true,
 			userAgents: true,
 			ips: true,
-			billableComparison: true,
 		},
 	},
-	all: {
-		label: "All requests",
-		requests: 9,
-		responseBytes: 1435,
-		requestBytes: 350,
-		firstTimestamp: "2026-06-14T00:00:00.000Z",
-		lastTimestamp: "2026-06-14T01:00:00.000Z",
-		studio: { requests: 1, responseBytes: 75, requestBytes: 50 },
-		nonStudio: { requests: 8, responseBytes: 1360, requestBytes: 300 },
-		byDomain: [{ label: "api", requests: 9, responseBytes: 1435 }],
-		byEndpoint: [
-			{ label: "listen", requests: 1, responseBytes: 200 },
-			{ label: "query", requests: 1, responseBytes: 75 },
-			{ label: "assets", requests: 1, responseBytes: 35 },
-		],
-		byDate: [{ label: "Sun Jun 14, 2026", requests: 9, responseBytes: 1435 }],
-		byHour: [
-			{ label: "00:00", requests: 8, responseBytes: 1360 },
-			{ label: "01:00", requests: 1, responseBytes: 75 },
-		],
-		byUrl: [
+	summary: {
+		bandwidth: 1435,
+		requestCount: 9,
+		studioRequestPercent: (1 / 9) * 100,
+		cdnDeliveryPercent: (8 / 9) * 100,
+		studioBandwidth: 75,
+		cdnBandwidth: 1360,
+	},
+	images: {
+		entries: [
 			{
 				label: "https://cdn.sanity.io/images/project/dataset/photo-400x300.jpg",
 				requests: 1,
@@ -63,25 +52,60 @@ export const SAMPLE_REPORT: ReportData = enrichReportData({
 				responseBytes: 180,
 			},
 			{
-				label: "https://cdn.sanity.io/images/project/dataset/thumb.jpg?format=webp",
+				label:
+					"https://cdn.sanity.io/images/project/dataset/thumb.jpg?format=webp",
 				requests: 1,
 				responseBytes: 80,
 			},
+		],
+	},
+	files: {
+		entries: [
 			{
 				label: "https://cdn.sanity.io/files/project/dataset/brochure.pdf",
 				requests: 1,
 				responseBytes: 150,
 			},
-			{ label: QUERY_URL, requests: 1, responseBytes: 75 },
-			{ label: "https://example.com/about", requests: 1, responseBytes: 200 },
 			{
 				label: "https://cdn.sanity.io/files/project/dataset/clip.mp4",
 				requests: 1,
 				responseBytes: 150,
 			},
 		],
-		byReferer: [{ label: "(empty)", requests: 9, responseBytes: 1435 }],
-		byUserAgent: [
+	},
+	queries: {
+		entries: [{ label: QUERY_URL, requests: 1, responseBytes: 75 }],
+	},
+	responseStatuses: {
+		entries: [
+			{ label: "200", count: 8 },
+			{ label: "404", count: 1 },
+		],
+	},
+	hourlyBandwidth: {
+		entries: [
+			{ label: "00:00", requests: 8, responseBytes: 1360 },
+			{ label: "01:00", requests: 1, responseBytes: 75 },
+		],
+		issues: [],
+	},
+	dailyBandwidth: {
+		entries: [
+			{ label: "Sun Jun 14, 2026", requests: 9, responseBytes: 1435 },
+		],
+		issues: [],
+	},
+	referrers: {
+		entries: [{ label: "(empty)", requests: 9, responseBytes: 1435 }],
+	},
+	ips: {
+		entries: [
+			{ label: "127.0.0.1", requests: 8, responseBytes: 1360 },
+			{ label: "127.0.0.2", requests: 1, responseBytes: 75 },
+		],
+	},
+	userAgents: {
+		entries: [
 			{
 				label:
 					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
@@ -96,124 +120,5 @@ export const SAMPLE_REPORT: ReportData = enrichReportData({
 			},
 			{ label: "curl/8.4.0", requests: 1, responseBytes: 100 },
 		],
-		byIp: [
-			{ label: "127.0.0.1", requests: 8, responseBytes: 1360 },
-			{ label: "127.0.0.2", requests: 1, responseBytes: 75 },
-		],
-		byStatus: [
-			{ label: "200", count: 8 },
-			{ label: "404", count: 1 },
-		],
-		responseSizeHistogram: [{ label: "0 B - 1 KB", count: 9 }],
-		byUrlKind: {
-			image: { requests: 5, responseBytes: 860 },
-			file: { requests: 2, responseBytes: 300 },
-			query: { requests: 1, responseBytes: 75 },
-			other: { requests: 1, responseBytes: 200 },
-		},
-		topContributors: {
-			image: {
-				label: "https://cdn.sanity.io/images/project/dataset/hero.jpg?w=2400",
-				requests: 2,
-				responseBytes: 400,
-			},
-			file: {
-				label: "https://cdn.sanity.io/files/project/dataset/brochure.pdf",
-				requests: 1,
-				responseBytes: 150,
-			},
-			query: {
-				label: QUERY_URL,
-				requests: 1,
-				responseBytes: 75,
-			},
-			referer: { label: "(empty)", requests: 9, responseBytes: 1435 },
-		},
-		includesStudio: true,
-	},
-	billable: {
-		label: "Billable requests",
-		requests: 8,
-		responseBytes: 1360,
-		requestBytes: 300,
-		firstTimestamp: "2026-06-14T00:00:00.000Z",
-		lastTimestamp: "2026-06-14T00:00:00.000Z",
-		studio: { requests: 0, responseBytes: 0, requestBytes: 0 },
-		nonStudio: { requests: 8, responseBytes: 1360, requestBytes: 300 },
-		byDomain: [{ label: "api", requests: 8, responseBytes: 1360 }],
-		byEndpoint: [
-			{ label: "images", requests: 6, responseBytes: 1100 },
-			{ label: "listen", requests: 1, responseBytes: 150 },
-			{ label: "query", requests: 1, responseBytes: 75 },
-			{ label: "assets", requests: 1, responseBytes: 35 },
-		],
-		byDate: [{ label: "Sun Jun 14, 2026", requests: 8, responseBytes: 1360 }],
-		byHour: [{ label: "00:00", requests: 8, responseBytes: 1360 }],
-		byUrl: [
-			{
-				label: "https://cdn.sanity.io/images/project/dataset/photo-400x300.jpg",
-				requests: 1,
-				responseBytes: 200,
-			},
-			{
-				label: "https://cdn.sanity.io/images/project/dataset/hero.jpg?w=2400",
-				requests: 2,
-				responseBytes: 400,
-			},
-			{
-				label: "https://cdn.sanity.io/images/project/dataset/banner.jpg?q=90",
-				requests: 1,
-				responseBytes: 180,
-			},
-			{
-				label: "https://cdn.sanity.io/images/project/dataset/thumb.jpg?format=webp",
-				requests: 1,
-				responseBytes: 80,
-			},
-			{
-				label: "https://cdn.sanity.io/files/project/dataset/brochure.pdf",
-				requests: 1,
-				responseBytes: 150,
-			},
-			{ label: "https://example.com/about", requests: 1, responseBytes: 200 },
-			{
-				label: "https://cdn.sanity.io/files/project/dataset/clip.mp4",
-				requests: 1,
-				responseBytes: 150,
-			},
-		],
-		byReferer: [{ label: "(empty)", requests: 8, responseBytes: 1360 }],
-		byUserAgent: [
-			{
-				label:
-					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-				requests: 3,
-				responseBytes: 600,
-			},
-			{ label: "curl/8.4.0", requests: 1, responseBytes: 100 },
-		],
-		byIp: [{ label: "127.0.0.1", requests: 8, responseBytes: 1360 }],
-		byStatus: [{ label: "200", count: 8 }],
-		responseSizeHistogram: [{ label: "0 B - 1 KB", count: 8 }],
-		byUrlKind: {
-			image: { requests: 5, responseBytes: 860 },
-			file: { requests: 2, responseBytes: 300 },
-			query: { requests: 0, responseBytes: 0 },
-			other: { requests: 1, responseBytes: 200 },
-		},
-		topContributors: {
-			image: {
-				label: "https://cdn.sanity.io/images/project/dataset/hero.jpg?w=2400",
-				requests: 2,
-				responseBytes: 400,
-			},
-			file: {
-				label: "https://cdn.sanity.io/files/project/dataset/brochure.pdf",
-				requests: 1,
-				responseBytes: 150,
-			},
-			referer: { label: "(empty)", requests: 8, responseBytes: 1360 },
-		},
-		includesStudio: false,
 	},
 });

@@ -3,9 +3,62 @@ import type {
 	ParsedUserAgent,
 	UserAgentAggregateStats,
 } from "./report/parse-user-agent.js";
-import type { ReportSummary } from "./report/summarize.js";
 
 export type { GroqQueryStats };
+
+export type IssueSeverity = "critical" | "warn" | "passed";
+
+export type FindingId =
+	| "groq-spread"
+	| "groq-perf"
+	| "mp4-transfer"
+	| "image-width"
+	| "image-format"
+	| "image-quality"
+	| "status-5xx"
+	| "status-4xx";
+
+export interface ReportIssue {
+	id: FindingId;
+	severity: IssueSeverity;
+	message: string;
+	suggestion: string;
+	requests?: number;
+	responseBytes?: number;
+}
+
+export interface RankedReportSection {
+	entries: RankedRow[];
+	issues: ReportIssue[];
+}
+
+export interface CountReportSection {
+	entries: CountRow[];
+	issues: ReportIssue[];
+}
+
+export interface ReportEntriesOnly {
+	entries: RankedRow[];
+}
+
+export interface QueriesSection extends RankedReportSection {
+	groqByUrl: Record<string, GroqUrlDetails>;
+}
+
+export interface UserAgentsSection extends ReportEntriesOnly {
+	userAgentByLabel: Record<string, ParsedUserAgent>;
+	userAgentStats: UserAgentAggregateStats;
+}
+
+export interface ReportSummaryBlock {
+	message: string;
+	bandwidth: number;
+	requestCount: number;
+	cdnDeliveryPercent: number;
+	studioRequestPercent: number;
+	studioBandwidth: number;
+	cdnBandwidth: number;
+}
 
 export interface GroqRowMetrics {
 	projections: number;
@@ -23,187 +76,149 @@ export interface GroqUrlDetails {
 	hasSpreadOperator: boolean;
 }
 
-export interface ReportMarkdown {
-	billable: string;
-	all: string;
-}
-
-export type ReportViewInput = Omit<
-	ReportView,
-	"summary" | "userAgentByLabel" | "userAgentStats" | "groqByUrl"
->;
-
 export type ReportDataInput = Omit<
 	ReportData,
-	"markdown" | "all" | "billable"
+	| "markdown"
+	| "summary"
+	| "images"
+	| "files"
+	| "queries"
+	| "responseStatuses"
+	| "hourlyBandwidth"
+	| "dailyBandwidth"
+	| "userAgents"
 > & {
-	all: ReportViewInput;
-	billable: ReportViewInput;
-	markdown?: ReportMarkdown;
+	summary: Omit<ReportSummaryBlock, "message">;
+	images: Omit<RankedReportSection, "issues"> & { issues?: ReportIssue[] };
+	files: Omit<RankedReportSection, "issues"> & { issues?: ReportIssue[] };
+	queries: Omit<QueriesSection, "issues" | "groqByUrl"> & {
+		issues?: ReportIssue[];
+		groqByUrl?: Record<string, GroqUrlDetails>;
+	};
+	responseStatuses: Omit<CountReportSection, "issues"> & {
+		issues?: ReportIssue[];
+	};
+	hourlyBandwidth: Omit<RankedReportSection, "issues"> & {
+		issues?: ReportIssue[];
+	};
+	dailyBandwidth: Omit<RankedReportSection, "issues"> & {
+		issues?: ReportIssue[];
+	};
+	userAgents: ReportEntriesOnly;
+	markdown?: string;
 };
 
 export interface LogEntry {
-  timestamp: string;
-  date: string;
-  hour: number;
-  method: string;
-  insertId: string;
-  duration: number;
-  requestSize: number;
-  responseSize: number;
-  status: number;
-  url: string;
-  referer: string;
-  userAgent: string;
-  remoteIp: string;
-  projectId: string;
-  dataset: string;
-  domain: string;
-  endpoint: string;
-  groqQueryIdentifier: string;
-  apiVersion: string;
-  tags: string[];
-  studioRequest: boolean;
+	timestamp: string;
+	date: string;
+	hour: number;
+	method: string;
+	insertId: string;
+	duration: number;
+	requestSize: number;
+	responseSize: number;
+	status: number;
+	url: string;
+	referer: string;
+	userAgent: string;
+	remoteIp: string;
+	projectId: string;
+	dataset: string;
+	domain: string;
+	endpoint: string;
+	groqQueryIdentifier: string;
+	apiVersion: string;
+	tags: string[];
+	studioRequest: boolean;
 }
 
 export interface Breakdown {
-  requests: number;
-  responseBytes: number;
+	requests: number;
+	responseBytes: number;
 }
 
 export interface Totals extends Breakdown {
-  requestBytes: number;
+	requestBytes: number;
 }
 
 export interface ReportSections {
-  domain: boolean;
-  endpoint: boolean;
-  date: boolean;
-  hour: boolean;
-  status: boolean;
-  histogram: boolean;
-  urls: boolean;
-  referers: boolean;
-  userAgents: boolean;
-  ips: boolean;
-  billableComparison: boolean;
+	images: boolean;
+	files: boolean;
+	queries: boolean;
+	responseStatuses: boolean;
+	hourlyBandwidth: boolean;
+	dailyBandwidth: boolean;
+	referrers: boolean;
+	userAgents: boolean;
+	ips: boolean;
 }
 
 export interface ReportConfig {
-  title: string;
-  topN: number;
-  histogramBuckets: number[];
-  sections: ReportSections;
+	title: string;
+	topN: number;
+	sections: ReportSections;
 }
 
 export interface PartialReportConfig {
-  title?: string;
-  topN?: number;
-  histogramBuckets?: number[];
-  sections?: Partial<ReportSections>;
+	title?: string;
+	topN?: number;
+	/** @deprecated Ignored; histogram section removed. */
+	histogramBuckets?: number[];
+	sections?: Partial<ReportSections>;
 }
 
 export interface AggregationSummary {
-  totalRequests: number;
-  totalResponseBytes: number;
-  totalRequestBytes: number;
-  firstTimestamp: string | null;
-  lastTimestamp: string | null;
-  byDomain: Record<string, Breakdown>;
-  byEndpoint: Record<string, Breakdown>;
-  byDate: Record<string, Breakdown>;
-  byHour: Record<number, Breakdown>;
-  byUrl: Record<string, Breakdown>;
-  byReferer: Record<string, Breakdown>;
-  byUserAgent: Record<string, Breakdown>;
-  byIp: Record<string, Breakdown>;
-  studio: Totals;
-  nonStudio: Totals;
-  byStatus: Record<number, number>;
-  byStatusNonStudio: Record<number, number>;
-  responseSizeHistogram: Record<string, number>;
-  responseSizeHistogramNonStudio: Record<string, number>;
-  byDomainNonStudio: Record<string, Breakdown>;
-  byEndpointNonStudio: Record<string, Breakdown>;
-  byDateNonStudio: Record<string, Breakdown>;
-  byHourNonStudio: Record<number, Breakdown>;
-  byUrlNonStudio: Record<string, Breakdown>;
-  byRefererNonStudio: Record<string, Breakdown>;
-  byUserAgentNonStudio: Record<string, Breakdown>;
-  byIpNonStudio: Record<string, Breakdown>;
+	projectId: string;
+	totalRequests: number;
+	totalResponseBytes: number;
+	totalRequestBytes: number;
+	firstTimestamp: string | null;
+	lastTimestamp: string | null;
+	byDate: Record<string, Breakdown>;
+	byHour: Record<number, Breakdown>;
+	byUrl: Record<string, Breakdown>;
+	byReferer: Record<string, Breakdown>;
+	byUserAgent: Record<string, Breakdown>;
+	byIp: Record<string, Breakdown>;
+	studio: Totals;
+	nonStudio: Totals;
+	byStatus: Record<number, number>;
 }
 
 export interface RankedRow extends Breakdown {
-  label: string;
-  groq?: GroqRowMetrics;
+	label: string;
+	groq?: GroqRowMetrics;
 }
 
 export interface CountRow {
-  label: string;
-  count: number;
-}
-
-export interface UrlKindBreakdown {
-  image: Breakdown;
-  file: Breakdown;
-  query: Breakdown;
-  other: Breakdown;
-}
-
-export interface TopContributor {
-  label: string;
-  requests: number;
-  responseBytes: number;
-}
-
-export interface TopContributors {
-  image?: TopContributor;
-  file?: TopContributor;
-  query?: TopContributor;
-  referer?: TopContributor;
-}
-
-export interface ReportView {
-  label: string;
-  requests: number;
-  responseBytes: number;
-  requestBytes: number;
-  firstTimestamp: string | null;
-  lastTimestamp: string | null;
-  studio: Totals;
-  nonStudio: Totals;
-  byDomain: RankedRow[];
-  byEndpoint: RankedRow[];
-  byDate: RankedRow[];
-  byHour: RankedRow[];
-  byUrl: RankedRow[];
-  byReferer: RankedRow[];
-  byUserAgent: RankedRow[];
-  byIp: RankedRow[];
-  byStatus: CountRow[];
-  responseSizeHistogram: CountRow[];
-  byUrlKind: UrlKindBreakdown;
-  topContributors: TopContributors;
-  includesStudio: boolean;
-  summary: ReportSummary;
-  userAgentByLabel: Record<string, ParsedUserAgent>;
-  userAgentStats: UserAgentAggregateStats;
-  groqByUrl: Record<string, GroqUrlDetails>;
+	label: string;
+	count: number;
 }
 
 export interface ReportData {
-  title: string;
-  sourcePath: string;
-  generatedAt: string;
-  config: ReportConfig;
-  all: ReportView;
-  billable: ReportView;
-  markdown: ReportMarkdown;
+	title: string;
+	sourcePath: string;
+	generatedAt: string;
+	projectId: string;
+	dateStart: string;
+	dateEnd: string;
+	config: ReportConfig;
+	summary: ReportSummaryBlock;
+	images: RankedReportSection;
+	files: RankedReportSection;
+	queries: QueriesSection;
+	responseStatuses: CountReportSection;
+	hourlyBandwidth: RankedReportSection;
+	dailyBandwidth: RankedReportSection;
+	referrers: ReportEntriesOnly;
+	ips: ReportEntriesOnly;
+	userAgents: UserAgentsSection;
+	markdown: string;
 }
 
 export interface LogProgress {
-  bytesRead: number;
-  totalBytes: number;
-  percent: number;
-  entriesProcessed: number;
+	bytesRead: number;
+	totalBytes: number;
+	percent: number;
+	entriesProcessed: number;
 }

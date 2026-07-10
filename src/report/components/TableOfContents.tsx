@@ -1,13 +1,12 @@
 import { getVisibleTocSections } from "../sections.js";
-import type { RankedRow, ReportSections } from "../../types.js";
+import type { ReportSections } from "../../types.js";
 
 interface TableOfContentsProps {
 	sections: ReportSections;
-	urlRows?: RankedRow[];
 }
 
-export function TableOfContents({ sections, urlRows }: TableOfContentsProps) {
-	const tocSections = getVisibleTocSections(sections, urlRows);
+export function TableOfContents({ sections }: TableOfContentsProps) {
+	const tocSections = getVisibleTocSections(sections);
 
 	return (
 		<nav

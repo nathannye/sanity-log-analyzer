@@ -6,7 +6,6 @@ import { initTableSort } from "./scripts/table-sort.js";
 import { initTocNav } from "./scripts/toc-nav.js";
 import { initToast } from "./scripts/toast.js";
 import { initUrlTabs } from "./scripts/url-tabs.js";
-import { initViewToggle } from "./scripts/view-toggle.js";
 
 const moduleRegistry: Record<string, ReportModuleInit> = {
 	"copy-buttons": initCopyButtons,
@@ -16,7 +15,6 @@ const moduleRegistry: Record<string, ReportModuleInit> = {
 	"toc-nav": initTocNav,
 	toast: initToast,
 	"url-tabs": initUrlTabs,
-	"view-toggle": initViewToggle,
 };
 
 function collectModuleNodes(root: ParentNode): HTMLElement[] {

@@ -95,7 +95,7 @@ async function main(): Promise<void> {
 	await writeHtmlReport(report, options.outputPath);
 
 	console.log(
-		`Wrote ${options.outputPath} in ${((Date.now() - start) / 1000).toFixed(1)}s (${report.all.requests.toLocaleString()} requests).`,
+		`Wrote ${options.outputPath} in ${((Date.now() - start) / 1000).toFixed(1)}s (${report.summary.requestCount.toLocaleString()} requests).`,
 	);
 
 	if (options.open) {

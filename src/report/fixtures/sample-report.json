@@ -2,100 +2,73 @@
   "title": "Sanity Log Report",
   "sourcePath": "sample.ndjson",
   "generatedAt": "2026-07-07T00:00:00.000Z",
+  "projectId": "project",
+  "dateStart": "2026-06-14T00:00:00.000Z",
+  "dateEnd": "2026-06-14T01:00:00.000Z",
   "config": {
     "title": "Sanity Log Report",
     "topN": 50,
-    "histogramBuckets": [0, 1024, null],
     "sections": {
-      "domain": true,
-      "endpoint": true,
-      "date": true,
-      "hour": true,
-      "status": true,
-      "histogram": true,
-      "urls": true,
-      "referers": true,
+      "images": true,
+      "files": true,
+      "queries": true,
+      "responseStatuses": true,
+      "hourlyBandwidth": true,
+      "dailyBandwidth": true,
+      "referrers": true,
       "userAgents": true,
-      "ips": true,
-      "billableComparison": true
+      "ips": true
     }
   },
-  "all": {
-    "label": "All requests",
-    "requests": 2,
-    "responseBytes": 275,
-    "requestBytes": 150,
-    "firstTimestamp": "2026-06-14T00:00:00.000Z",
-    "lastTimestamp": "2026-06-14T01:00:00.000Z",
-    "studio": { "requests": 1, "responseBytes": 75, "requestBytes": 50 },
-    "nonStudio": { "requests": 1, "responseBytes": 200, "requestBytes": 100 },
-    "byDomain": [{ "label": "api", "requests": 2, "responseBytes": 275 }],
-    "byEndpoint": [
-      { "label": "listen", "requests": 1, "responseBytes": 200 },
-      { "label": "query", "requests": 1, "responseBytes": 75 }
-    ],
-    "byDate": [{ "label": "Sun Jun 14, 2026", "requests": 2, "responseBytes": 275 }],
-    "byHour": [
+  "summary": {
+    "bandwidth": 275,
+    "requestCount": 2,
+    "studioRequestPercent": 50,
+    "cdnDeliveryPercent": 50,
+    "studioBandwidth": 75,
+    "cdnBandwidth": 200
+  },
+  "images": {
+    "entries": []
+  },
+  "files": {
+    "entries": []
+  },
+  "queries": {
+    "entries": []
+  },
+  "responseStatuses": {
+    "entries": [
+      { "label": "200", "count": 1 },
+      { "label": "404", "count": 1 }
+    ]
+  },
+  "hourlyBandwidth": {
+    "entries": [
       { "label": "00:00", "requests": 1, "responseBytes": 200 },
       { "label": "01:00", "requests": 1, "responseBytes": 75 }
     ],
-    "byUrl": [
-      { "label": "https://example.com/a", "requests": 1, "responseBytes": 200 },
-      { "label": "https://example.com/b", "requests": 1, "responseBytes": 75 }
+    "issues": []
+  },
+  "dailyBandwidth": {
+    "entries": [
+      { "label": "Sun Jun 14, 2026", "requests": 2, "responseBytes": 275 }
     ],
-    "byReferer": [{ "label": "(empty)", "requests": 2, "responseBytes": 275 }],
-    "byUserAgent": [
-      { "label": "UA-1", "requests": 1, "responseBytes": 200 },
-      { "label": "UA-2", "requests": 1, "responseBytes": 75 }
-    ],
-    "byIp": [
+    "issues": []
+  },
+  "referrers": {
+    "entries": [{ "label": "(empty)", "requests": 2, "responseBytes": 275 }]
+  },
+  "ips": {
+    "entries": [
       { "label": "127.0.0.1", "requests": 1, "responseBytes": 200 },
       { "label": "127.0.0.2", "requests": 1, "responseBytes": 75 }
-    ],
-    "byStatus": [
-      { "label": "200", "count": 1 },
-      { "label": "404", "count": 1 }
-    ],
-    "responseSizeHistogram": [{ "label": "0 B - 1 KB", "count": 2 }],
-    "byUrlKind": {
-      "image": { "requests": 0, "responseBytes": 0 },
-      "file": { "requests": 0, "responseBytes": 0 },
-      "query": { "requests": 0, "responseBytes": 0 },
-      "other": { "requests": 2, "responseBytes": 275 }
-    },
-    "topContributors": {
-      "other": { "label": "https://example.com/a", "requests": 1, "responseBytes": 200 }
-    },
-    "includesStudio": true
+    ]
   },
-  "billable": {
-    "label": "Billable requests",
-    "requests": 1,
-    "responseBytes": 200,
-    "requestBytes": 100,
-    "firstTimestamp": "2026-06-14T00:00:00.000Z",
-    "lastTimestamp": "2026-06-14T00:00:00.000Z",
-    "studio": { "requests": 0, "responseBytes": 0, "requestBytes": 0 },
-    "nonStudio": { "requests": 1, "responseBytes": 200, "requestBytes": 100 },
-    "byDomain": [{ "label": "api", "requests": 1, "responseBytes": 200 }],
-    "byEndpoint": [{ "label": "listen", "requests": 1, "responseBytes": 200 }],
-    "byDate": [{ "label": "Sun Jun 14, 2026", "requests": 1, "responseBytes": 200 }],
-    "byHour": [{ "label": "00:00", "requests": 1, "responseBytes": 200 }],
-    "byUrl": [{ "label": "https://example.com/a", "requests": 1, "responseBytes": 200 }],
-    "byReferer": [{ "label": "(empty)", "requests": 1, "responseBytes": 200 }],
-    "byUserAgent": [{ "label": "UA-1", "requests": 1, "responseBytes": 200 }],
-    "byIp": [{ "label": "127.0.0.1", "requests": 1, "responseBytes": 200 }],
-    "byStatus": [{ "label": "200", "count": 1 }],
-    "responseSizeHistogram": [{ "label": "0 B - 1 KB", "count": 1 }],
-    "byUrlKind": {
-      "image": { "requests": 0, "responseBytes": 0 },
-      "file": { "requests": 0, "responseBytes": 0 },
-      "query": { "requests": 0, "responseBytes": 0 },
-      "other": { "requests": 1, "responseBytes": 200 }
-    },
-    "topContributors": {
-      "other": { "label": "https://example.com/a", "requests": 1, "responseBytes": 200 }
-    },
-    "includesStudio": false
+  "userAgents": {
+    "entries": [
+      { "label": "UA-1", "requests": 1, "responseBytes": 200 },
+      { "label": "UA-2", "requests": 1, "responseBytes": 75 }
+    ]
   }
 }

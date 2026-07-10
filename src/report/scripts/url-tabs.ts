@@ -1,29 +1,20 @@
 import type { ReportModuleInit } from "./module.js";
 
-interface UrlTabGroup {
-	id: string;
-	label: string;
-}
-
 declare global {
 	interface Window {
 		__activateUrlTab?: (tab?: string | null) => void;
 	}
 }
 
-function visibleUrlTabsSection(): HTMLElement | null {
-	return document.querySelector<HTMLElement>(
-		'[data-report-view]:not([hidden]) [data-url-tabs]',
-	);
+function visibleTabsSection(): HTMLElement | null {
+	return document.querySelector<HTMLElement>("[data-url-tabs]");
 }
 
 function activateUrlTab(section: HTMLElement, tab?: string | null): void {
 	const resolved =
-		tab ||
-		section.getAttribute("data-default-url-tab") ||
-		"image";
+		tab || section.getAttribute("data-default-url-tab") || "referrers";
 	const fallback =
-		section.getAttribute("data-default-url-tab") || "image";
+		section.getAttribute("data-default-url-tab") || "referrers";
 	const effectiveTab = section.querySelector(`[data-url-tab="${resolved}"]`)
 		? resolved
 		: fallback;
@@ -44,7 +35,7 @@ function activateUrlTab(section: HTMLElement, tab?: string | null): void {
 }
 
 window.__activateUrlTab = (tab?: string | null) => {
-	const section = visibleUrlTabsSection();
+	const section = visibleTabsSection();
 	if (!section) return;
 	activateUrlTab(section, tab);
 };
@@ -56,7 +47,7 @@ export const initUrlTabs: ReportModuleInit = (node) => {
 	const activeTab =
 		node.getAttribute("data-default-url-tab") ||
 		node.querySelector<HTMLElement>("[data-url-tab]")?.getAttribute("data-url-tab") ||
-		"image";
+		"referrers";
 
 	activateUrlTab(node, activeTab);
 
@@ -73,12 +64,12 @@ export const initUrlTabs: ReportModuleInit = (node) => {
 		event.preventDefault();
 		activateUrlTab(node, tab);
 
-		const suffix = tab === "image" ? "" : `/${tab}`;
+		const suffix = tab === "referrers" ? "" : `/${tab}`;
 		if (history.replaceState) {
 			history.replaceState(
 				null,
 				"",
-				`${window.location.pathname}${window.location.search}#urls${suffix}`,
+				`${window.location.pathname}${window.location.search}#traffic${suffix}`,
 			);
 		}
 	};

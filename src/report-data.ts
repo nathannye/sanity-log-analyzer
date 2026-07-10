@@ -1,200 +1,95 @@
 import { formatIsoDate } from "./format.js";
-import { classifyUrl } from "./report/classify-url.js";
+import { groupUrlsByKind } from "./report/group-urls-by-kind.js";
 import { enrichReportData } from "./report/enrich-report.js";
+import { percentOf } from "./report/summarize.js";
 import type {
-  AggregationSummary,
-  Breakdown,
-  CountRow,
-  RankedRow,
-  ReportConfig,
-  ReportData,
-  ReportViewInput,
-  TopContributor,
-  TopContributors,
-  Totals,
-  UrlKindBreakdown,
+	AggregationSummary,
+	Breakdown,
+	CountRow,
+	RankedRow,
+	ReportConfig,
+	ReportData,
+	ReportDataInput,
 } from "./types.js";
 
 function topN(
-  map: Record<string, Breakdown>,
-  limit: number,
-  sortBy: "responseBytes" | "requests" = "responseBytes",
+	map: Record<string, Breakdown>,
+	limit: number,
+	sortBy: "responseBytes" | "requests" = "responseBytes",
 ): RankedRow[] {
-  return Object.entries(map)
-    .map(([label, value]) => ({ label, ...value }))
-    .sort((a, b) =>
-      sortBy === "responseBytes"
-        ? b.responseBytes - a.responseBytes
-        : b.requests - a.requests,
-    )
-    .slice(0, limit);
+	return Object.entries(map)
+		.map(([label, value]) => ({ label, ...value }))
+		.sort((a, b) =>
+			sortBy === "responseBytes"
+				? b.responseBytes - a.responseBytes
+				: b.requests - a.requests,
+		)
+		.slice(0, limit);
 }
 
 function sortDateRows(map: Record<string, Breakdown>): RankedRow[] {
-  return Object.entries(map)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([isoDate, value]) => ({
-      label: formatIsoDate(isoDate),
-      ...value,
-    }));
+	return Object.entries(map)
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([isoDate, value]) => ({
+			label: formatIsoDate(isoDate),
+			...value,
+		}));
 }
 
 function sortHourRows(map: Record<number, Breakdown>): RankedRow[] {
-  return Array.from({ length: 24 }, (_, hour) => ({
-    label: `${hour.toString().padStart(2, "0")}:00`,
-    ...(map[hour] ?? { requests: 0, responseBytes: 0 }),
-  }));
+	return Array.from({ length: 24 }, (_, hour) => ({
+		label: `${hour.toString().padStart(2, "0")}:00`,
+		...(map[hour] ?? { requests: 0, responseBytes: 0 }),
+	}));
 }
 
 function toCountRows(map: Record<number, number>): CountRow[] {
-  return Object.entries(map)
-    .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => Number(a.label) - Number(b.label));
+	return Object.entries(map)
+		.map(([label, count]) => ({ label, count }))
+		.sort((a, b) => Number(a.label) - Number(b.label));
 }
 
-function zeroTotals(): Totals {
-  return { requests: 0, responseBytes: 0, requestBytes: 0 };
-}
+export function buildReportDataInput(
+	summary: AggregationSummary,
+	config: ReportConfig,
+	sourcePath: string,
+): ReportDataInput {
+	const byUrl = topN(summary.byUrl, config.topN);
+	const groups = groupUrlsByKind(byUrl);
+	const requestCount = summary.totalRequests;
 
-function zeroBreakdown(): Breakdown {
-  return { requests: 0, responseBytes: 0 };
-}
-
-function emptyUrlKindBreakdown(): UrlKindBreakdown {
-  return {
-    image: zeroBreakdown(),
-    file: zeroBreakdown(),
-    query: zeroBreakdown(),
-    other: zeroBreakdown(),
-  };
-}
-
-type UrlKindTab = keyof UrlKindBreakdown;
-
-function urlKindTab(url: string): UrlKindTab {
-  const kind = classifyUrl(url);
-  if (kind === "image") return "image";
-  if (kind === "file" || kind === "video") return "file";
-  if (kind === "query") return "query";
-  return "other";
-}
-
-function updateTopContributor(
-  current: TopContributor | undefined,
-  label: string,
-  breakdown: Breakdown,
-): TopContributor {
-  if (!current || breakdown.responseBytes > current.responseBytes) {
-    return { label, ...breakdown };
-  }
-  return current;
-}
-
-export function computeUrlKindStats(map: Record<string, Breakdown>): {
-  byUrlKind: UrlKindBreakdown;
-  topContributors: Pick<TopContributors, "image" | "file" | "query">;
-} {
-  const byUrlKind = emptyUrlKindBreakdown();
-  let topContributors: Pick<TopContributors, "image" | "file" | "query"> = {};
-
-  for (const [label, breakdown] of Object.entries(map)) {
-    const tab = urlKindTab(label);
-    byUrlKind[tab].requests += breakdown.requests;
-    byUrlKind[tab].responseBytes += breakdown.responseBytes;
-    if (tab !== "other") {
-      topContributors = {
-        ...topContributors,
-        [tab]: updateTopContributor(topContributors[tab], label, breakdown),
-      };
-    }
-  }
-
-  return { byUrlKind, topContributors };
-}
-
-function topReferer(map: Record<string, Breakdown>): TopContributor | undefined {
-  let top: TopContributor | undefined;
-  for (const [label, breakdown] of Object.entries(map)) {
-    top = updateTopContributor(top, label, breakdown);
-  }
-  return top;
-}
-
-function viewFromSummary(
-  label: string,
-  summary: AggregationSummary,
-  prefix: "" | "NonStudio",
-  topLimit: number,
-): ReportViewInput {
-  const responseHistogram = Object.entries(summary.responseSizeHistogram).map(
-    ([bucketLabel, count]) => ({ label: bucketLabel, count }),
-  );
-  const responseHistogramNonStudio = Object.entries(
-    summary.responseSizeHistogramNonStudio,
-  ).map(([bucketLabel, count]) => ({ label: bucketLabel, count }));
-
-  const urlMap = prefix ? summary.byUrlNonStudio : summary.byUrl;
-  const refererMap = prefix ? summary.byRefererNonStudio : summary.byReferer;
-  const { byUrlKind, topContributors: urlTops } = computeUrlKindStats(urlMap);
-  const refererTop = topReferer(refererMap);
-
-  const byDomain = prefix
-    ? topN(summary.byDomainNonStudio, topLimit)
-    : topN(summary.byDomain, topLimit);
-  const byEndpoint = prefix
-    ? topN(summary.byEndpointNonStudio, topLimit)
-    : topN(summary.byEndpoint, topLimit);
-  const byDate = prefix ? sortDateRows(summary.byDateNonStudio) : sortDateRows(summary.byDate);
-  const byHour = prefix ? sortHourRows(summary.byHourNonStudio) : sortHourRows(summary.byHour);
-  const byUrl = topN(urlMap, topLimit);
-  const byReferer = topN(refererMap, topLimit);
-  const byUserAgent = prefix
-    ? topN(summary.byUserAgentNonStudio, topLimit)
-    : topN(summary.byUserAgent, topLimit);
-  const byIp = prefix ? topN(summary.byIpNonStudio, topLimit) : topN(summary.byIp, topLimit);
-  const byStatus = prefix
-    ? toCountRows(summary.byStatusNonStudio)
-    : toCountRows(summary.byStatus);
-
-  return {
-    label,
-    requests: prefix ? summary.nonStudio.requests : summary.totalRequests,
-    responseBytes: prefix ? summary.nonStudio.responseBytes : summary.totalResponseBytes,
-    requestBytes: prefix ? summary.nonStudio.requestBytes : summary.totalRequestBytes,
-    firstTimestamp: summary.firstTimestamp,
-    lastTimestamp: summary.lastTimestamp,
-    studio: prefix ? zeroTotals() : summary.studio,
-    nonStudio: summary.nonStudio,
-    byDomain,
-    byEndpoint,
-    byDate,
-    byHour,
-    byUrl,
-    byReferer,
-    byUserAgent,
-    byIp,
-    byStatus,
-    responseSizeHistogram: prefix ? responseHistogramNonStudio : responseHistogram,
-    byUrlKind,
-    topContributors: {
-      ...urlTops,
-      referer: refererTop,
-    },
-    includesStudio: !prefix,
-  };
+	return {
+		title: config.title,
+		sourcePath,
+		generatedAt: new Date().toISOString(),
+		projectId: summary.projectId,
+		dateStart: summary.firstTimestamp ?? "",
+		dateEnd: summary.lastTimestamp ?? "",
+		config,
+		summary: {
+			bandwidth: summary.totalResponseBytes,
+			requestCount,
+			studioRequestPercent: percentOf(summary.studio.requests, requestCount),
+			cdnDeliveryPercent: percentOf(summary.nonStudio.requests, requestCount),
+			studioBandwidth: summary.studio.responseBytes,
+			cdnBandwidth: summary.nonStudio.responseBytes,
+		},
+		images: { entries: groups.image },
+		files: { entries: groups.file },
+		queries: { entries: groups.query },
+		responseStatuses: { entries: toCountRows(summary.byStatus) },
+		hourlyBandwidth: { entries: sortHourRows(summary.byHour), issues: [] },
+		dailyBandwidth: { entries: sortDateRows(summary.byDate), issues: [] },
+		referrers: { entries: topN(summary.byReferer, config.topN) },
+		ips: { entries: topN(summary.byIp, config.topN) },
+		userAgents: { entries: topN(summary.byUserAgent, config.topN) },
+	};
 }
 
 export function buildReportData(
-  summary: AggregationSummary,
-  config: ReportConfig,
-  sourcePath: string,
+	summary: AggregationSummary,
+	config: ReportConfig,
+	sourcePath: string,
 ): ReportData {
-  return enrichReportData({
-    title: config.title,
-    sourcePath,
-    generatedAt: new Date().toISOString(),
-    config,
-    all: viewFromSummary("All requests", summary, "", config.topN),
-    billable: viewFromSummary("Billable requests", summary, "NonStudio", config.topN),
-  });
+	return enrichReportData(buildReportDataInput(summary, config, sourcePath));
 }

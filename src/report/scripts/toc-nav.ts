@@ -2,7 +2,7 @@ import type { ReportModuleInit } from "./module.js";
 
 interface ParsedHash {
 	section: string;
-	urlTab: string | null;
+	tab: string | null;
 	full: string;
 }
 
@@ -14,20 +14,18 @@ declare global {
 
 function parseHash(hash: string): ParsedHash {
 	const raw = (hash || "").replace(/^#/, "");
-	if (!raw) return { section: "", urlTab: null, full: "" };
-	if (raw.startsWith("urls/")) {
-		return { section: "urls", urlTab: raw.slice(5), full: raw };
+	if (!raw) return { section: "", tab: null, full: "" };
+	if (raw.startsWith("traffic/")) {
+		return { section: "traffic", tab: raw.slice(8), full: raw };
 	}
-	if (raw === "urls") {
-		return { section: "urls", urlTab: null, full: "urls" };
+	if (raw === "traffic") {
+		return { section: "traffic", tab: null, full: "traffic" };
 	}
-	return { section: raw, urlTab: null, full: raw };
+	return { section: raw, tab: null, full: raw };
 }
 
 function scrollToSection(node: HTMLElement, section: string, fullHash: string): void {
-	const target = node.querySelector<HTMLElement>(
-		`[data-report-view]:not([hidden]) [data-section="${section}"]`,
-	);
+	const target = node.querySelector<HTMLElement>(`[data-section="${section}"]`);
 	if (!target) return;
 
 	target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -49,8 +47,8 @@ function navigate(node: HTMLElement, hash: string): void {
 
 	scrollToSection(node, parsed.section, parsed.full);
 
-	if (parsed.section === "urls") {
-		window.__activateUrlTab?.(parsed.urlTab);
+	if (parsed.section === "traffic") {
+		window.__activateUrlTab?.(parsed.tab);
 	}
 }
 

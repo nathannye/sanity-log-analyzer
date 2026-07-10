@@ -2,8 +2,7 @@ import type { ReportModuleInit } from "./module.js";
 
 interface MarkdownPayload {
 	filenameBase?: string;
-	billable?: string;
-	all?: string;
+	markdown?: string;
 }
 
 export const initMarkdownDownload: ReportModuleInit = (node) => {
@@ -24,16 +23,12 @@ export const initMarkdownDownload: ReportModuleInit = (node) => {
 			return;
 		}
 
-		if (!payload?.filenameBase) return;
+		if (!payload?.filenameBase || !payload.markdown) return;
 
-		const checkbox = node.querySelector<HTMLInputElement>("#show-studio-requests");
-		const view = checkbox && checkbox.checked ? "all" : "billable";
-		const markdown = view === "all" ? payload.all : payload.billable;
-		if (!markdown) return;
-
-		const suffix = view === "all" ? "_all" : "_billable-only";
-		const filename = `${payload.filenameBase}${suffix}.md`;
-		const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+		const filename = `${payload.filenameBase}.md`;
+		const blob = new Blob([payload.markdown], {
+			type: "text/markdown;charset=utf-8",
+		});
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement("a");
 		link.href = url;
