@@ -188,10 +188,15 @@ pre {
 	border-collapse: collapse;
 }
 
-.data-table th,
+.data-table th {
+	padding: .5rem 1.2rem;
+	text-align: left;
+	vertical-align: top;
+}
+
 .data-table td {
 	padding: .8rem 1.2rem 2.7rem 1.2rem;
-	border-bottom: 0.1rem solid color-mix(in srgb, var(--color-primary) 7%, transparent);
+	border-bottom: 0.1rem solid color-mix(in srgb, var(--color-primary) 17%, transparent);
 	text-align: left;
 	vertical-align: top;
 }
