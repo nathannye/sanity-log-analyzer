@@ -18,14 +18,15 @@
 	--breakpoint-xl: 1440px;
 
 	--color-primary: #09090b;
+	--color-pure: #000;
 	--color-inverted: #f4f4f5;
 	--color-muted: #71717a;
 	--color-panel: rgba(255, 255, 255, 0.9);
 
 	--color-red: #EE2F5C;
 	--color-ylw: #EFDB6A;
+	--color-accent: #0ea5e9;
 	--color-green: #50EC89;
-
 
 	--radius-lg: 2rem;
 	--radius-md: 1.2rem;
@@ -34,21 +35,23 @@
 
 	--font-sans: Geist;
 	--font-mono: Geist Mono;
-}
 
-:root {
-	color-scheme: dark;
 	--text-size-xs: 1.152rem;
 	--text-size-sm: 1.44rem;
 	--text-size-md: 1.52rem;
 	--tracking-tight: 0.013em;
 	--tracking-wide: 0.0335em;
-	--accent: #0ea5e9;
+}
+
+:root {
+	color-scheme: dark;
+
 }
 
 html[data-theme="light"] {
 	color-scheme: light;
 	--color-primary: #f4f4f5;
+	--color-pure: #fff;
 	--color-inverted: #09090b;
 	--color-muted: #a1a1aa;
 	--color-panel: rgba(24, 24, 27, 0.9);
@@ -251,7 +254,7 @@ pre {
 }
 
 .sort-header:focus-visible {
-	outline: 0.2rem solid var(--accent);
+	outline: 0.2rem solid var(--color-accent);
 	outline-offset: 0.2rem;
 }
 
