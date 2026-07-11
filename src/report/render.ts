@@ -43,6 +43,7 @@ export function renderReportHtml(data: ReportData): string {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(data.title)}</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/nathannye/sanity-log-analyzer/main/favicon.png" type="image/png" />
   <script>
     try {
       if (localStorage.getItem("sanity-log-parser-theme") === "light") {
