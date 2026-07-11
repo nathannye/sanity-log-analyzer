@@ -132,7 +132,9 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 	const issueCounts = buildSectionIssueCounts(data);
 
 	return (
-		<aside class="h-screen pr-30 pl-margin-1 shrink-0 top-0 pt-80 self-start lg:sticky">
+		<>
+		<div class="w-grid-3-w pr-30 pl-margin-1 shrink-0 h-screen"></div>
+		<aside class="pr-30 pl-margin-1 top-0 pt-80 w-grid-3 fixed">
 			<nav
 				aria-label="Report sections"
 				data-module="theme-toggle"
@@ -195,5 +197,6 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 				</div>
 			</nav>
 		</aside>
+		</>
 	);
 }

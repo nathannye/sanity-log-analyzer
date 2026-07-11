@@ -17,7 +17,7 @@ export function ReportApp({ data }: ReportAppProps) {
 		<main
 			class="mx-auto max-w-1920 pb-56"
 			style={colorStyle}
-			data-module="toast markdown-download toc-nav"
+			data-module="toast markdown-download toc-nav table-scroll-fade"
 		>
 			<Topbar {...data} />
 			

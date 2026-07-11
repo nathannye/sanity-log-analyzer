@@ -2,6 +2,7 @@ import { initCopyButtons } from "./scripts/copy-buttons.js";
 import { initGroqFlyout } from "./scripts/groq-flyout.js";
 import { initMarkdownDownload } from "./scripts/markdown-download.js";
 import type { ReportModuleCleanup, ReportModuleInit } from "./scripts/module.js";
+import { initTableScrollFade } from "./scripts/table-scroll-fade.js";
 import { initTableSort } from "./scripts/table-sort.js";
 import { initThemeToggle } from "./scripts/theme-toggle.js";
 import { initTocNav } from "./scripts/toc-nav.js";
@@ -12,6 +13,7 @@ const moduleRegistry: Record<string, ReportModuleInit> = {
 	"copy-buttons": initCopyButtons,
 	"groq-flyout": initGroqFlyout,
 	"markdown-download": initMarkdownDownload,
+	"table-scroll-fade": initTableScrollFade,
 	"table-sort": initTableSort,
 	"theme-toggle": initThemeToggle,
 	"toc-nav": initTocNav,

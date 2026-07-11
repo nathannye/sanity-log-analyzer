@@ -186,6 +186,29 @@ pre {
 	margin-top: 1.2rem;
 }
 
+.data-table-wrap::after {
+	content: "";
+	--size: 15vh;
+	position: sticky;
+	bottom: 0;
+	display: block;
+	height: var(--size);
+	margin-top: calc(var(--size) * -1);
+	pointer-events: none;
+	background: linear-gradient(
+		to top,
+		var(--color-inverted),
+		color-mix(in srgb, var(--color-inverted) 0%, transparent)
+	);
+	opacity: 0;
+	transition: opacity 0.15s ease;
+	z-index: 3;
+}
+
+.data-table-wrap[data-can-scroll-down]::after {
+	opacity: 1;
+}
+
 .data-table {
 	width: 100%;
 	border-collapse: collapse;
