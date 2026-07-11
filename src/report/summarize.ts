@@ -200,7 +200,7 @@ export function buildImageIssues(
 			failMessage: (count) =>
 				`${formatCountLabel(count, "image")} exceed ${MAX_IMAGE_WIDTH}px`,
 			passMessage: `No images exceed ${MAX_IMAGE_WIDTH}px width`,
-			suggestion: `Cap CDN width requests at ${MAX_IMAGE_WIDTH}px or below`,
+			suggestion: `Use srcset and sizes attributes to only serve images above ${MAX_IMAGE_WIDTH}px when necessary.`,
 		}),
 		failOrPass({
 			id: "image-format",
@@ -218,7 +218,7 @@ export function buildImageIssues(
 			failMessage: (count) =>
 				`${formatCountLabel(count, "image")} with quality above ${MAX_IMAGE_QUALITY}`,
 			passMessage: `No images use quality above ${MAX_IMAGE_QUALITY}`,
-			suggestion: `Keep image quality at ${MAX_IMAGE_QUALITY} or below for raster assets`,
+			suggestion: `Images with a quality of ${MAX_IMAGE_QUALITY} are visually identical to the original and much smaller in size.`,
 		}),
 	];
 }

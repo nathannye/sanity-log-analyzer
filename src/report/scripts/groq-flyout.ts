@@ -1,5 +1,42 @@
 import type { ReportModuleInit } from "./module.js";
 
+let lockedScrollY: number | null = null;
+
+function lockBodyScroll(): void {
+	if (lockedScrollY !== null) return;
+	lockedScrollY = window.scrollY;
+	const { body } = document;
+	body.style.position = "fixed";
+	body.style.top = `-${lockedScrollY}px`;
+	body.style.left = "0";
+	body.style.right = "0";
+	body.style.width = "100%";
+	body.style.overflow = "hidden";
+}
+
+function unlockBodyScroll(): void {
+	if (lockedScrollY === null) return;
+	const y = lockedScrollY;
+	lockedScrollY = null;
+	const { body } = document;
+	body.style.position = "";
+	body.style.top = "";
+	body.style.left = "";
+	body.style.right = "";
+	body.style.width = "";
+	body.style.overflow = "";
+	window.scrollTo(0, y);
+}
+
+function openFlyout(dialog: HTMLDialogElement): void {
+	if (typeof dialog.showModal !== "function") return;
+	if (dialog.open) return;
+
+	lockBodyScroll();
+	dialog.addEventListener("close", unlockBodyScroll, { once: true });
+	dialog.showModal();
+}
+
 export const initGroqFlyout: ReportModuleInit = (node) => {
 	const onClick = (event: MouseEvent) => {
 		const target = event.target;
@@ -11,8 +48,8 @@ export const initGroqFlyout: ReportModuleInit = (node) => {
 			const id = trigger.getAttribute("data-groq-flyout-target");
 			if (!id) return;
 			const dialog = document.getElementById(id);
-			if (dialog && typeof (dialog as HTMLDialogElement).showModal === "function") {
-				(dialog as HTMLDialogElement).showModal();
+			if (dialog instanceof HTMLDialogElement) {
+				openFlyout(dialog);
 			}
 			return;
 		}
@@ -39,5 +76,6 @@ export const initGroqFlyout: ReportModuleInit = (node) => {
 
 	return () => {
 		node.removeEventListener("click", onClick);
+		unlockBodyScroll();
 	};
 };

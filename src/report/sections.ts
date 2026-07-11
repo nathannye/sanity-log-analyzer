@@ -4,6 +4,7 @@ export interface TocSection {
 	slug: string;
 	label: string;
 	children?: TocSection[];
+	collapsible?: boolean;
 }
 
 export interface ReportSectionDefinition {
@@ -23,9 +24,29 @@ export const REPORT_SECTIONS: ReportSectionDefinition[] = [
 	},
 	{ slug: "images", label: "Images", configKey: "images" },
 	{ slug: "files", label: "Files", configKey: "files" },
-	{ slug: "queries", label: "GROQ Queries", configKey: "queries" },
-	{ slug: "traffic", label: "Traffic sources" },
+	{ slug: "queries", label: "GROQ queries", configKey: "queries" },
+	{ slug: "traffic", label: "Requests" },
 ];
+
+function pushIfEnabled(
+	target: TocSection[],
+	sections: ReportSections,
+	entry: ReportSectionDefinition,
+): void {
+	if (!entry.configKey || sections[entry.configKey]) {
+		target.push({ slug: entry.slug, label: entry.label });
+	}
+}
+
+function pushGroup(
+	result: TocSection[],
+	slug: string,
+	label: string,
+	children: TocSection[],
+): void {
+	if (children.length === 0) return;
+	result.push({ slug, label, children, collapsible: true });
+}
 
 export function getSectionLabel(slug: string): string | undefined {
 	const top = REPORT_SECTIONS.find((section) => section.slug === slug);
@@ -43,30 +64,51 @@ export function getSectionLabel(slug: string): string | undefined {
 }
 
 export function getVisibleTocSections(sections: ReportSections): TocSection[] {
+	const bySlug = new Map(
+		REPORT_SECTIONS.map((entry) => [entry.slug, entry] as const),
+	);
 	const result: TocSection[] = [];
 
-	for (const entry of REPORT_SECTIONS) {
-		if (entry.slug === "traffic") {
-			const children: TocSection[] = [];
-			if (sections.referrers) {
-				children.push({ slug: "traffic/referrers", label: "Referrers" });
-			}
-			if (sections.ips) {
-				children.push({ slug: "traffic/ips", label: "IPs" });
-			}
-			if (sections.userAgents) {
-				children.push({ slug: "traffic/userAgents", label: "User agents" });
-			}
-			if (children.length > 0) {
-				result.push({ slug: "traffic", label: entry.label, children });
-			}
-			continue;
-		}
-
-		if (!entry.configKey || sections[entry.configKey]) {
-			result.push({ slug: entry.slug, label: entry.label });
-		}
+	const summary = bySlug.get("summary");
+	if (summary) {
+		result.push({ slug: summary.slug, label: summary.label });
 	}
+
+	const bandwidthChildren: TocSection[] = [];
+	for (const slug of ["dailyBandwidth", "hourlyBandwidth"] as const) {
+		const entry = bySlug.get(slug);
+		if (entry) pushIfEnabled(bandwidthChildren, sections, entry);
+	}
+	pushGroup(result, "bandwidth", "Bandwidth", bandwidthChildren);
+
+	const responseChildren: TocSection[] = [];
+	const responseStatuses = bySlug.get("responseStatuses");
+	if (responseStatuses) {
+		pushIfEnabled(responseChildren, sections, responseStatuses);
+	}
+	pushGroup(result, "responses", "Responses", responseChildren);
+
+	const assetChildren: TocSection[] = [];
+	for (const slug of ["images", "files", "queries"] as const) {
+		const entry = bySlug.get(slug);
+		if (entry) pushIfEnabled(assetChildren, sections, entry);
+	}
+	pushGroup(result, "assets", "Assets & queries", assetChildren);
+
+	const requestChildren: TocSection[] = [];
+	if (sections.referrers) {
+		requestChildren.push({ slug: "traffic/referrers", label: "Referrers" });
+	}
+	if (sections.ips) {
+		requestChildren.push({ slug: "traffic/ips", label: "IPs" });
+	}
+	if (sections.userAgents) {
+		requestChildren.push({
+			slug: "traffic/userAgents",
+			label: "User agents",
+		});
+	}
+	pushGroup(result, "requests", "Requests", requestChildren);
 
 	return result;
 }

@@ -11,10 +11,25 @@ export function Topbar({maxRows, sourcePath, dateStart, dateEnd, projectId}: {ma
 		<div class="fixed top-0 left-0 right-0 z-10 pl-290">
       <div class="bg-inverted flex items-center justify-between px-10 py-4 eyebrow-1">
       <div class="flex items-center gap-16">
-        <p>Max rows: {maxRows}</p>
-        <p>File: {sourcePath}</p>
+        {
+          maxRows &&  <p>
+          <span class="opacity-50 inline-block mr-3">
+          Max rows:
+          </span> {maxRows}
+        </p>
+        }
+
+        <p>
+          <span class="opacity-50 inline-block mr-3">
+          File: 
+          </span>
+          {sourcePath}</p>
       </div>
-      <p>Project ID: {projectId}</p>
+      <p>
+        <span class="opacity-50 inline-block mr-3">
+        Project ID: 
+        </span>
+        {projectId}</p>
       <div class="flex items-center gap-16">
         <p>{startDate} → {endDate}</p>
         <Button

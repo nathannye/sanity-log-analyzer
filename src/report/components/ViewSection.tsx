@@ -58,10 +58,10 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				<IssueCardList issues={data.summary.issues} />
 			</section>
 
-			<div class="mb-24 flex flex-col gap-16">
+			<div class="mb-24 flex flex-col gap-50">
+				<h2 class="heading-2">Bandwidth</h2>
 				{(sections.dailyBandwidth || sections.hourlyBandwidth) && (
 					<div class="flex flex-col gap-16">
-						<div class="eyebrow-1 section-title">Bandwidth over time</div>
 						{sections.dailyBandwidth ? (
 							<section class="scroll-mt-20" data-section="dailyBandwidth">
 								<IssueCardList issues={data.dailyBandwidth.issues} />
@@ -146,6 +146,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 							<UrlDataTable
 								rows={data.queries.entries}
 								variant="query"
+								groqByUrl={data.queries.groqByUrl}
 								idPrefix="queries"
 							/>
 					</SectionWithLabel>

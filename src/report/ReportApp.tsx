@@ -22,7 +22,7 @@ export function ReportApp({ data }: ReportAppProps) {
 			<Topbar {...data} />
 			
 			<div class="items-start gap-margin-2 pr-margin-2 flex">
-				<TableOfContents sections={data.config.sections} />
+				<TableOfContents data={data} />
 				<div class="min-w-0">
 					<Header data={data} />
 					<ViewSection data={data} sections={data.config.sections} />

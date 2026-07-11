@@ -15,11 +15,12 @@ import {
 	PREFERRED_IMAGE_FORMAT,
 	parseImageUrl,
 	toInlineAssetUrl,
+	toThumbnailUrl,
 } from "../parse-image-url.js";
 import { encodeSortValue } from "../sort-table-values.js";
 import { Button } from "./Button.js";
 import { GroqQueryFlyout } from "./GroqQueryFlyout.js";
-import { ErrorIcon, WarningIcon } from "./icons.js";
+import { ErrorIcon, SearchIcon, WarningIcon } from "./icons.js";
 import { LabelActions } from "./LabelActions.js";
 import { RankedRowMetricCells } from "./RankedRowMetricCells.js";
 import { SortableTableHeader } from "./SortableTableHeader.js";
@@ -27,9 +28,8 @@ import { Tooltip } from "./Tooltip.js";
 
 interface UrlDataTableProps {
 	rows: RankedRow[];
-	showFlyout?: boolean;
 	groqByUrl?: Record<string, GroqUrlDetails>;
-	variant?: "default" | "image" | "file";
+	variant?: "default" | "image" | "file" | "query";
 	idPrefix: string;
 }
 
@@ -42,7 +42,6 @@ function groqIssueTooltip(issue: string): string {
 
 export function UrlDataTable({
 	rows,
-	showFlyout = false,
 	groqByUrl = {},
 	variant = "default",
 	idPrefix,
@@ -53,8 +52,8 @@ export function UrlDataTable({
 
 	const isImageTable = variant === "image";
 	const isFileTable = variant === "file";
-	const isQueryTable = showFlyout;
-	const showExternalLink = isImageTable || isFileTable;
+	const isQueryTable = variant === "query";
+	const showAssetLink = isImageTable || isFileTable;
 
 	return (
 		<div class="data-table-wrap" data-module="table-sort copy-buttons groq-flyout">
@@ -192,7 +191,7 @@ export function UrlDataTable({
 										value={row.label}
 										copyToast="Copied URL"
 										href={
-											showExternalLink
+											showAssetLink
 												? toInlineAssetUrl(row.label)
 												: undefined
 										}
@@ -216,18 +215,32 @@ export function UrlDataTable({
 														</span>
 													</Tooltip>
 												))}
-												{flyoutId ? (
-													<Button
-														variant="outline-pill-accent"
-														data-groq-flyout-target={flyoutId}
-														aria-haspopup="dialog"
-													>
-														View query
-													</Button>
-												) : null}
 											</>
 										}
+										actions={
+											flyoutId ? (
+												<Button
+													variant="ghost-icon-sm"
+													icon={<SearchIcon />}
+													data-groq-flyout-target={flyoutId}
+													aria-haspopup="dialog"
+													aria-label="View query"
+													title="View query"
+												/>
+											) : null
+										}
 									>
+										{isImageTable ? (
+											<img
+												src={toThumbnailUrl(row.label)}
+												alt=""
+												width={70}
+												height={70}
+												loading="lazy"
+												decoding="async"
+												class="size-70 shrink-0 rounded-sm bg-primary/8 object-cover"
+											/>
+										) : null}
 										<span class="min-w-0 flex-1 truncate">{displayLabel}</span>
 									</LabelActions>
 									{flyoutId && groqDetails ? (

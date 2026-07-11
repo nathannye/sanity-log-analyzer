@@ -30,7 +30,7 @@ export function VerticalBarChart({
 	const ticks = buildAxisTicks(axisMax);
 
 	return (
-		<section class="card">
+		<section>
 			<h3 class="heading-3">{title}</h3>
 			{rows.length === 0 ? (
 				<p class="empty body-2 mt-12">{emptyMessage}</p>

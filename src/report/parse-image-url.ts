@@ -79,6 +79,20 @@ export function toInlineAssetUrl(url: string): string {
 	}
 }
 
+/** Build a small CDN URL suitable for table thumbnails. */
+export function toThumbnailUrl(url: string, size = 100): string {
+	try {
+		const parsed = new URL(url);
+		parsed.searchParams.delete("dl");
+		parsed.searchParams.set("w", String(size));
+		parsed.searchParams.set("h", String(size));
+		parsed.searchParams.set("fit", "crop");
+		return parsed.toString();
+	} catch {
+		return url;
+	}
+}
+
 export function hasImageWidthError(width: number | null): boolean {
 	return width !== null && width > MAX_IMAGE_WIDTH;
 }

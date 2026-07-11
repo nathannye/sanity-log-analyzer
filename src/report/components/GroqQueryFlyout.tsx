@@ -4,6 +4,7 @@ import { GROQ_SPREAD_WARNING } from "../groq-constants.js";
 import { Button } from "./Button.js";
 import { GroqQueryStatsView } from "./GroqQueryStats.js";
 import { CopyIcon } from "./icons.js";
+import { StatCard } from "./StatCard.js";
 
 interface GroqQueryFlyoutProps {
 	id: string;
@@ -34,10 +35,10 @@ export function GroqQueryFlyout({
 	return (
 		<dialog
 			id={id}
-			class="dialog border border-primary/12 bg-panel p-0 text-primary shadow-[0_1.6rem_4.8rem_color-mix(in_srgb,var(--color-inverted)_45%,transparent)] rounded-md"
+			class="dialog border-l border-primary/12 bg-inverted p-0 text-primary shadow-[0_1.6rem_4.8rem_color-mix(in_srgb,var(--color-inverted)_45%,transparent)]"
 			data-groq-flyout
 		>
-			<div class="px-16 pt-12 pb-16">
+			<div class="px-margin-1 pt-12 pb-16">
 				<div class="mb-12 flex items-center gap-8">
 					<h4 class="heading-3 mb-0 flex-1 text-[1.4rem]">GROQ query</h4>
 					<Button
@@ -60,30 +61,21 @@ export function GroqQueryFlyout({
 				<div>
 					<div class="eyebrow-1 mb-8 text-muted">Usage</div>
 					<dl class="m-0 grid grid-cols-3 gap-8">
-						<div class="m-0 rounded-sm border border-primary/8 bg-primary/5 px-12 py-10">
-							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
-								Bandwidth
-							</dt>
-							<dd class="body-2 mt-4 mb-0 tabular-nums">
-								{formatBytes(responseBytes)}
-							</dd>
-						</div>
-						<div class="m-0 rounded-sm border border-primary/8 bg-primary/5 px-12 py-10">
-							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
-								Requests
-							</dt>
-							<dd class="body-2 mt-4 mb-0 tabular-nums">
-								{formatNumber(requests)}
-							</dd>
-						</div>
-						<div class="m-0 rounded-sm border border-primary/8 bg-primary/5 px-12 py-10">
-							<dt class="m-0 text-muted" style={{ fontSize: "var(--text-size-xs)" }}>
-								Avg / req
-							</dt>
-							<dd class="body-2 mt-4 mb-0 tabular-nums">
-								{formatBytes(avgBytes)}
-							</dd>
-						</div>
+						<StatCard
+							label="Bandwidth"
+							className="w-full"
+							value={formatBytes(responseBytes)}
+						/>
+						<StatCard
+							label="Requests"
+							className="w-full"
+							value={formatNumber(requests)}
+						/>
+						<StatCard
+							label="Avg / req"
+							className="w-full"
+							value={formatBytes(avgBytes)}
+						/>
 					</dl>
 				</div>
 				{hasSpreadOperator ? (

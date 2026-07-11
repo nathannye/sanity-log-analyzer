@@ -1,52 +1,190 @@
-import { getVisibleTocSections } from "../sections.js";
-import type { ReportSections } from "../../types.js";
+import type { ComponentChildren } from "preact";
+import type { ReportData, ReportIssue } from "../../types.js";
+import { getVisibleTocSections, type TocSection } from "../sections.js";
 import { Button } from "./Button.js";
-import { DownloadIcon, MoonIcon, SunIcon } from "./icons.js";
-import { MarkdownDownload } from "./MarkdownDownload.js";
+import {
+	CalendarIcon,
+	CodeIcon,
+	DownloadIcon,
+	FileIcon,
+	HourglassIcon,
+	ImageIcon,
+	IpIcon,
+	QueryIcon,
+	ReferrerIcon,
+	StateErrorIcon,
+	StateWarningIcon,
+	SummaryIcon,
+	UserAgentIcon,
+} from "./icons.js";
+import cx from "classix";
 
 interface TableOfContentsProps {
-	sections: ReportSections;
+	data: ReportData;
 }
 
-export function TableOfContents({ sections }: TableOfContentsProps) {
-	const tocSections = getVisibleTocSections(sections);
+interface IssueCounts {
+	warn: number;
+	critical: number;
+}
+
+const SECTION_ICONS: Record<string, ComponentChildren> = {
+	summary: <SummaryIcon />,
+	dailyBandwidth: <CalendarIcon />,
+	hourlyBandwidth: <HourglassIcon />,
+	responseStatuses: <CodeIcon />,
+	images: <ImageIcon />,
+	files: <FileIcon />,
+	queries: <QueryIcon />,
+	"traffic/referrers": <ReferrerIcon />,
+	"traffic/ips": <IpIcon />,
+	"traffic/userAgents": <UserAgentIcon />,
+};
+
+function countFailingIssues(issues: ReportIssue[]): IssueCounts {
+	let warn = 0;
+	let critical = 0;
+	for (const issue of issues) {
+		if (issue.severity === "warn") warn += 1;
+		else if (issue.severity === "critical") critical += 1;
+	}
+	return { warn, critical };
+}
+
+function buildSectionIssueCounts(data: ReportData): Record<string, IssueCounts> {
+	return {
+		dailyBandwidth: countFailingIssues(data.dailyBandwidth.issues),
+		hourlyBandwidth: countFailingIssues(data.hourlyBandwidth.issues),
+		responseStatuses: countFailingIssues(data.responseStatuses.issues),
+		images: countFailingIssues(data.images.issues),
+		files: countFailingIssues(data.files.issues),
+		queries: countFailingIssues(data.queries.issues),
+	};
+}
+
+function IssueBadges({ counts }: { counts?: IssueCounts }) {
+	if (!counts || (counts.warn === 0 && counts.critical === 0)) return null;
 
 	return (
-		<aside class="h-screen pr-30 shrink-0 top-0 pt-80 self-start lg:sticky">
+		<span class="ml-10 mt-2 inline-flex items-center gap-6">
+			{counts.critical > 0 ? (
+				<span class="inline-flex" title={`${counts.critical} critical`}>
+					<StateErrorIcon />
+				</span>
+			) : null}
+			{counts.warn > 0 ? (
+				<span class="inline-flex" title={`${counts.warn} warning`}>
+					<StateWarningIcon />
+				</span>
+			) : null}
+		</span>
+	);
+}
+
+function TocLink({
+	entry,
+	className,
+	counts,
+}: {
+	entry: TocSection;
+	className: string;
+	counts?: IssueCounts;
+}) {
+	const icon = SECTION_ICONS[entry.slug];
+
+	return (
+		<a class={cx(className, "flex items-center gap-10")} href={`#${entry.slug}`} data-toc-link>
+			{icon ? (
+				<div class="inline-flex size-15 shrink-0 [&_svg]:size-15 text-muted" aria-hidden="true">
+					{icon}
+				</div>
+			) : null}
+			<span class="min-w-0 truncate">{entry.label}</span>
+			<IssueBadges counts={counts} />
+		</a>
+	);
+}
+
+function TocChildren({
+	items,
+	issueCounts,
+}: {
+	items: TocSection[];
+	issueCounts: Record<string, IssueCounts>;
+}) {
+	return (
+		<ul class="mt-2 mb-4 grid list-none gap-2 py-0 pr-0 pl-12">
+			{items.map((child) => (
+				<li key={child.slug}>
+					<TocLink
+						entry={child}
+						counts={issueCounts[child.slug]}
+						className="body-2 rounded-sm px-8 py-3 text-muted no-underline transition-colors hover:bg-primary/6 hover:text-primary"
+					/>
+				</li>
+			))}
+		</ul>
+	);
+}
+
+export function TableOfContents({ data }: TableOfContentsProps) {
+	const tocSections = getVisibleTocSections(data.config.sections);
+	const issueCounts = buildSectionIssueCounts(data);
+
+	return (
+		<aside class="h-screen pr-30 pl-margin-1 shrink-0 top-0 pt-80 self-start lg:sticky">
 			<nav
 				aria-label="Report sections"
 				data-module="theme-toggle"
-				class="card flex flex-col justify-between"
+				class="bg-muted/3 p-17 rounded-md flex flex-col justify-between"
 			>
-				<div class="mb-12 flex items-center  justify-between gap-8">
-					<div class="eyebrow-1 text-muted">Contents</div>
-
-				</div>
-				<ul class="m-0 grid list-none gap-4 p-0">
+				<ul class="m-0 grid list-none gap-20 p-0">
 					{tocSections.map((entry) => (
 						<li key={entry.slug}>
-							<a
-								class="body-2 block rounded-sm px-8 py-6 text-primary no-underline transition-colors hover:bg-primary/6"
-								href={`#${entry.slug}`}
-								data-toc-link
-							>
-								{entry.label}
-							</a>
-							{entry.children && entry.children.length > 0 ? (
-								<ul class="mt-2 mb-4 grid list-none gap-2 py-0 pr-0 pl-12">
-									{entry.children.map((child) => (
-										<li key={child.slug}>
-											<a
-												class="eyebrow-1 block rounded-sm px-8 py-4 text-muted no-underline transition-colors hover:bg-primary/6 hover:text-primary"
-												href={`#${child.slug}`}
-												data-toc-link
+							{entry.collapsible && entry.children && entry.children.length > 0 ? (
+								<details open class="group">
+									<summary class="eyebrow-1 flex cursor-pointer list-none items-center gap-8 rounded-sm px-8 py-6 text-primary transition-colors hover:bg-primary/6 [&::-webkit-details-marker]:hidden">
+										<span
+											class="inline-flex shrink-0 text-muted transition-transform group-open:rotate-90"
+											aria-hidden="true"
+										>
+											<svg
+												width="8"
+												height="8"
+												viewBox="0 0 8 8"
+												fill="none"
 											>
-												{child.label}
-											</a>
-										</li>
-									))}
-								</ul>
-							) : null}
+												<path
+													d="M3 1.5 5.5 4 3 6.5"
+													stroke="currentColor"
+													stroke-width="1.25"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+												/>
+											</svg>
+										</span>
+										<span class="min-w-0 truncate">{entry.label}</span>
+									</summary>
+									<TocChildren
+										items={entry.children}
+										issueCounts={issueCounts}
+									/>
+								</details>
+							) : (
+								<>
+									<TocLink
+										entry={entry}
+										counts={issueCounts[entry.slug]}
+										className="body-2 rounded-sm px-8 py-6 text-primary no-underline transition-colors hover:bg-primary/6"
+									/>
+									{entry.children && entry.children.length > 0 ? (
+										<TocChildren
+											items={entry.children}
+											issueCounts={issueCounts}
+										/>
+									) : null}
+								</>
+							)}
 						</li>
 					))}
 				</ul>
