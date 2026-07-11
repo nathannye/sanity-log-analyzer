@@ -17,7 +17,7 @@ export function SortableTableHeader({
 	className,
 }: SortableTableHeaderProps) {
 	return (
-		<th class={cx("bg-[black]", className)}>
+		<th class={cx("bg-pure", className)}>
 			<button
 				type="button"
 				class="sort-header uppercase cursor-pointer eyebrow-1"

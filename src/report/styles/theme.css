@@ -18,7 +18,8 @@
 	--breakpoint-xl: 1440px;
 
 	--color-primary: #09090b;
-	--color-pure: #000;
+	
+	--color-pure: #fff;
 	--color-inverted: #f4f4f5;
 	--color-muted: #71717a;
 	--color-panel: rgba(255, 255, 255, 0.9);
@@ -51,7 +52,7 @@
 html[data-theme="light"] {
 	color-scheme: light;
 	--color-primary: #f4f4f5;
-	--color-pure: #fff;
+	--color-pure: #000;
 	--color-inverted: #09090b;
 	--color-muted: #a1a1aa;
 	--color-panel: rgba(24, 24, 27, 0.9);
@@ -171,8 +172,8 @@ pre {
 .btn-ghost .btn-icon svg,
 .btn-ghost-sm .btn-icon svg,
 .btn-pill .btn-icon svg {
-	width: 1.4rem;
-	height: 1.4rem;
+	width: 1.8rem;
+	height: 1.8rem;
 }
 
 .btn-label {

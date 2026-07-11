@@ -32,7 +32,7 @@ export function DataTable({
 			{header}
 			<div class="data-table-wrap">
 				<table class="body-1 data-table" data-sortable-table>
-					<thead class="bg-[black] rounded-md overflow-hidden">
+					<thead class="bg-pure rounded-md overflow-hidden">
 						<tr>
 							<SortableTableHeader
 								label="Label"

@@ -39,11 +39,11 @@ export function Button({
 	return (
 		<button type={type} class={classes} {...rest}>
 			{icon && iconPosition === "start" ? (
-				<span class="btn-icon">{icon}</span>
+				<span class="btn-icon translate-y-2">{icon}</span>
 			) : null}
 			{children ? <span class="btn-label">{children}</span> : null}
 			{icon && iconPosition === "end" ? (
-				<span class="btn-icon">{icon}</span>
+				<span class="btn-icon translate-y-2">{icon}</span>
 			) : null}
 		</button>
 	);

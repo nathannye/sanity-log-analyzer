@@ -39,10 +39,10 @@ export function Topbar({maxRows, sourcePath, dateStart, dateEnd, projectId}: {ma
           title="Switch to light theme"
           icon={
             <>
-              <span class="theme-icon theme-icon-sun">
+              <span class="[&_svg]:size-15 theme-icon theme-icon-sun">
                 <SunIcon />
               </span>
-              <span class="theme-icon theme-icon-moon">
+              <span class="[&_svg]:size-15 theme-icon theme-icon-moon">
                 <MoonIcon />
               </span>
             </>
