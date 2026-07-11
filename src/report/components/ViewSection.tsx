@@ -26,7 +26,7 @@ interface ViewSectionProps {
 export function ViewSection({ data, sections }: ViewSectionProps) {
 	return (
 		<div>
-			<section class="scroll-mt-20 mb-24" data-section="summary">
+			<section class="scroll-mt-32 mb-24" data-section="summary">
 				<div class="flex items-center mb-20 gap-16 [&>*]:min-w-[130px]">
 					<StatCard
 						label="Requests"
@@ -63,7 +63,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				{(sections.dailyBandwidth || sections.hourlyBandwidth) && (
 					<div class="flex flex-col gap-16">
 						{sections.dailyBandwidth ? (
-							<section class="scroll-mt-20" data-section="dailyBandwidth">
+							<section class="scroll-mt-32" data-section="dailyBandwidth">
 								<IssueCardList issues={data.dailyBandwidth.issues} />
 								<BandwidthBarChart
 									title={
@@ -75,7 +75,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 							</section>
 						) : null}
 						{sections.hourlyBandwidth ? (
-							<section class="scroll-mt-20" data-section="hourlyBandwidth">
+							<section class="scroll-mt-32" data-section="hourlyBandwidth">
 								<IssueCardList issues={data.hourlyBandwidth.issues} />
 								<BandwidthBarChart
 									title={
@@ -90,7 +90,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				)}
 
 				{sections.responseStatuses ? (
-					<section class="scroll-mt-20" data-section="responseStatuses">
+					<section class="scroll-mt-32" data-section="responseStatuses">
 						<div class="eyebrow-1 section-title mb-16">
 							{getSectionLabel("responseStatuses") ?? "Response codes"}
 						</div>

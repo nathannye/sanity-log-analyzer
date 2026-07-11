@@ -66,7 +66,7 @@ function IssueBadges({ counts }: { counts?: IssueCounts }) {
 	if (!counts || (counts.warn === 0 && counts.critical === 0)) return null;
 
 	return (
-		<span class="ml-10 mt-2 inline-flex items-center gap-6">
+		<span class="mt-2 inline-flex items-center gap-6">
 			{counts.critical > 0 ? (
 				<span class="inline-flex" title={`${counts.critical} critical`}>
 					<StateErrorIcon />
@@ -93,7 +93,7 @@ function TocLink({
 	const icon = SECTION_ICONS[entry.slug];
 
 	return (
-		<a class={cx(className, "flex items-center gap-10")} href={`#${entry.slug}`} data-toc-link>
+		<a class={cx(className, "flex select-none items-center gap-10")} href={`#${entry.slug}`} data-toc-link>
 			{icon ? (
 				<div class="inline-flex size-15 shrink-0 [&_svg]:size-15 text-muted" aria-hidden="true">
 					{icon}
@@ -143,7 +143,7 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 						<li key={entry.slug}>
 							{entry.collapsible && entry.children && entry.children.length > 0 ? (
 								<details open class="group">
-									<summary class="eyebrow-1 flex cursor-pointer list-none items-center gap-8 rounded-sm px-8 py-6 text-primary transition-colors hover:bg-primary/6 [&::-webkit-details-marker]:hidden">
+									<summary class="eyebrow-1 flex select-none cursor-pointer list-none items-center gap-8 rounded-sm px-8 py-6 text-primary transition-colors hover:bg-primary/6 [&::-webkit-details-marker]:hidden">
 										<span
 											class="inline-flex shrink-0 text-muted transition-transform group-open:rotate-90"
 											aria-hidden="true"

@@ -74,10 +74,6 @@ body {
 	background: var(--color-inverted);
 }
 
-h3 {
-	margin: 0;
-}
-
 code,
 pre {
 	font-family: var(--font-mono);

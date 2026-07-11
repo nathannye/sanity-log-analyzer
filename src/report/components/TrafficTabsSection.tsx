@@ -29,7 +29,7 @@ export function TrafficTabsSection({
 
 	return (
 		<section
-			class="scroll-mt-20"
+			class="scroll-mt-32"
 			data-section="traffic"
 			data-url-tabs
 			data-default-url-tab={activeTab}
@@ -60,7 +60,7 @@ export function TrafficTabsSection({
 					role="tabpanel"
 					data-url-panel="referrers"
 					data-section="traffic/referrers"
-					class="scroll-mt-20"
+					class="scroll-mt-32"
 					hidden={activeTab !== "referrers" || undefined}
 				>
 					<RefererDataTable
@@ -74,7 +74,7 @@ export function TrafficTabsSection({
 					role="tabpanel"
 					data-url-panel="ips"
 					data-section="traffic/ips"
-					class="scroll-mt-20"
+					class="scroll-mt-32"
 					hidden={activeTab !== "ips" || undefined}
 				>
 					<DataTable
@@ -91,7 +91,7 @@ export function TrafficTabsSection({
 					role="tabpanel"
 					data-url-panel="userAgents"
 					data-section="traffic/userAgents"
-					class="scroll-mt-20"
+					class="scroll-mt-32"
 					hidden={activeTab !== "userAgents" || undefined}
 				>
 					<UserAgentDataTable

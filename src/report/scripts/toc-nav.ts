@@ -25,6 +25,20 @@ function parseHash(hash: string): ParsedHash {
 }
 
 function scrollToSection(node: HTMLElement, section: string, fullHash: string): void {
+	if (section === "summary") {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+		if (history.replaceState) {
+			history.replaceState(
+				null,
+				"",
+				`${window.location.pathname}${window.location.search}`,
+			);
+		} else {
+			window.location.hash = "";
+		}
+		return;
+	}
+
 	const target = node.querySelector<HTMLElement>(`[data-section="${section}"]`);
 	if (!target) return;
 
