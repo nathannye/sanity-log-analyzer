@@ -5,6 +5,7 @@ import { CopyIcon } from "./icons.js";
 interface LabelActionsProps {
 	value: string;
 	copyToast?: string;
+	showCopyButton?: boolean;
 	href?: string;
 	externalLinkLabel?: string;
 	children: ComponentChildren;
@@ -15,6 +16,7 @@ interface LabelActionsProps {
 export function LabelActions({
 	value,
 	copyToast,
+	showCopyButton = true,
 	href,
 	externalLinkLabel,
 	children,
@@ -26,7 +28,7 @@ export function LabelActions({
 			href={href}
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex min-w-0 flex-1 items-center gap-6 text-inherit no-underline"
+			class="flex min-w-0 flex-1 items-center gap-15 text-inherit no-underline"
 			aria-label={`Open "${externalLinkLabel ?? value}" in new tab`}
 			title="Open in new tab"
 		>
@@ -38,14 +40,16 @@ export function LabelActions({
 
 	return (
 		<div class="flex min-w-0 items-center gap-6">
-			<Button
-				variant="ghost-icon-sm"
-				icon={<CopyIcon />}
-				data-copy-value={value}
-				{...(copyToast ? { "data-copy-toast": copyToast } : {})}
-				aria-label={`Copy "${value}"`}
-				title="Copy to clipboard"
-			/>
+			{showCopyButton ? (
+				<Button
+					variant="ghost-icon-sm"
+					icon={<CopyIcon />}
+					data-copy-value={value}
+					{...(copyToast ? { "data-copy-toast": copyToast } : {})}
+					aria-label={`Copy "${value}"`}
+					title="Copy to clipboard"
+				/>
+			) : null}
 			{actions}
 			{label}
 			{adornments}

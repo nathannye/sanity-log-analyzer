@@ -14,6 +14,7 @@ import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { CountBarChart } from "./CountBarChart.js";
 import { IssueCardList } from "./IssueCard.js";
 import { SectionWithLabel } from "./SectionWithLabel.js";
+import SectionWrapper from "./SectionWrapper.js";
 import { StatCard } from "./StatCard.js";
 import { TrafficTabsSection } from "./TrafficTabsSection.js";
 import { UrlDataTable } from "./UrlDataTable.js";
@@ -39,6 +40,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 					<StatCard
 						label="Studio"
 						value={formatPercentage(data.summary.studioRequestPercent)}
+						percentage={data.summary.studioRequestPercent}
 						tone={
 							data.summary.studioRequestPercent > STUDIO_REQUEST_WARN_PERCENT
 								? "red"
@@ -48,6 +50,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 					<StatCard
 						label="CDN Delivery"
 						value={formatPercentage(data.summary.cdnDeliveryPercent)}
+						percentage={data.summary.cdnDeliveryPercent}
 						tone={
 							data.summary.cdnDeliveryPercent < CDN_DELIVERY_WARN_PERCENT
 								? "red"
@@ -58,8 +61,8 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 				<IssueCardList issues={data.summary.issues} />
 			</section>
 
-			<div class="mb-24 flex flex-col gap-50">
-				<h2 class="heading-2">Bandwidth</h2>
+			<div class="mb-24 flex flex-col gap-140">
+				<SectionWrapper title="Bandwidth">
 				{(sections.dailyBandwidth || sections.hourlyBandwidth) && (
 					<div class="flex flex-col gap-16">
 						{sections.dailyBandwidth ? (
@@ -88,19 +91,17 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 						) : null}
 					</div>
 				)}
+				</SectionWrapper>
 
 				{sections.responseStatuses ? (
-					<section class="scroll-mt-32" data-section="responseStatuses">
-						<div class="eyebrow-1 section-title mb-16">
-							{getSectionLabel("responseStatuses") ?? "Response codes"}
-						</div>
+					<SectionWrapper title={"Responses"} data-section="responseStatuses">
 						<IssueCardList issues={data.responseStatuses.issues} />
 						<CountBarChart
 							title={getSectionLabel("responseStatuses") ?? "Response codes"}
 							rows={data.responseStatuses.entries}
 							accent={colorVar("purple")}
 						/>
-					</section>
+					</SectionWrapper>
 				) : null}
 
 				{sections.images ? (
@@ -112,10 +113,10 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 							data.images.entries.length > 0 && <IssueCardList issues={data.images.issues} />		
 						}
 						<UrlDataTable
-								rows={data.images.entries}
-								variant="image"
-								idPrefix="images"
-							/>
+							rows={data.images.entries}
+							variant="image"
+							idPrefix="images"
+						/>
 					</SectionWithLabel>
 				) : null}
 

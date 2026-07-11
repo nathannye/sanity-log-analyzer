@@ -68,12 +68,12 @@ function IssueBadges({ counts }: { counts?: IssueCounts }) {
 	return (
 		<span class="mt-2 inline-flex items-center gap-6">
 			{counts.critical > 0 ? (
-				<span class="inline-flex" title={`${counts.critical} critical`}>
+				<span class="inline-flex [&_svg]:size-13" title={`${counts.critical} critical`}>
 					<StateErrorIcon />
 				</span>
 			) : null}
 			{counts.warn > 0 ? (
-				<span class="inline-flex" title={`${counts.warn} warning`}>
+				<span class="inline-flex [&_svg]:size-13" title={`${counts.warn} warning`}>
 					<StateWarningIcon />
 				</span>
 			) : null}

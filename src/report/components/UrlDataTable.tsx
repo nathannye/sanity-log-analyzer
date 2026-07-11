@@ -190,6 +190,7 @@ export function UrlDataTable({
 									<LabelActions
 										value={row.label}
 										copyToast="Copied URL"
+										showCopyButton={!isImageTable}
 										href={
 											showAssetLink
 												? toInlineAssetUrl(row.label)
@@ -234,11 +235,11 @@ export function UrlDataTable({
 											<img
 												src={toThumbnailUrl(row.label)}
 												alt=""
-												width={70}
-												height={70}
+												width={40}
+												height={40}
 												loading="lazy"
 												decoding="async"
-												class="size-70 shrink-0 rounded-sm bg-primary/8 object-cover"
+												class="size-40 shrink-0 rounded-sm bg-primary/8 object-cover"
 											/>
 										) : null}
 										<span class="min-w-0 flex-1 truncate">{displayLabel}</span>

@@ -2,6 +2,7 @@ import type { ReportData } from "../../types.js";
 import { Button } from "./Button.js";
 import { DataTable } from "./DataTable.js";
 import { RefererDataTable } from "./RefererDataTable.js";
+import SectionWrapper from "./SectionWrapper.js";
 import { UserAgentDataTable } from "./UserAgentDataTable.js";
 
 interface TrafficTabsSectionProps {
@@ -28,14 +29,13 @@ export function TrafficTabsSection({
 	const activeTab = tabs[0].id;
 
 	return (
-		<section
-			class="scroll-mt-32"
+		<SectionWrapper
 			data-section="traffic"
 			data-url-tabs
+			title="Traffic sources"
 			data-default-url-tab={activeTab}
 			data-module="url-tabs"
 		>
-			<div class="heading-2 mb-12">Traffic sources</div>
 			<div
 				class="mb-12 flex flex-wrap gap-6"
 				role="tablist"
@@ -101,6 +101,6 @@ export function TrafficTabsSection({
 					/>
 				</div>
 			) : null}
-		</section>
+		</SectionWrapper>
 	);
 }
