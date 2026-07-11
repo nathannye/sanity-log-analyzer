@@ -18,7 +18,7 @@ export function Header({ data }: HeaderProps) {
 			<p class=" mb-90">
 				Report from {formattedDate}
 			</p>
-			<h1 class="heading-1 w-grid-9 mb-45">{data.summary.message}</h1>
+			<h1 class="heading-1 lg:w-[80vw] w-full mb-45">{data.summary.message}</h1>
 		</header>
 	);
 }

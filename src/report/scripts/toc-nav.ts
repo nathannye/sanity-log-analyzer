@@ -79,6 +79,14 @@ export const initTocNav: ReportModuleInit = (node) => {
 
 		event.preventDefault();
 		navigate(node, `#${slug}`);
+
+		const tocDetails = link.closest<HTMLDetailsElement>("details.toc-details");
+		if (
+			tocDetails &&
+			window.matchMedia("(max-width: 1023px)").matches
+		) {
+			tocDetails.open = false;
+		}
 	};
 
 	node.addEventListener("click", onClick);

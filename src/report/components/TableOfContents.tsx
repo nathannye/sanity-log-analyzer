@@ -133,70 +133,89 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 
 	return (
 		<>
-		<div class="w-grid-3-w pr-30 pl-margin-1 shrink-0 h-screen"></div>
-		<aside class="pr-30 pl-margin-1 top-0 pt-80 w-grid-3 fixed">
-			<nav
-				aria-label="Report sections"
-				data-module="theme-toggle"
-				class="bg-muted/3 p-17 rounded-md flex flex-col justify-between"
-			>
-				<ul class="m-0 grid list-none gap-20 p-0">
-					{tocSections.map((entry) => (
-						<li key={entry.slug}>
-							{entry.collapsible && entry.children && entry.children.length > 0 ? (
-								<details open class="group">
-									<summary class="eyebrow-1 flex select-none cursor-pointer list-none items-center gap-8 rounded-sm px-8 py-6 text-primary transition-colors hover:bg-primary/6 [&::-webkit-details-marker]:hidden">
-										<span
-											class="inline-flex shrink-0 text-muted transition-transform group-open:rotate-90"
-											aria-hidden="true"
-										>
-											<svg
-												width="8"
-												height="8"
-												viewBox="0 0 8 8"
-												fill="none"
-											>
-												<path
-													d="M3 1.5 5.5 4 3 6.5"
-													stroke="currentColor"
-													stroke-width="1.25"
-													stroke-linecap="round"
-													stroke-linejoin="round"
+			<div class="hidden w-330 shrink-0 h-screen pr-30 pl-margin-1 lg:block" />
+			<aside class="w-full shrink-0 max-lg:order-first lg:fixed lg:top-0 lg:w-auto lg:pr-30 lg:pl-margin-1 lg:pt-80">
+				<details class="toc-details group/toc">
+					<summary class="eyebrow-1 mb-12 flex cursor-pointer list-none select-none items-center gap-8 rounded-md bg-muted/3 px-17 py-14 text-primary transition-colors hover:bg-primary/6 lg:hidden [&::-webkit-details-marker]:hidden">
+						<span
+							class="inline-flex shrink-0 text-muted transition-transform group-open/toc:rotate-90"
+							aria-hidden="true"
+						>
+							<svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+								<path
+									d="M3 1.5 5.5 4 3 6.5"
+									stroke="currentColor"
+									stroke-width="1.25"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+						</span>
+						<span>Sections</span>
+					</summary>
+					<nav
+						aria-label="Report sections"
+						data-module="theme-toggle"
+						class="flex flex-col justify-between rounded-md bg-muted/3 p-17"
+					>
+						<ul class="m-0 grid list-none gap-20 p-0">
+							{tocSections.map((entry) => (
+								<li key={entry.slug}>
+									{entry.collapsible && entry.children && entry.children.length > 0 ? (
+										<details open class="group">
+											<summary class="eyebrow-1 flex cursor-pointer list-none select-none items-center gap-8 rounded-sm px-8 py-6 text-primary transition-colors hover:bg-primary/6 [&::-webkit-details-marker]:hidden">
+												<span
+													class="inline-flex shrink-0 text-muted transition-transform group-open:rotate-90"
+													aria-hidden="true"
+												>
+													<svg
+														width="8"
+														height="8"
+														viewBox="0 0 8 8"
+														fill="none"
+													>
+														<path
+															d="M3 1.5 5.5 4 3 6.5"
+															stroke="currentColor"
+															stroke-width="1.25"
+															stroke-linecap="round"
+															stroke-linejoin="round"
+														/>
+													</svg>
+												</span>
+												<span class="min-w-0 truncate">{entry.label}</span>
+											</summary>
+											<TocChildren
+												items={entry.children}
+												issueCounts={issueCounts}
+											/>
+										</details>
+									) : (
+										<>
+											<TocLink
+												entry={entry}
+												counts={issueCounts[entry.slug]}
+												className="body-2 rounded-sm px-8 py-6 text-primary no-underline transition-colors hover:bg-primary/6"
+											/>
+											{entry.children && entry.children.length > 0 ? (
+												<TocChildren
+													items={entry.children}
+													issueCounts={issueCounts}
 												/>
-											</svg>
-										</span>
-										<span class="min-w-0 truncate">{entry.label}</span>
-									</summary>
-									<TocChildren
-										items={entry.children}
-										issueCounts={issueCounts}
-									/>
-								</details>
-							) : (
-								<>
-									<TocLink
-										entry={entry}
-										counts={issueCounts[entry.slug]}
-										className="body-2 rounded-sm px-8 py-6 text-primary no-underline transition-colors hover:bg-primary/6"
-									/>
-									{entry.children && entry.children.length > 0 ? (
-										<TocChildren
-											items={entry.children}
-											issueCounts={issueCounts}
-										/>
-									) : null}
-								</>
-							)}
-						</li>
-					))}
-				</ul>
-				<div class="pt-120">
-					<Button id="download-markdown" icon={<DownloadIcon />}>
-						Download markdown for LLM
-					</Button>
-				</div>
-			</nav>
-		</aside>
+											) : null}
+										</>
+									)}
+								</li>
+							))}
+						</ul>
+						<div class="pt-120">
+							<Button id="download-markdown" icon={<DownloadIcon />}>
+								Download markdown for LLM
+							</Button>
+						</div>
+					</nav>
+				</details>
+			</aside>
 		</>
 	);
 }

@@ -332,6 +332,16 @@ pre {
 	box-shadow: 0 0 1rem currentColor;
 }
 
+@media (min-width: 1024px) {
+	.toc-details > summary {
+		display: none;
+	}
+
+	.toc-details > :not(summary) {
+		display: flex !important;
+	}
+}
+
 .status-dot {
 	width: 1.2rem;
 	height: 1.2rem;

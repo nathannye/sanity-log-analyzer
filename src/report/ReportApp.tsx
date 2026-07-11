@@ -1,6 +1,5 @@
 import type { ReportData } from "../types.js";
 import { Header } from "./components/Header.js";
-import { ReportControls } from "./components/ReportControls.js";
 import { TableOfContents } from "./components/TableOfContents.js";
 import { Topbar } from "./components/Topbar.js";
 import { ViewSection } from "./components/ViewSection.js";
@@ -21,7 +20,7 @@ export function ReportApp({ data }: ReportAppProps) {
 		>
 			<Topbar {...data} />
 			
-			<div class="items-start gap-margin-2 pr-margin-2 flex">
+			<div class="items-start gap-[4vw] pr-margin-2 flex max-lg:flex-col max-lg:px-margin-1">
 				<TableOfContents data={data} />
 				<div class="min-w-0">
 					<Header data={data} />
