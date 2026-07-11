@@ -53,7 +53,7 @@ export function IssueCardList({ issues }: IssueCardListProps) {
 	if (issues.length === 0) return null;
 
 	return (
-		<div class="mb-16 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+		<div class="mb-48 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
 			{issues.map((issue) => (
 				<IssueCard key={issue.id} issue={issue} />
 			))}

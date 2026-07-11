@@ -51,7 +51,7 @@
 	padding: 0.2rem 0.6rem;
 	border: 0.1rem solid color-mix(in srgb, var(--color-primary) 12%, transparent);
 	border-radius: var(--radius-pill);
-	background: rgba(239, 68, 68, 0.12);
+	background: color-mix(in srgb, var(--color-red) 12%, transparent);
 	color: var(--color-red);
 	font-size: var(--text-size-xs);
 	font-weight: 600;

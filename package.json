@@ -1,6 +1,6 @@
 {
   "name": "sanity-log-analyzer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "description": "Parse Sanity request logs (NDJSON) into an offline HTML report, no server required.",
   "author": "Nathan Nye <nathan@nye.dev> (https://nye.dev)",
