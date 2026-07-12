@@ -9,12 +9,21 @@
 	font-size: clamp(2.4rem, 4.5vw, 7.8rem);
 	font-weight: 620;
 	letter-spacing: var(--tracking-tight);
+
+	@media (max-width: 1024px) {
+		font-size: clamp(3.5rem, 5.2vw, 7.8rem);
+	}
 }
 
 @utility heading-3 {
 	font-size: 1.6rem;
 	font-weight: 600;
 	margin-bottom: 2.75rem;
+
+	@media (max-width: 1024px) {
+		margin-bottom: 2rem;
+		font-size: 1.35rem;
+	}
 }
 
 @utility heading-4 {

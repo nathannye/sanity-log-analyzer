@@ -20,7 +20,7 @@ export function ReportApp({ data }: ReportAppProps) {
 		>
 			<Topbar {...data} />
 			
-			<div class="items-start gap-30 w-full flex max-lg:flex-col px-margin-1">
+			<div class="items-start gap-margin-3 w-full flex max-lg:flex-col px-margin-1 lg:pr-margin-3">
 				<TableOfContents data={data} />
 				<div class="w-full min-w-0">
 					<Header data={data} />

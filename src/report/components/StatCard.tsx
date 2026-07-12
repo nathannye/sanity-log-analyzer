@@ -43,8 +43,10 @@ export function StatCard({
 	return (
 		<div
 			class={cx(
-				"bg-primary/7 border-primary/7 border flex items-center gap-8 rounded-sm py-8 px-10",
-				toneClasses(tone),
+				"flex items-center gap-8 rounded-sm py-8 px-10",
+				tone
+					? toneClasses(tone)
+					: "bg-primary/7 border-primary/7 border",
 				className,
 			)}
 		>

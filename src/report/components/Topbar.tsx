@@ -8,7 +8,7 @@ export function Topbar({maxRows, sourcePath, dateStart, dateEnd, projectId}: {ma
   const endDate = formatReadableDate(dateEnd);
 
 	return (
-		<div class="fixed top-0 left-0 right-0 z-10 lg:pl-395">
+		<div class="fixed top-0 left-0 right-0 z-10 lg:pl-418">
       <div class="bg-inverted flex items-center justify-between px-margin-1 py-4 eyebrow-1">
       <div class="flex items-center gap-16">
         {
