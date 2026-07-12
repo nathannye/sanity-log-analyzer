@@ -1,3 +1,4 @@
+import { cx } from "classix";
 import type { ComponentChildren } from "preact";
 import type { ReportData, ReportIssue } from "../../types.js";
 import { getVisibleTocSections, type TocSection } from "../sections.js";
@@ -12,13 +13,12 @@ import {
 	IpIcon,
 	QueryIcon,
 	ReferrerIcon,
+	SizeIcon,
 	StateErrorIcon,
 	StateWarningIcon,
-	SizeIcon,
 	SummaryIcon,
 	UserAgentIcon,
 } from "./icons.js";
-import { cx } from "classix";
 
 interface TableOfContentsProps {
 	data: ReportData;
@@ -53,7 +53,9 @@ function countFailingIssues(issues: ReportIssue[]): IssueCounts {
 	return { warn, critical };
 }
 
-function buildSectionIssueCounts(data: ReportData): Record<string, IssueCounts> {
+function buildSectionIssueCounts(
+	data: ReportData,
+): Record<string, IssueCounts> {
 	return {
 		dailyBandwidth: countFailingIssues(data.dailyBandwidth.issues),
 		hourlyBandwidth: countFailingIssues(data.hourlyBandwidth.issues),
@@ -71,12 +73,18 @@ function IssueBadges({ counts }: { counts?: IssueCounts }) {
 	return (
 		<span class="mt-2 inline-flex items-center gap-6">
 			{counts.critical > 0 ? (
-				<span class="inline-flex [&_svg]:size-13" title={`${counts.critical} critical`}>
+				<span
+					class="inline-flex [&_svg]:size-13"
+					title={`${counts.critical} critical`}
+				>
 					<StateErrorIcon />
 				</span>
 			) : null}
 			{counts.warn > 0 ? (
-				<span class="inline-flex [&_svg]:size-13" title={`${counts.warn} warning`}>
+				<span
+					class="inline-flex [&_svg]:size-13"
+					title={`${counts.warn} warning`}
+				>
 					<StateWarningIcon />
 				</span>
 			) : null}
@@ -96,9 +104,16 @@ function TocLink({
 	const icon = SECTION_ICONS[entry.slug];
 
 	return (
-		<a class={cx(className, "flex select-none items-center gap-10")} href={`#${entry.slug}`} data-toc-link>
+		<a
+			class={cx(className, "flex select-none items-center gap-10")}
+			href={`#${entry.slug}`}
+			data-toc-link
+		>
 			{icon ? (
-				<div class="inline-flex size-15 shrink-0 [&_svg]:size-15 text-muted" aria-hidden="true">
+				<div
+					class="inline-flex size-15 shrink-0 [&_svg]:size-15 text-muted"
+					aria-hidden="true"
+				>
 					{icon}
 				</div>
 			) : null}
@@ -164,7 +179,9 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 						<ul class="m-0 grid list-none gap-20 p-0">
 							{tocSections.map((entry) => (
 								<li key={entry.slug}>
-									{entry.collapsible && entry.children && entry.children.length > 0 ? (
+									{entry.collapsible &&
+									entry.children &&
+									entry.children.length > 0 ? (
 										<details open class="group">
 											<summary class="eyebrow-1 flex cursor-pointer list-none select-none items-center gap-8 rounded-sm px-8 py-6 text-primary transition-colors hover:bg-primary/6 [&::-webkit-details-marker]:hidden">
 												<span
@@ -213,7 +230,7 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 						</ul>
 						<div class="pt-60 lg:pt-120">
 							<Button id="download-markdown" icon={<DownloadIcon />}>
-								Download markdown for LLM
+								Download markdown
 							</Button>
 						</div>
 					</nav>

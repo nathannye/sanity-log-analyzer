@@ -6,13 +6,13 @@ Sanity's request logs contain a huge amount of operational data, but they're dif
 
 ## Features
 - Interactive self-contained HTML report
-- Markdown export for LLMs
+- Structured Markdown export for analysis with LLMs
 - Detects common bandwidth hogs
 - Highlights oversized image requests
 - Identifies expensive GROQ queries
 - GROQ query viewer with syntax highlighting
 - Streams multi-GB NDJSON logs without loading them into memory
-- Zero external services or uploads required
+- Analysis happens entirely on your machine. Request logs are never uploaded or transmitted
 
 ## Requirements
 - Node.js >= 22
@@ -102,7 +102,7 @@ const markdown = generateMarkdown(report);
 await writeMarkdownReport(report, "report.md");
 ```
 
-The HTML report includes a **Download markdown for LLM** button that exports the report markdown.
+The HTML report includes a **Download markdownM** button that downloads a .md file.
 
 ## Input format
 

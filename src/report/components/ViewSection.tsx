@@ -1,14 +1,14 @@
 import { formatBytes, formatNumber, formatPercentage } from "../../format.js";
 import type { ReportData, ReportSections } from "../../types.js";
 import { getSectionLabel } from "../sections.js";
-import { REPORT_PALETTE, colorVar } from "../styles/colors.js";
+import { colorVar, REPORT_PALETTE } from "../styles/colors.js";
 import {
 	CDN_DELIVERY_WARN_PERCENT,
 	STUDIO_REQUEST_WARN_PERCENT,
 } from "../thresholds.js";
-import { Donut } from "./Donut.js";
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { CountBarChart } from "./CountBarChart.js";
+import { Donut } from "./Donut.js";
 import { IssueCardList } from "./IssueCard.js";
 import { SectionWithLabel } from "./SectionWithLabel.js";
 import SectionWrapper from "./SectionWrapper.js";
@@ -36,7 +36,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 
 	return (
 		<div>
-			<section class="scroll-mt-32 mb-24" data-section="summary">
+			<section class="scroll-mt-32 mb-80" data-section="summary">
 				<div class="mb-20 flex flex-wrap items-center gap-16 [&>*]:min-w-[100px] lg:[&>*]:min-w-[130px]">
 					<StatCard
 						label="Requests"
@@ -108,7 +108,9 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 							<>
 								<IssueCardList issues={data.responseStatuses.issues} />
 								<CountBarChart
-									title={getSectionLabel("responseStatuses") ?? "Response codes"}
+									title={
+										getSectionLabel("responseStatuses") ?? "Response codes"
+									}
 									rows={data.responseStatuses.entries}
 									accent={colorVar("purple")}
 								/>
