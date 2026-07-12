@@ -36,7 +36,7 @@ function getGeistFontCss(): string {
 	if (geistFontCss !== null) return geistFontCss;
 
 	const require = createRequire(import.meta.url);
-	const geistPackageDir = dirname(require.resolve("geist"));
+	const geistPackageDir = dirname(require.resolve("geist/font/sans"));
 	const sansPath = resolve(
 		geistPackageDir,
 		"fonts/geist-sans/Geist-Variable.woff2",
