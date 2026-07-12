@@ -22,6 +22,11 @@ export const REPORT_SECTIONS: ReportSectionDefinition[] = [
 		label: "Response codes",
 		configKey: "responseStatuses",
 	},
+	{
+		slug: "responseSizes",
+		label: "Response sizes",
+		configKey: "responseSizes",
+	},
 	{ slug: "images", label: "Images", configKey: "images" },
 	{ slug: "files", label: "Files", configKey: "files" },
 	{ slug: "queries", label: "GROQ queries", configKey: "queries" },
@@ -56,9 +61,11 @@ export function getSectionLabel(slug: string): string | undefined {
 		referrers: "Top referrers",
 		ips: "Top IPs",
 		userAgents: "Top user agents",
+		responseSizes: "Response sizes",
 		"traffic/referrers": "Top referrers",
 		"traffic/ips": "Top IPs",
 		"traffic/userAgents": "Top user agents",
+		"responses/responseSizes": "Response sizes",
 	};
 	return trafficLabels[slug];
 }
@@ -85,6 +92,10 @@ export function getVisibleTocSections(sections: ReportSections): TocSection[] {
 	const responseStatuses = bySlug.get("responseStatuses");
 	if (responseStatuses) {
 		pushIfEnabled(responseChildren, sections, responseStatuses);
+	}
+	const responseSizes = bySlug.get("responseSizes");
+	if (responseSizes) {
+		pushIfEnabled(responseChildren, sections, responseSizes);
 	}
 	pushGroup(result, "responses", "Responses", responseChildren);
 

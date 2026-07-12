@@ -4,7 +4,6 @@ import { DataTable } from "./DataTable.js";
 import { LabelActions } from "./LabelActions.js";
 
 interface RefererDataTableProps {
-	title: string;
 	rows: RankedRow[];
 }
 
@@ -28,10 +27,9 @@ function RefererLabel({ row }: { row: RankedRow }) {
 	);
 }
 
-export function RefererDataTable({ title, rows }: RefererDataTableProps) {
+export function RefererDataTable({ rows }: RefererDataTableProps) {
 	return (
 		<DataTable
-			title={title}
 			rows={rows}
 			renderLabel={(row) => <RefererLabel row={row} />}
 		/>

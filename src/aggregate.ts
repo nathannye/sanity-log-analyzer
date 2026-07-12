@@ -1,7 +1,13 @@
 import { streamLogEntries } from "./stream.js";
+import {
+	bucketLabelForBytes,
+	createHistogramRows,
+	DEFAULT_HISTOGRAM_BUCKETS,
+} from "./response-size-buckets.js";
 import type {
 	AggregationSummary,
 	Breakdown,
+	CountRow,
 	LogEntry,
 	LogProgress,
 	Totals,
@@ -15,7 +21,9 @@ function createTotals(): Totals {
 	return { requests: 0, responseBytes: 0, requestBytes: 0 };
 }
 
-export function createSummary(): AggregationSummary {
+export function createSummary(
+	histogramBuckets: number[] = DEFAULT_HISTOGRAM_BUCKETS,
+): AggregationSummary {
 	return {
 		projectId: "",
 		totalRequests: 0,
@@ -32,6 +40,7 @@ export function createSummary(): AggregationSummary {
 		studio: createTotals(),
 		nonStudio: createTotals(),
 		byStatus: {},
+		responseSizeHistogram: createHistogramRows(histogramBuckets),
 	};
 }
 
@@ -60,7 +69,18 @@ function incrementStatus(map: Record<number, number>, status: number): void {
 	map[status] = (map[status] ?? 0) + 1;
 }
 
-function accumulateEntry(summary: AggregationSummary, entry: LogEntry): void {
+function incrementHistogramRow(rows: CountRow[], label: string | null): void {
+	if (!label) return;
+
+	const row = rows.find((entry) => entry.label === label);
+	if (row) row.count += 1;
+}
+
+function accumulateEntry(
+	summary: AggregationSummary,
+	entry: LogEntry,
+	histogramBuckets: number[],
+): void {
 	const responseBytes = entry.responseSize;
 	const requestBytes = entry.requestSize;
 	const studioRequest = entry.studioRequest;
@@ -96,16 +116,21 @@ function accumulateEntry(summary: AggregationSummary, entry: LogEntry): void {
 	}
 
 	incrementStatus(summary.byStatus, entry.status);
+	incrementHistogramRow(
+		summary.responseSizeHistogram,
+		bucketLabelForBytes(responseBytes, histogramBuckets),
+	);
 }
 
 export async function aggregateLogFile(
 	inputPath: string,
 	onProgress?: (progress: LogProgress) => void,
+	histogramBuckets: number[] = DEFAULT_HISTOGRAM_BUCKETS,
 ): Promise<AggregationSummary> {
-	const summary = createSummary();
+	const summary = createSummary(histogramBuckets);
 
 	for await (const entry of streamLogEntries(inputPath, onProgress)) {
-		accumulateEntry(summary, entry);
+		accumulateEntry(summary, entry, histogramBuckets);
 	}
 
 	return summary;

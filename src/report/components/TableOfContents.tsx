@@ -14,6 +14,7 @@ import {
 	ReferrerIcon,
 	StateErrorIcon,
 	StateWarningIcon,
+	SizeIcon,
 	SummaryIcon,
 	UserAgentIcon,
 } from "./icons.js";
@@ -33,6 +34,7 @@ const SECTION_ICONS: Record<string, ComponentChildren> = {
 	dailyBandwidth: <CalendarIcon />,
 	hourlyBandwidth: <HourglassIcon />,
 	responseStatuses: <CodeIcon />,
+	responseSizes: <SizeIcon />,
 	images: <ImageIcon />,
 	files: <FileIcon />,
 	queries: <QueryIcon />,
@@ -56,6 +58,7 @@ function buildSectionIssueCounts(data: ReportData): Record<string, IssueCounts> 
 		dailyBandwidth: countFailingIssues(data.dailyBandwidth.issues),
 		hourlyBandwidth: countFailingIssues(data.hourlyBandwidth.issues),
 		responseStatuses: countFailingIssues(data.responseStatuses.issues),
+		responseSizes: countFailingIssues(data.responseSizes.issues),
 		images: countFailingIssues(data.images.issues),
 		files: countFailingIssues(data.files.issues),
 		queries: countFailingIssues(data.queries.issues),

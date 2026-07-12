@@ -46,7 +46,11 @@ export async function analyzeLog(
 	options: AnalyzeLogOptions = {},
 ): Promise<ReportData> {
 	const config = resolveReportConfig(options.config);
-	const summary = await aggregateLogFile(inputPath, options.onProgress);
+	const summary = await aggregateLogFile(
+		inputPath,
+		options.onProgress,
+		config.histogramBuckets,
+	);
 	return buildReportData(summary, config, inputPath);
 }
 

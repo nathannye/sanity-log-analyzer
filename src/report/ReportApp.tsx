@@ -18,8 +18,8 @@ export function ReportApp({ data }: ReportAppProps) {
 			style={colorStyle}
 			data-module="toast markdown-download toc-nav toc-details table-scroll-fade"
 		>
-			<Topbar {...data} />
-			
+			<Topbar data={data} />
+
 			<div class="items-start gap-margin-3 w-full flex max-lg:flex-col px-margin-1 lg:pr-margin-3">
 				<TableOfContents data={data} />
 				<div class="w-full min-w-0">

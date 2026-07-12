@@ -87,6 +87,7 @@ export type ReportDataInput = Omit<
 	| "files"
 	| "queries"
 	| "responseStatuses"
+	| "responseSizes"
 	| "hourlyBandwidth"
 	| "dailyBandwidth"
 	| "userAgents"
@@ -99,6 +100,9 @@ export type ReportDataInput = Omit<
 		groqByUrl?: Record<string, GroqUrlDetails>;
 	};
 	responseStatuses: Omit<CountReportSection, "issues"> & {
+		issues?: ReportIssue[];
+	};
+	responseSizes: Omit<CountReportSection, "issues"> & {
 		issues?: ReportIssue[];
 	};
 	hourlyBandwidth: Omit<RankedReportSection, "issues"> & {
@@ -149,6 +153,7 @@ export interface ReportSections {
 	files: boolean;
 	queries: boolean;
 	responseStatuses: boolean;
+	responseSizes: boolean;
 	hourlyBandwidth: boolean;
 	dailyBandwidth: boolean;
 	referrers: boolean;
@@ -159,13 +164,13 @@ export interface ReportSections {
 export interface ReportConfig {
 	title: string;
 	topN: number;
+	histogramBuckets: number[];
 	sections: ReportSections;
 }
 
 export interface PartialReportConfig {
 	title?: string;
 	topN?: number;
-	/** @deprecated Ignored; histogram section removed. */
 	histogramBuckets?: number[];
 	sections?: Partial<ReportSections>;
 }
@@ -186,6 +191,7 @@ export interface AggregationSummary {
 	studio: Totals;
 	nonStudio: Totals;
 	byStatus: Record<number, number>;
+	responseSizeHistogram: CountRow[];
 }
 
 export interface RankedRow extends Breakdown {
@@ -211,6 +217,7 @@ export interface ReportData {
 	files: RankedReportSection;
 	queries: QueriesSection;
 	responseStatuses: CountReportSection;
+	responseSizes: CountReportSection;
 	hourlyBandwidth: RankedReportSection;
 	dailyBandwidth: RankedReportSection;
 	referrers: ReportEntriesOnly;

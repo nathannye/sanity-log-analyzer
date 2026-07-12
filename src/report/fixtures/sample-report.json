@@ -8,11 +8,13 @@
   "config": {
     "title": "Sanity Log Report",
     "topN": 50,
+    "histogramBuckets": [0, 1024, 10240, 102400, 1048576, 10485760, 1073741824],
     "sections": {
       "images": true,
       "files": true,
       "queries": true,
       "responseStatuses": true,
+      "responseSizes": true,
       "hourlyBandwidth": true,
       "dailyBandwidth": true,
       "referrers": true,
@@ -42,6 +44,9 @@
       { "label": "200", "count": 1 },
       { "label": "404", "count": 1 }
     ]
+  },
+  "responseSizes": {
+    "entries": [{ "label": "0 B - 1 KB", "count": 2 }]
   },
   "hourlyBandwidth": {
     "entries": [

@@ -8,7 +8,6 @@ import { DataTable } from "./DataTable.js";
 import { DesktopIcon, MobileIcon } from "./icons.js";
 
 interface UserAgentDataTableProps {
-	title: string;
 	rows: RankedRow[];
 	userAgentByLabel: Record<string, ParsedUserAgent>;
 	userAgentStats: UserAgentAggregateStats;
@@ -85,15 +84,14 @@ function UserAgentSummary({ stats }: { stats: UserAgentAggregateStats }) {
 }
 
 export function UserAgentDataTable({
-	title,
 	rows,
 	userAgentByLabel,
 	userAgentStats,
 }: UserAgentDataTableProps) {
 	return (
 		<DataTable
-			title={title}
 			rows={rows}
+			header={<UserAgentSummary stats={userAgentStats} />}
 			renderLabel={(row) => (
 				<UserAgentLabel
 					raw={row.label}

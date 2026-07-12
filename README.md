@@ -46,7 +46,7 @@ sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.jso
 
 - Streams large NDJSON files without loading everything into memory
 - Writes a self-contained HTML file (inline CSS, no server required)
-- `--config` — optional JSON file to customize title, sections, top-N, histogram buckets
+- `--config` — optional JSON file to customize title, sections, and top-N
 - `--open` — open the report in your default browser after writing
 
 ## Config
@@ -58,8 +58,8 @@ sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.jso
   "title": "Production Report",
   "topN": 50,
   "sections": {
-    "urls": true,
-    "referers": false
+    "images": true,
+    "referrers": false
   }
 }
 ```
@@ -68,8 +68,7 @@ Optional JSON file passed via `--config`. Merges with defaults.
 
 - `title` — report heading
 - `topN` — max rows per breakdown table (default: 50)
-- `histogramBuckets` — response-size bucket boundaries (bytes)
-- `sections` — toggle individual report sections on/off (`domain`, `endpoint`, `date`, `hour`, `status`, `histogram`, `urls`, `referers`, `userAgents`, `ips`, `billableComparison`)
+- `sections` — toggle individual report sections on/off (`images`, `files`, `queries`, `responseStatuses`, `hourlyBandwidth`, `dailyBandwidth`, `referrers`, `userAgents`, `ips`)
 
 ## Programmatic API
 
@@ -86,9 +85,9 @@ await writeHtmlReport(report, "report.html");
 
 - `analyzeLog(inputPath, options?)` — returns `ReportData`
 - `writeHtmlReport(report, outputPath)` — writes self-contained HTML
-- `generateMarkdown(report, options?)` — returns LLM-friendly markdown for a report view (`billable` by default, or `all`)
+- `generateMarkdown(report, options?)` — returns the report markdown
 - `writeMarkdownReport(report, outputPath, options?)` — writes markdown to disk
-- `markdownReportFilename(report, view)` — derives a filename with `_billable-only` or `_all` suffix
+- `markdownReportFilename(report)` — derives the markdown filename from the report title
 - `resolveReportConfig(partial)` / `loadReportConfig(path)` — config helpers
 
 ### Markdown export
@@ -98,13 +97,12 @@ import { analyzeLog, generateMarkdown, writeMarkdownReport } from "sanity-log-an
 
 const report = await analyzeLog("logs.ndjson");
 
-const billableMd = generateMarkdown(report);
-const allMd = generateMarkdown(report, { view: "all" });
+const markdown = generateMarkdown(report);
 
-await writeMarkdownReport(report, "report_billable-only.md", { view: "billable" });
+await writeMarkdownReport(report, "report.md");
 ```
 
-The HTML report includes a **Download markdown for LLM** button that exports whichever view is currently shown.
+The HTML report includes a **Download markdown for LLM** button that exports the report markdown.
 
 ## Input format
 

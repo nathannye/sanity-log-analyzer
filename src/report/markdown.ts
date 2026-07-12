@@ -279,6 +279,14 @@ function renderSections(data: ReportData, sections: ReportSections): string {
 			renderIssues("Response codes", data.responseStatuses.issues),
 		);
 	}
+	if (sections.responseSizes) {
+		parts.push(
+			countTable(
+				getSectionLabel("responseSizes") ?? "Response sizes",
+				data.responseSizes.entries,
+			),
+		);
+	}
 	if (sections.images) {
 		parts.push(
 			imageUrlTable(data.images.entries),

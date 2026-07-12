@@ -130,6 +130,10 @@ export function enrichReportData(data: ReportDataInput): ReportData {
 			entries: data.responseStatuses.entries,
 			issues: responseIssues,
 		},
+		responseSizes: {
+			entries: data.responseSizes.entries,
+			issues: data.responseSizes.issues ?? [],
+		},
 		hourlyBandwidth: {
 			entries: data.hourlyBandwidth.entries,
 			issues: data.hourlyBandwidth.issues ?? [],

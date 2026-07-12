@@ -78,6 +78,7 @@ export function buildReportDataInput(
 		files: { entries: groups.file },
 		queries: { entries: groups.query },
 		responseStatuses: { entries: toCountRows(summary.byStatus) },
+		responseSizes: { entries: summary.responseSizeHistogram, issues: [] },
 		hourlyBandwidth: { entries: sortHourRows(summary.byHour), issues: [] },
 		dailyBandwidth: { entries: sortDateRows(summary.byDate), issues: [] },
 		referrers: { entries: topN(summary.byReferer, config.topN) },

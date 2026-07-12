@@ -14,11 +14,13 @@ export const SAMPLE_REPORT: ReportData = enrichReportData({
 	config: {
 		title: "Sanity Request Log Report",
 		topN: 50,
+		histogramBuckets: [0, 1024, 10_240, 102_400, 1_048_576, 10_485_760, Infinity],
 		sections: {
 			images: true,
 			files: true,
 			queries: true,
 			responseStatuses: true,
+			responseSizes: true,
 			hourlyBandwidth: true,
 			dailyBandwidth: true,
 			referrers: true,
@@ -81,6 +83,9 @@ export const SAMPLE_REPORT: ReportData = enrichReportData({
 			{ label: "200", count: 8 },
 			{ label: "404", count: 1 },
 		],
+	},
+	responseSizes: {
+		entries: [{ label: "0 B - 1 KB", count: 9 }],
 	},
 	hourlyBandwidth: {
 		entries: [
