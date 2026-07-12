@@ -1,5 +1,6 @@
 # sanity-log-analyzer
 Analyze Sanity request logs and generate an offline report to help triage bandwidth usage, expensive queries, and oversized images. No server required.
+<img width="1346" height="702" alt="example" src="https://github.com/user-attachments/assets/41de4e16-7169-4a28-9168-d470dddb0210" />
 
 ## Why this exists
 Sanity's request logs contain a huge amount of operational data, but they're difficult to inspect manually. This package turns raw NDJSON logs into visual reports that surface common fixes for out-of-control bandwidth.
