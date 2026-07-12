@@ -1,8 +1,8 @@
-import { cx } from "classix";
 import type { ComponentChildren } from "preact";
 import type { ReportData, ReportIssue } from "../../types.js";
 import { getVisibleTocSections, type TocSection } from "../sections.js";
 import { Button } from "./Button.js";
+import { cx } from "./cx.js";
 import {
 	CalendarIcon,
 	CodeIcon,

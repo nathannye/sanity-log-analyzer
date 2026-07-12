@@ -1,4 +1,4 @@
-import { cx } from "classix";
+import { cx } from "./cx.js";
 import type { Tone } from "./tone.js";
 import { toneClasses } from "./tone.js";
 
@@ -8,7 +8,13 @@ const TONE_DONUT_COLOR: Record<Tone, string> = {
 	red: "var(--color-red)",
 };
 
-function PercentageDonut({ percentage, tone }: { percentage: number; tone?: Tone }) {
+function PercentageDonut({
+	percentage,
+	tone,
+}: {
+	percentage: number;
+	tone?: Tone;
+}) {
 	const clamped = Math.min(100, Math.max(0, percentage));
 	const fill = tone ? TONE_DONUT_COLOR[tone] : "var(--color-green)";
 	const track = "color-mix(in srgb, var(--color-inverted) 10%, transparent)";
@@ -45,9 +51,7 @@ export function StatCard({
 		<div
 			class={cx(
 				"flex items-center gap-8 rounded-sm py-8 px-10",
-				tone
-					? toneClasses(tone)
-					: "bg-primary/7 border-primary/7 border",
+				tone ? toneClasses(tone) : "bg-primary/7 border-primary/7 border",
 				className,
 			)}
 		>

@@ -51,7 +51,7 @@ sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.jso
 
 ## Config
 
-```json 
+```
 // Minimal config:
 
 {

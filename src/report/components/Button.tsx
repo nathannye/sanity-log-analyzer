@@ -1,4 +1,4 @@
-import type { ComponentChildren, JSX } from "preact";
+import type { ButtonHTMLAttributes, ComponentChildren } from "preact";
 
 export type ButtonVariant =
 	| "default"
@@ -18,7 +18,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 };
 
 export interface ButtonProps
-	extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "icon"> {
+	extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "icon"> {
 	variant?: ButtonVariant;
 	icon?: ComponentChildren;
 	iconPosition?: "start" | "end";
