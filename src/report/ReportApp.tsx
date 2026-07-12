@@ -20,10 +20,12 @@ export function ReportApp({ data }: ReportAppProps) {
 		>
 			<Topbar {...data} />
 			
-			<div class="lg:items-start gap-30 w-full pr-margin-2 flex max-lg:flex-col max-lg:px-margin-1">
+			<div class="items-start gap-30 w-full flex max-lg:flex-col px-margin-1">
 				<TableOfContents data={data} />
-				<Header data={data} />
-				<ViewSection data={data} sections={data.config.sections} />
+				<div class="w-full min-w-0">
+					<Header data={data} />
+					<ViewSection data={data} sections={data.config.sections} />
+				</div>
 			</div>
 		</main>
 	);
