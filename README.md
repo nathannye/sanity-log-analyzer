@@ -111,5 +111,4 @@ The HTML report includes a **Download markdown for LLM** button that exports the
 
 ## Roadmap
 - [ ] Support Sanity [request tagging](https://www.sanity.io/docs/platform-management/reference-api-request-tags) via the `?tag=...` param
-- [ ] Export as PDF button
 - [ ] Rewrite parser in Rust
