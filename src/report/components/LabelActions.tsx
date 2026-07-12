@@ -39,7 +39,7 @@ export function LabelActions({
 	);
 
 	return (
-		<div class="flex min-w-0 items-center gap-6">
+		<div class="flex min-w-0 items-center gap-10">
 			{showCopyButton ? (
 				<Button
 					variant="ghost-icon-sm"
@@ -48,6 +48,7 @@ export function LabelActions({
 					{...(copyToast ? { "data-copy-toast": copyToast } : {})}
 					aria-label={`Copy "${value}"`}
 					title="Copy to clipboard"
+					class="-translate-y-2"
 				/>
 			) : null}
 			{actions}

@@ -5,6 +5,7 @@ import type { ReportModuleCleanup, ReportModuleInit } from "./scripts/module.js"
 import { initTableScrollFade } from "./scripts/table-scroll-fade.js";
 import { initTableSort } from "./scripts/table-sort.js";
 import { initThemeToggle } from "./scripts/theme-toggle.js";
+import { initTocDetails } from "./scripts/toc-details.js";
 import { initTocNav } from "./scripts/toc-nav.js";
 import { initToast } from "./scripts/toast.js";
 import { initUrlTabs } from "./scripts/url-tabs.js";
@@ -16,6 +17,7 @@ const moduleRegistry: Record<string, ReportModuleInit> = {
 	"table-scroll-fade": initTableScrollFade,
 	"table-sort": initTableSort,
 	"theme-toggle": initThemeToggle,
+	"toc-details": initTocDetails,
 	"toc-nav": initTocNav,
 	toast: initToast,
 	"url-tabs": initUrlTabs,

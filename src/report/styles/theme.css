@@ -227,6 +227,10 @@ pre {
 	vertical-align: middle;
 }
 
+.data-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
 .data-table th {
 	position: sticky;
 	top: 0;
@@ -335,10 +339,6 @@ pre {
 @media (min-width: 1024px) {
 	.toc-details > summary {
 		display: none;
-	}
-
-	.toc-details > :not(summary) {
-		display: flex !important;
 	}
 }
 
