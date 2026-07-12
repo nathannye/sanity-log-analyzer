@@ -14,13 +14,13 @@ export function ReportApp({ data }: ReportAppProps) {
 
 	return (
 		<main
-			class="mx-auto max-w-1920 pb-56"
+			class="mx-auto max-w-1920 max-lg:pt-30 pb-56"
 			style={colorStyle}
 			data-module="toast markdown-download toc-nav table-scroll-fade"
 		>
 			<Topbar {...data} />
 			
-			<div class="items-start gap-[4vw] pr-margin-2 flex max-lg:flex-col max-lg:px-margin-1">
+			<div class="items-start gap-30 pr-margin-2 flex max-lg:flex-col max-lg:px-margin-1">
 				<TableOfContents data={data} />
 				<div class="min-w-0">
 					<Header data={data} />

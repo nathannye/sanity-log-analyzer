@@ -14,8 +14,8 @@ export function Header({ data }: HeaderProps) {
 	const formattedRequests = formatNumber(data.summary.requestCount);
 
 	return (
-		<header class="mb-24 flex pt-[24vh] flex-wrap items-start justify-between gap-16 lg:items-end">
-			<p class=" mb-90">
+		<header class="mb-24 flex pt-[6vh] lg:pt-[24vh] flex-wrap items-start justify-between gap-16 lg:items-end">
+			<p class="mb-45 lg:mb-90">
 				Report from {formattedDate}
 			</p>
 			<h1 class="heading-1 lg:w-[80vw] w-full mb-45">{data.summary.message}</h1>

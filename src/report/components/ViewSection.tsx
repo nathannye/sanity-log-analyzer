@@ -28,7 +28,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 	return (
 		<div>
 			<section class="scroll-mt-32 mb-24" data-section="summary">
-				<div class="flex flex-wrap items-center mb-20 gap-16 [&>*]:min-w-[130px]">
+				<div class="flex flex-wrap items-center mb-20 gap-16 lg:[&>*]:min-w-[130px] [&>*]:min-w-[100px]">
 					<StatCard
 						label="Requests"
 						value={formatNumber(data.summary.requestCount)}

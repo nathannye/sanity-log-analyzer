@@ -133,7 +133,7 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 
 	return (
 		<>
-			<div class="hidden w-330 shrink-0 h-screen pr-30 pl-margin-1 lg:block" />
+			<div class="hidden w-330 shrink-0 h-screen pl-margin-1 lg:block" />
 			<aside class="w-full shrink-0 max-lg:order-first lg:fixed lg:top-0 lg:w-auto lg:pr-30 lg:pl-margin-1 lg:pt-80">
 				<details class="toc-details group/toc">
 					<summary class="eyebrow-1 mb-12 flex cursor-pointer list-none select-none items-center gap-8 rounded-md bg-muted/3 px-17 py-14 text-primary transition-colors hover:bg-primary/6 lg:hidden [&::-webkit-details-marker]:hidden">
@@ -208,7 +208,7 @@ export function TableOfContents({ data }: TableOfContentsProps) {
 								</li>
 							))}
 						</ul>
-						<div class="pt-120">
+						<div class="pt-60 lg:pt-120">
 							<Button id="download-markdown" icon={<DownloadIcon />}>
 								Download markdown for LLM
 							</Button>
