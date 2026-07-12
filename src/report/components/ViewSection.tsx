@@ -115,7 +115,7 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 							</>
 						) : null}
 
-						<section class="scroll-mt-32" data-section="responseSizes">
+						<section class="scroll-mt-32 mt-40" data-section="responseSizes">
 							<h3 class="heading-3 mb-12">
 								{getSectionLabel("responseSizes") ?? "Response sizes"}
 							</h3>
