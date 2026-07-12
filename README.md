@@ -31,7 +31,7 @@ pnpm add sanity-log-analyzer
 
 ```
 
-npx sanity-log-analyzer
+npx sanity-log-analyzer input.ndjson output.html --open
 
 ⠴ Processed 1.2 GB / 1.2 GB (98.9%) — 1,264,879 entries
 Wrote output.html in 6.6s (1,284,676 requests).
