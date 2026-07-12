@@ -1,17 +1,17 @@
 @utility heading-1 {
-	font-size: clamp(3.2rem, 4vw, 5.2rem);
+	font-size: clamp(3.2rem, 4.5vw, 6.4rem);
 	line-height: 1.09;
 	font-weight: 670;
 	letter-spacing: var(--tracking-tight);
 }
 
 @utility heading-2 {
-	font-size: clamp(2.4rem, 4.5vw, 7.8rem);
+	font-size: clamp(2.4rem, 4vw, 4.3rem);
 	font-weight: 620;
 	letter-spacing: var(--tracking-tight);
 
 	@media (max-width: 1024px) {
-		font-size: clamp(3.5rem, 5.2vw, 7.8rem);
+		font-size: clamp(3.5rem, 5.2vw, 5.2rem);
 	}
 }
 
