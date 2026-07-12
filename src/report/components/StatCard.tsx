@@ -1,5 +1,6 @@
-import cx from "classix"
-import { Tone, toneClasses } from "./tone";
+import { cx } from "classix";
+import type { Tone } from "./tone.js";
+import { toneClasses } from "./tone.js";
 
 const TONE_DONUT_COLOR: Record<Tone, string> = {
 	green: "var(--color-green)",

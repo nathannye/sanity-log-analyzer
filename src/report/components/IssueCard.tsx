@@ -3,7 +3,7 @@ import type { IssueSeverity, ReportIssue } from "../../types.js";
 import { CardMetric } from "./CardMetric.js";
 import type { Tone } from "./tone.js";
 import { toneClasses } from "./tone.js";
-import cx from "classix";
+import { cx } from "classix";
 
 function severityTone(severity: IssueSeverity): Tone {
 	if (severity === "critical") return "red";

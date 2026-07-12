@@ -1,4 +1,4 @@
-import cx from "classix";
+import { cx } from "classix";
 import { SortIcon } from "./icons.js";
 
 export type SortColumnType = "string" | "number";

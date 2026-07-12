@@ -18,7 +18,7 @@ import {
 	SummaryIcon,
 	UserAgentIcon,
 } from "./icons.js";
-import cx from "classix";
+import { cx } from "classix";
 
 interface TableOfContentsProps {
 	data: ReportData;

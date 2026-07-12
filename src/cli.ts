@@ -20,7 +20,7 @@ interface CliOptions {
 
 function printHelp(): void {
 	console.log(`Usage:
-  sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.json]
+  sanity-log-analyzer <input.ndjson|.ndjson.gz> <output.html> [--config config.json] [--open]
 
 Options:
   --config    Load a JSON config file

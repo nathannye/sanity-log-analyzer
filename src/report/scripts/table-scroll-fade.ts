@@ -16,7 +16,7 @@ function bindTableScrollFade(el: HTMLElement): () => void {
 
 	const resizeObserver = new ResizeObserver(() => updateScrollFade(el));
 	resizeObserver.observe(el);
-	for (const child of el.children) {
+	for (const child of Array.from(el.children)) {
 		if (child instanceof Element) resizeObserver.observe(child);
 	}
 

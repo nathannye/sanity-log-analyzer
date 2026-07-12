@@ -26,7 +26,7 @@ const moduleRegistry: Record<string, ReportModuleInit> = {
 function collectModuleNodes(root: ParentNode): HTMLElement[] {
 	if (root instanceof HTMLElement) {
 		const nodes = root.matches("[data-module]")
-			? [root, ...root.querySelectorAll<HTMLElement>("[data-module]")]
+			? [root, ...Array.from(root.querySelectorAll<HTMLElement>("[data-module]"))]
 			: Array.from(root.querySelectorAll<HTMLElement>("[data-module]"));
 		return nodes;
 	}

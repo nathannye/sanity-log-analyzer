@@ -18,7 +18,7 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 };
 
 export interface ButtonProps
-	extends Omit<JSX.HTMLAttributes<HTMLButtonElement>, "icon"> {
+	extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "icon"> {
 	variant?: ButtonVariant;
 	icon?: ComponentChildren;
 	iconPosition?: "start" | "end";

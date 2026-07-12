@@ -10,10 +10,15 @@ interface FindingBoxProps {
 export function FindingBox({ text, tone }: FindingBoxProps) {
 	return (
 		<CardMetric
-			className={toneClasses(
-				["grid", "min-h-0", "content-start", "gap-8"],
-				tone,
-			)}
+			className={[
+				"grid",
+				"min-h-0",
+				"content-start",
+				"gap-8",
+				toneClasses(tone),
+			]
+				.filter(Boolean)
+				.join(" ")}
 		>
 			{tone ? (
 				<div class="flex items-center gap-8">
