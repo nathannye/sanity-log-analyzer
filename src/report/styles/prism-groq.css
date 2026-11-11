@@ -1,43 +1,81 @@
+/*
+ * Heads up: this report's theme attribute is inverted relative to what it
+ * paints. The default state (no data-theme) renders #09090b text on #f4f4f5 —
+ * the LIGHT-looking page — while html[data-theme="light"] renders the DARK one.
+ * The blocks below are named for the surface the code block actually sits on,
+ * not for the attribute.
+ */
+
+/* Light surface: the code block sits on #e1e1e2 (bg-primary/8 over #f4f4f5). */
+:root {
+	--groq-comment: #52525b;
+	--groq-string: #166534;
+	--groq-number: #92400e;
+	--groq-keyword-operator: #6d28d9;
+	--groq-function: #075985;
+	--groq-namespace: #9a3412;
+	--groq-variable: #9d174d;
+	--groq-wildcard: #be185d;
+	--groq-operator: #3f3f46;
+	--groq-punctuation: #27272a;
+}
+
+/* Dark surface: the code block sits on #1c1c1e. */
+html[data-theme="light"] {
+	--groq-comment: #71717a;
+	--groq-string: #86efac;
+	--groq-number: #fcd34d;
+	--groq-keyword-operator: #c4b5fd;
+	--groq-function: #7dd3fc;
+	--groq-namespace: #fdba74;
+	--groq-variable: #f9a8d4;
+	--groq-wildcard: #f472b6;
+	--groq-operator: #a1a1aa;
+	--groq-punctuation: #d4d4d8;
+}
+
 .language-groq .token.comment {
-	color: #71717a;
+	color: var(--groq-comment);
 }
 
 .language-groq .token.string {
-	color: #86efac;
+	color: var(--groq-string);
 }
 
 .language-groq .token.number,
 .language-groq .token.boolean,
 .language-groq .token.null {
-	color: #fcd34d;
+	color: var(--groq-number);
 }
 
 .language-groq .token.keyword-operator {
-	color: #c4b5fd;
+	color: var(--groq-keyword-operator);
 }
 
 .language-groq .token.function {
-	color: #7dd3fc;
+	color: var(--groq-function);
 }
 
 .language-groq .token.namespace {
-	color: #fdba74;
+	color: var(--groq-namespace);
 }
 
 .language-groq .token.variable,
 .language-groq .token.special-variable {
-	color: #f9a8d4;
+	color: var(--groq-variable);
 }
 
+/* Must stay after .token.variable: `*` is emitted as `token wildcard variable`
+ * and the two rules have equal specificity, so source order decides. */
 .language-groq .token.wildcard {
-	color: #f472b6;
+	color: var(--groq-wildcard);
 }
 
 .language-groq .token.operator {
-	color: #a1a1aa;
+	color: var(--groq-operator);
 }
 
 .language-groq .token.spread,
 .language-groq .token.punctuation {
-	color: #d4d4d8;
+	color: var(--groq-punctuation);
 }
