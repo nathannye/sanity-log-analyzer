@@ -25,6 +25,7 @@ export function GroqQueryFlyout({
 		stats,
 		hasSpreadOperator,
 		params,
+		parseError,
 	} = details;
 	const avgBytes = requests > 0 ? responseBytes / requests : 0;
 	const formattedParams =
@@ -105,7 +106,11 @@ export function GroqQueryFlyout({
 					{stats ? (
 						<GroqQueryStatsView stats={stats} />
 					) : (
-						<p class="body-2 empty m-0">Could not analyze query structure.</p>
+						<p class="body-2 empty m-0">
+							{parseError
+								? `Could not analyze query structure: ${parseError}`
+								: "Could not analyze query structure."}
+						</p>
 					)}
 				</div>
 				<p class="body-2 mt-22 text-muted">

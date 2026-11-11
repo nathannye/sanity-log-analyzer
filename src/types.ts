@@ -45,6 +45,7 @@ export interface ReportEntriesOnly {
 
 export interface QueriesSection extends RankedReportSection {
 	groqByUrl: Record<string, GroqUrlDetails>;
+	parseFailures: GroqParseFailures;
 }
 
 export interface UserAgentsSection extends ReportEntriesOnly {
@@ -77,6 +78,22 @@ export interface GroqUrlDetails {
 	highlightedQuery: string;
 	stats: GroqQueryStats | null;
 	hasSpreadOperator: boolean;
+	parseError: string | null;
+}
+
+export interface GroqParseFailureReason {
+	/** The parser message, verbatim. */
+	reason: string;
+	/** How many distinct query URLs failed this way. */
+	count: number;
+	/** One offending query, for context. */
+	sampleQuery: string;
+}
+
+export interface GroqParseFailures {
+	count: number;
+	/** Sorted by count descending, then reason ascending. */
+	reasons: GroqParseFailureReason[];
 }
 
 export type ReportDataInput = Omit<
@@ -95,9 +112,10 @@ export type ReportDataInput = Omit<
 	summary: Omit<ReportSummaryBlock, "message" | "issues">;
 	images: Omit<RankedReportSection, "issues"> & { issues?: ReportIssue[] };
 	files: Omit<RankedReportSection, "issues"> & { issues?: ReportIssue[] };
-	queries: Omit<QueriesSection, "issues" | "groqByUrl"> & {
+	queries: Omit<QueriesSection, "issues" | "groqByUrl" | "parseFailures"> & {
 		issues?: ReportIssue[];
 		groqByUrl?: Record<string, GroqUrlDetails>;
+		parseFailures?: GroqParseFailures;
 	};
 	responseStatuses: Omit<CountReportSection, "issues"> & {
 		issues?: ReportIssue[];

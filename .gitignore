@@ -8,3 +8,5 @@ sample.ndjson
 sample.gz
 *.ndjson
 *.gz
+
+.DS_Store

@@ -1,3 +1,4 @@
+import type { ComponentChildren } from "preact";
 import { CardMetric } from "./CardMetric.js";
 import type { Tone } from "./tone.js";
 import { toneClasses } from "./tone.js";
@@ -5,9 +6,10 @@ import { toneClasses } from "./tone.js";
 interface FindingBoxProps {
 	text: string;
 	tone?: Tone;
+	children?: ComponentChildren;
 }
 
-export function FindingBox({ text, tone }: FindingBoxProps) {
+export function FindingBox({ text, tone, children }: FindingBoxProps) {
 	return (
 		<CardMetric
 			className={[
@@ -28,6 +30,7 @@ export function FindingBox({ text, tone }: FindingBoxProps) {
 			) : (
 				<p class="body-1 m-0 min-w-0 text-primary">{text}</p>
 			)}
+			{children}
 		</CardMetric>
 	);
 }

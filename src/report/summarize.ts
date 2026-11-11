@@ -251,7 +251,7 @@ export function buildQueryIssues(
 			failingRows: getQuerySpreadRows(entries),
 			ctx,
 			failMessage: (count) =>
-				`${formatCountLabel(count, "query")} ${count === 1 ? "uses" : "use"} the spread operator {...}`,
+				`${formatCountLabel(count, "query", "queries")} ${count === 1 ? "uses" : "use"} the spread operator {...}`,
 			passMessage: "No GROQ spread queries detected",
 			suggestion:
 				"Project only needed fields instead of using the {...} spread operator",
@@ -261,7 +261,7 @@ export function buildQueryIssues(
 			failingRows: getQueryPerfRows(entries),
 			ctx,
 			failMessage: (count) =>
-				`${formatCountLabel(count, "query")} ${count === 1 ? "has" : "have"} GROQ performance anti-patterns`,
+				`${formatCountLabel(count, "query", "queries")} ${count === 1 ? "has" : "have"} GROQ performance anti-patterns`,
 			passMessage: "No GROQ performance anti-patterns detected",
 			suggestion:
 				"Avoid joins in filters, repeated reference resolves, deep slices, and non-literal field comparisons",

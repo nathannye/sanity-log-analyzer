@@ -1,4 +1,4 @@
-import { GroqSyntaxError, parse } from "groq-js";
+import { parse } from "groq-js";
 import {
 	COMPARISON_OPS,
 	GROQ_DEEP_SLICE_THRESHOLD,
@@ -41,6 +41,10 @@ export interface GroqAnalysis {
 	signals: GroqAstSignals;
 	issues: string[];
 }
+
+export type GroqAnalysisResult =
+	| { ok: true; analysis: GroqAnalysis }
+	| { ok: false; reason: string };
 
 type AstNode = {
 	type: string;
@@ -122,7 +126,8 @@ function walkChildren(
 	for (const [key, value] of Object.entries(node)) {
 		if (skipKeys.has(key)) continue;
 		if (Array.isArray(value)) {
-			for (const child of value) walkNode(child, stats, signals, derefPaths, ctx);
+			for (const child of value)
+				walkNode(child, stats, signals, derefPaths, ctx);
 		} else {
 			walkNode(value, stats, signals, derefPaths, ctx);
 		}
@@ -250,34 +255,49 @@ export function buildGroqIssues(
 	return issues;
 }
 
+function parseFailureReason(error: unknown): string {
+	return error instanceof Error && error.message
+		? error.message
+		: "Unknown GROQ parse error";
+}
+
 export function analyzeGroqQuery(
 	query: string,
 	params?: Record<string, unknown>,
-): GroqAnalysis | null {
+): GroqAnalysisResult {
+	// Only `parse` is guarded: any failure there means the query is
+	// unanalyzable, which covers GroqSyntaxError, the unexported
+	// GroqQueryError, and the handful of plain Errors groq-js throws. A throw
+	// from the walk below would be a bug in our own code and must surface.
+	let ast: ReturnType<typeof parse>;
 	try {
-		const ast = parse(query, params ? { params } : {});
-		const stats = emptyStats();
-		const signals = emptySignals();
-		const derefPaths = new Map<string, number>();
-		walkNode(ast, stats, signals, derefPaths, {
-			inFuncArg: false,
-			inFilterExpr: false,
-		});
-		return {
+		ast = parse(query, params ? { params } : {});
+	} catch (error) {
+		return { ok: false, reason: parseFailureReason(error) };
+	}
+
+	const stats = emptyStats();
+	const signals = emptySignals();
+	const derefPaths = new Map<string, number>();
+	walkNode(ast, stats, signals, derefPaths, {
+		inFuncArg: false,
+		inFilterExpr: false,
+	});
+
+	return {
+		ok: true,
+		analysis: {
 			stats,
 			signals,
 			issues: buildGroqIssues(stats, signals),
-		};
-	} catch (error) {
-		if (error instanceof GroqSyntaxError) return null;
-		throw error;
-	}
+		},
+	};
 }
 
 export function hasGroqSpreadOperator(
 	query: string,
 	params?: Record<string, unknown>,
 ): boolean {
-	const analysis = analyzeGroqQuery(query, params);
-	return analysis !== null && analysis.stats.spreads > 0;
+	const result = analyzeGroqQuery(query, params);
+	return result.ok && result.analysis.stats.spreads > 0;
 }

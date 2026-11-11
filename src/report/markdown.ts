@@ -1,5 +1,6 @@
 import {
 	formatBytes,
+	formatCountLabel,
 	formatNullableMetric,
 	formatNumber,
 	formatPercentage,
@@ -8,6 +9,7 @@ import {
 import { avgBytesPerRequest } from "../ranked-row.js";
 import type {
 	CountRow,
+	GroqParseFailures,
 	RankedRow,
 	ReportData,
 	ReportIssue,
@@ -44,6 +46,25 @@ export function escapeMarkdownCell(value: string): string {
 }
 
 const MP4_WARNING = "consider HLS streaming instead of MP4";
+
+function renderParseFailures(failures: GroqParseFailures): string {
+	if (failures.count === 0) return "";
+
+	const lines = [
+		`### ${getSectionLabel("queries") ?? "Queries"} — Not analyzed`,
+		"",
+		`${formatCountLabel(failures.count, "query", "queries")} could not be parsed, so no GROQ structure was analyzed for them.`,
+		"",
+	];
+	for (const failure of failures.reasons) {
+		lines.push(
+			`- **${failure.reason}** (${formatCountLabel(failure.count, "query", "queries")})`,
+			`  - Example: \`${escapeMarkdownCell(failure.sampleQuery)}\``,
+		);
+	}
+	lines.push("");
+	return lines.join("\n");
+}
 
 function renderIssues(title: string, issues: ReportIssue[]): string {
 	if (issues.length === 0) return "";
@@ -165,11 +186,8 @@ function queryUrlTable(rows: RankedRow[]): string {
 }
 
 function fileUrlTable(rows: RankedRow[]): string {
-	return rankedUrlSubtable(
-		getSectionLabel("files") ?? "Files",
-		rows,
-		(row) =>
-			isMp4Url(row.label) ? `${row.label} (${MP4_WARNING})` : row.label,
+	return rankedUrlSubtable(getSectionLabel("files") ?? "Files", rows, (row) =>
+		isMp4Url(row.label) ? `${row.label} (${MP4_WARNING})` : row.label,
 	);
 }
 
@@ -303,6 +321,7 @@ function renderSections(data: ReportData, sections: ReportSections): string {
 		parts.push(
 			queryUrlTable(data.queries.entries),
 			renderIssues("Queries", data.queries.issues),
+			renderParseFailures(data.queries.parseFailures),
 		);
 	}
 	if (sections.referrers) {

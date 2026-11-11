@@ -1,4 +1,6 @@
 import type {
+	GroqParseFailureReason,
+	GroqParseFailures,
 	GroqUrlDetails,
 	RankedRow,
 	ReportData,
@@ -34,20 +36,50 @@ function buildUserAgentByLabel(
 	return byLabel;
 }
 
+function collectParseFailures(
+	failures: Map<string, GroqParseFailureReason>,
+): GroqParseFailures {
+	const reasons = [...failures.values()].sort(
+		(a, b) => b.count - a.count || a.reason.localeCompare(b.reason),
+	);
+	return {
+		count: reasons.reduce((total, entry) => total + entry.count, 0),
+		reasons,
+	};
+}
+
 function enrichUrlRows(rows: RankedRow[]): {
 	rows: RankedRow[];
 	groqByUrl: Record<string, GroqUrlDetails>;
+	parseFailures: GroqParseFailures;
 } {
 	const groqByUrl: Record<string, GroqUrlDetails> = {};
+	const failures = new Map<string, GroqParseFailureReason>();
+
 	const enrichedRows = rows.map((row) => {
 		const query = extractGroqQuery(row.label);
 		if (!query) return row;
 
 		const params = extractGroqParams(row.label);
 		const formattedQuery = formatGroqForDisplay(query);
-		const analysis = analyzeGroqQuery(formattedQuery, params ?? undefined);
+		const result = analyzeGroqQuery(formattedQuery, params ?? undefined);
+		const analysis = result.ok ? result.analysis : null;
+		const parseError = result.ok ? null : result.reason;
 		const stats = analysis?.stats ?? null;
 		const hasSpreadOperator = (stats?.spreads ?? 0) > 0;
+
+		if (parseError) {
+			const existing = failures.get(parseError);
+			if (existing) {
+				existing.count += 1;
+			} else {
+				failures.set(parseError, {
+					reason: parseError,
+					count: 1,
+					sampleQuery: formattedQuery,
+				});
+			}
+		}
 
 		groqByUrl[row.label] = {
 			query,
@@ -56,6 +88,7 @@ function enrichUrlRows(rows: RankedRow[]): {
 			highlightedQuery: highlightGroq(formattedQuery),
 			stats,
 			hasSpreadOperator,
+			parseError,
 		};
 
 		return {
@@ -69,11 +102,19 @@ function enrichUrlRows(rows: RankedRow[]): {
 		};
 	});
 
-	return { rows: enrichedRows, groqByUrl };
+	return {
+		rows: enrichedRows,
+		groqByUrl,
+		parseFailures: collectParseFailures(failures),
+	};
 }
 
 export function enrichReportData(data: ReportDataInput): ReportData {
-	const { rows: queryEntries, groqByUrl } = enrichUrlRows(data.queries.entries);
+	const {
+		rows: queryEntries,
+		groqByUrl,
+		parseFailures,
+	} = enrichUrlRows(data.queries.entries);
 	const severityCtx = {
 		requestCount: data.summary.requestCount,
 		bandwidth: data.summary.bandwidth,
@@ -125,6 +166,7 @@ export function enrichReportData(data: ReportDataInput): ReportData {
 			entries: queryEntries,
 			issues: queriesIssues,
 			groqByUrl,
+			parseFailures,
 		},
 		responseStatuses: {
 			entries: data.responseStatuses.entries,

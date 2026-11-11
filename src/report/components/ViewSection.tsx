@@ -1,4 +1,9 @@
-import { formatBytes, formatNumber, formatPercentage } from "../../format.js";
+import {
+	formatBytes,
+	formatCountLabel,
+	formatNumber,
+	formatPercentage,
+} from "../../format.js";
 import type { ReportData, ReportSections } from "../../types.js";
 import { getSectionLabel } from "../sections.js";
 import { colorVar, REPORT_PALETTE } from "../styles/colors.js";
@@ -9,6 +14,7 @@ import {
 import { BandwidthBarChart } from "./BandwidthBarChart.js";
 import { CountBarChart } from "./CountBarChart.js";
 import { Donut } from "./Donut.js";
+import { FindingBox } from "./FindingBox.js";
 import { IssueCardList } from "./IssueCard.js";
 import { SectionWithLabel } from "./SectionWithLabel.js";
 import SectionWrapper from "./SectionWrapper.js";
@@ -175,6 +181,26 @@ export function ViewSection({ data, sections }: ViewSectionProps) {
 					>
 						{data.queries.entries.length > 0 ? (
 							<IssueCardList issues={data.queries.issues} />
+						) : null}
+						{data.queries.parseFailures.count > 0 ? (
+							<FindingBox
+								tone="yellow"
+								text={`${formatCountLabel(
+									data.queries.parseFailures.count,
+									"query",
+									"queries",
+								)} could not be analyzed`}
+							>
+								<ul class="body-2 m-0 grid gap-6 pl-16 text-muted">
+									{data.queries.parseFailures.reasons.map((failure) => (
+										<li key={failure.reason}>
+											{failure.reason} (
+											{formatCountLabel(failure.count, "query", "queries")}) —{" "}
+											<code>{failure.sampleQuery}</code>
+										</li>
+									))}
+								</ul>
+							</FindingBox>
 						) : null}
 						<UrlDataTable
 							rows={data.queries.entries}
